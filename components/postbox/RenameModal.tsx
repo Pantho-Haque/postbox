@@ -1,8 +1,9 @@
 import { Pencil } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { TPostBoxCollections } from "@/types";
+import { TPostBoxCollections, TPostBoxSelectorSelection } from "@/types";
 import { createPortal } from "react-dom";
 import {
+  isAlreadyExists,
   renameCollectionName,
   renameCurlName,
 } from "@/utils/postboxCollectionModifier";
@@ -10,39 +11,44 @@ import {
 export default function RenameModal({
   currentName,
   type,
-  collectionList,
-  curlList,
+  collectionCurlList,
+  collectionName,
   setCollections,
+  setSelection,
 }: {
   currentName: string;
   type: "collection" | "route";
-  collectionList: string[];
-  curlList: string[];
+  collectionCurlList: { [key: string]: string[] };
+  collectionName?: string;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
+  setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
 }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(currentName);
   const [error, setError] = useState("");
-  const isAlreadyExists = (value: string) => {
-    if (type === "collection") {
-      return collectionList.includes(value.trim());
-    } else {
-      return curlList.includes(value.trim());
-    }
-  };
 
   const handleRename = () => {
     if (!value.trim() || value === currentName) return setOpen(false);
 
-    if (isAlreadyExists(value))
+    if (isAlreadyExists(collectionCurlList, type, value, collectionName))
       return setError(`${type} with name ${value} already exists`);
 
     if (type === "collection") {
+      const collectionName = value.trim();
       setCollections((prev) =>
-        renameCollectionName(prev, currentName, value.trim()),
+        renameCollectionName(prev, currentName, collectionName),
       );
+      setSelection((prev) => {
+        return { ...prev, collectionName };
+      });
     } else if (type === "route") {
-      setCollections((prev) => renameCurlName(prev, currentName, value.trim()));
+      const curlName = value.trim();
+      setCollections((prev) =>
+        renameCurlName(prev, currentName, collectionName ||"", curlName),
+      );
+      setSelection((prev) => {
+        return { ...prev, curlName };
+      });
     }
     setOpen(false);
   };

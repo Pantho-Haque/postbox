@@ -1,55 +1,61 @@
 import { Plus } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { TPostBoxCollections } from "@/types";
+import {
+  TPostBoxCollections,
+  TPostBoxSelectorResponse,
+  TPostBoxSelectorSelection,
+} from "@/types";
 import { createPortal } from "react-dom";
 import {
   createCollectionName,
   createCurlName,
+  isAlreadyExists,
 } from "@/utils/postboxCollectionModifier";
 
 export default function CreateModal({
   type,
-  selectedCollection,
-  collectionList,
-  curlList,
-  setSelectedCollection,
-  setSelectedCurlName,
+  selection,
+  setSelection,
   setCollections,
+  setSelectorResponse,
+  collectionCurlList,
 }: {
   type: "collection" | "route";
-  selectedCollection: string;
-  collectionList: string[];
-  curlList: string[];
-  setSelectedCollection: Dispatch<SetStateAction<string>>;
-  setSelectedCurlName: (value: string) => void;
+  selection: TPostBoxSelectorSelection;
+  setSelection: (value: TPostBoxSelectorSelection) => void;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
+  setSelectorResponse: Dispatch<SetStateAction<TPostBoxSelectorResponse | null>>;
+  collectionCurlList: { [key: string]: string[] };
 }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
 
-  const isAlreadyExists = (value: string) => {
-    if (type === "collection") {
-      return collectionList.includes(value.trim());
-    } else {
-      return curlList.includes(value.trim());
-    }
-  };
-
   const handleCreate = () => {
     if (!value.trim()) return setOpen(false);
 
-    if (isAlreadyExists(value))
+    if (
+      isAlreadyExists(collectionCurlList, type, value, selection.collectionName)
+    )
       return setError(`${type} with name ${value} already exists`);
 
     if (type === "collection") {
-      setCollections((prev) => createCollectionName(prev, value.trim()));
-      setSelectedCollection(value.trim());
+      const collectionName = value.trim();
+      setCollections((prev) => createCollectionName(prev, collectionName));
+      setSelection({
+        collectionName,
+        curlName: "",
+      });
+      setSelectorResponse(()=> null);
     } else if (type === "route") {
+      const curlName = value.trim();
       setCollections((prev) =>
-        createCurlName(prev, selectedCollection, value.trim()),
+        createCurlName(prev, selection.collectionName, curlName),
       );
-      setSelectedCurlName(value.trim());
+      setSelection({
+        collectionName: selection.collectionName,
+        curlName,
+      });
     }
     setValue("");
     setOpen(false);
@@ -65,10 +71,7 @@ export default function CreateModal({
         className="mx-1 p-1 py-2 flex items-center gap-1 text-sm font-semibold bg-cyan-500 text-white hover:bg-cyan-600 cursor-pointer"
       >
         <Plus size={18} />
-        Create{" "}
-        <span className="capitalize">
-          {type}
-        </span>
+        Create <span className="capitalize">{type}</span>
       </button>
       {open &&
         createPortal(
@@ -81,20 +84,17 @@ export default function CreateModal({
               onClick={(e) => e.stopPropagation()}
             >
               <h2 className="text-sm font-bold uppercase tracking-widest text-cyan-600">
-                Create{" "}
-                <span className="capitalize">
-                  {type}
-                </span>
+                Create <span className="capitalize">{type}</span>
               </h2>
 
               {error ? (
                 <p className="text-xs text-red-500">{error}</p>
               ) : (
-                <p className="text-xs text-gray-400">
-                  Create a new{" "}
-                  <span className="capitalize">
-                    {type}
-                  </span>
+                <p className="text-xs text-gray-400 capitalize">
+                  Create a new <span className="capitalize">{type}</span>
+                  {type == "route" && (
+                    <span> on {selection.collectionName}</span>
+                  )}
                 </p>
               )}
 

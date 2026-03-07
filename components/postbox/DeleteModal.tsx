@@ -6,7 +6,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { TPostBoxCollections } from "@/types";
+import { TPostBoxCollections, TPostBoxSelectorSelection } from "@/types";
 import { createPortal } from "react-dom";
 import {
   deleteCollectionName,
@@ -16,33 +16,42 @@ import {
 export default function DeleteModal({
   currentName,
   type,
+  collectionName,
   setCollections,
-  setSelectedCollection,
-  setSelectedCurlName,
+  setSelection,
 }: {
   currentName: string;
   type: "collection" | "route";
+  collectionName?: string;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectedCollection: Dispatch<SetStateAction<string>>;
-  setSelectedCurlName: (value: string) => void;
+  setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
 }) {
   const [open, setOpen] = useState(false);
 
   const handleDelete = useCallback(() => {
     if (type === "collection") {
       setCollections((prev) => {
-        setSelectedCollection(prev[prev.length - 2]?.collectionName || "");
-        return deleteCollectionName(prev, currentName)
+        return deleteCollectionName(prev, currentName);
+      });
+      setSelection(() => {
+        return {
+          collectionName: "",
+          curlName: "",
+        };
       });
     } else if (type === "route") {
       setCollections((prev) => {
-        const prevCurlsLength = prev[prev.length - 1]?.curls.length;
-        setSelectedCurlName(prev[prev.length - 1]?.curls[prevCurlsLength - 2]?.name || "");
-        return deleteCurlName(prev, currentName)
+        return deleteCurlName(prev, collectionName || "", currentName);
+      });
+      setSelection((prev) => {
+        return {
+          ...prev,
+          curlName: "",
+        };
       });
     }
     setOpen(false);
-  }, [type, currentName, setCollections, setSelectedCollection, setSelectedCurlName]);
+  }, [type, currentName, collectionName, setCollections, setSelection]);
 
   useEffect(() => {
     if (!open) return;

@@ -22,6 +22,16 @@ export type TPostBoxCurlJson = {
   url: string;
   headers: string;
   body: string;
-  collectionName: string;
-  curlName: string;
+};
+
+export type TPostBoxSelectorSelection = {
+    collectionName: string;
+    curlName: string;
+}
+
+export type TPostBoxSelectorResponse = {
+    collectionName: string;
+    curlName: string;
+    env?: TPostBoxEnv;
+    curlJson: TPostBoxCurlJson;
 };

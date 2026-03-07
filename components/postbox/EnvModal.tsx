@@ -1,25 +1,37 @@
 import { Plus, Trash2 } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { TPostBoxCollections, TPostBoxEnv } from "@/types";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import {
+  TPostBoxCollections,
+  TPostBoxEnv,
+  TPostBoxSelectorResponse,
+} from "@/types";
 import { createPortal } from "react-dom";
 import { updateEnv } from "@/utils/postboxCollectionModifier";
 
 export default function EnvModal({
-  selectedEnv,
-  selectedCollection,
-  setEnvs,
+  envs,
+  collectionName,
+  setSelectorResponse,
   setCollections,
 }: {
-  selectedEnv: TPostBoxEnv;
-  selectedCollection: string;
-  setEnvs: Dispatch<SetStateAction<TPostBoxEnv>>;
+  envs: TPostBoxEnv;
+  collectionName: string;
+  setSelectorResponse: Dispatch<
+    SetStateAction<TPostBoxSelectorResponse | null>
+  >;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
 }) {
   const [open, setOpen] = useState(false);
   const [localEnv, setLocalEnv] = useState<[string, string][]>([]);
 
   const openModal = () => {
-    setLocalEnv(Object.entries(selectedEnv) as [string, string][]);
+    setLocalEnv(Object.entries(envs) as [string, string][]);
     setOpen(true);
   };
 
@@ -35,29 +47,35 @@ export default function EnvModal({
     );
   };
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     const updatedEnv = Object.fromEntries(
       localEnv.filter(([k]) => k.trim()),
     ) as TPostBoxEnv;
-    setEnvs(updatedEnv);
-    setCollections((prev) => updateEnv(prev, selectedCollection, updatedEnv));
+    setCollections((prev) => updateEnv(prev, collectionName, updatedEnv));
+    setSelectorResponse((prev) => {
+      if (!prev || prev.collectionName !== collectionName) return prev;
+      return {
+        ...prev,
+        env: updatedEnv,
+      };
+    });
     setOpen(false);
-  };
+  }, [localEnv, collectionName, setCollections, setSelectorResponse]);
 
   useEffect(() => {
-      if (!open) return;
+    if (!open) return;
 
-      const handleGlobalKeyDown = (e: KeyboardEvent) => {
-        if (e.key === "Escape") setOpen(false);
-        if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-          e.preventDefault();
-          handleSave();
-        };
-      };
-  
-      window.addEventListener("keydown", handleGlobalKeyDown);
-      return () => window.removeEventListener("keydown", handleGlobalKeyDown);
-    }, [open]);
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, [open, handleSave]);
 
   return (
     <>
@@ -84,7 +102,7 @@ export default function EnvModal({
                   <h2 className="text-sm tracking-widest text-cyan-600">
                     Manage{" "}
                     <span className="font-bold uppercase">
-                      {selectedCollection}
+                      {collectionName}
                     </span>{" "}
                     Envs
                   </h2>

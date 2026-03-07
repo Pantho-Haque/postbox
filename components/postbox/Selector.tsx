@@ -1,167 +1,165 @@
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import { EllipsisVertical } from "lucide-react";
-import {
-  CreateModal,
-  DeleteModal,
-  EnvModal,
-  RenameModal,
-} from "@/components";
+import { CreateModal, DeleteModal, EnvModal, RenameModal } from "@/components";
 import { curlConverter } from "@/utils/curlConverter";
-import { TPostBoxCollections, TPostBoxCurlJson, TPostBoxEnv } from "@/types";
+import {
+  TPostBoxCollections,
+  TPostBoxSelectorResponse,
+  TPostBoxSelectorSelection,
+} from "@/types";
 
 export default function Selector({
   collections,
-  envs,
-  setEnvs,
   setCollections,
-  setSelectedCurlJson,
+  setSelectorResponse,
 }: {
   collections: TPostBoxCollections;
-  envs: TPostBoxEnv;
-  setEnvs: Dispatch<SetStateAction<TPostBoxEnv>>;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectedCurlJson: Dispatch<SetStateAction<TPostBoxCurlJson>>;
+  setSelectorResponse: Dispatch<
+    SetStateAction<TPostBoxSelectorResponse | null>
+  >;
 }) {
-  const [selectedCollection, setSelectedCollection] = useState<string>(
-    collections[0]?.collectionName,
+  const collectionCurlList = collections.reduce(
+    (acc, c) => {
+      acc[c.collectionName] = c.curls.map((curl) => curl.name);
+      return acc;
+    },
+    {} as Record<string, string[]>,
   );
 
-  const selectedRouteList = useCallback(
-    () =>
-      collections.find((c) => c.collectionName === selectedCollection)?.curls,
-    [collections, selectedCollection],
-  );
+  const [selection, setSelection] = useState<TPostBoxSelectorSelection>({
+    collectionName: "",
+    curlName: "",
+  });
 
-  const [selectedCurlName, setSelectedCurlName] = useState<string>(
-    collections[0]?.curls[0]?.name,
-  );
-
-  const collectionList = collections.map((c) => c.collectionName) || [];
-  const curlList = selectedRouteList()?.map((c) => c.name) || [];
+  useEffect(() => {
+    if (!!selection.curlName) {
+      setSelectorResponse({
+        collectionName: selection.collectionName,
+        curlName: selection.curlName,
+        env: collections.find(
+          (c) => c.collectionName === selection.collectionName,
+        )?.env,
+        curlJson: curlConverter(
+          collections
+            .find((c) => c.collectionName === selection.collectionName)
+            ?.curls.find((c) => c.name === selection.curlName)?.curl || "",
+        ),
+      });
+    } else {
+      setSelectorResponse(null);
+    }
+  }, [selection, collections, setSelectorResponse]);
 
   return (
     <div className="h-full w-[300px] flex z-1">
       <div className="h-full w-[150px] pt-4 bg-gray-50  flex flex-col gap-2">
         <CreateModal
           type="collection"
-          collectionList={collectionList}
-          curlList={curlList}
-          setSelectedCollection={setSelectedCollection}
-          setSelectedCurlName={setSelectedCurlName}
-          selectedCollection={selectedCollection}
+          selection={selection}
+          setSelection={setSelection}
           setCollections={setCollections}
+          setSelectorResponse={setSelectorResponse}
+          collectionCurlList={collectionCurlList}
         />
-        {collections?.map((collection, i) => {
-          return (
-            <div
-              key={i}
-              className={`group/menu flex items-center justify-between pr-2 rounded overflow-visible capitalize font-semibold ${selectedCollection === collection.collectionName ? "border-b-4 border-cyan-500 bg-cyan-100" : ""} cursor-pointer`}
-            >
+        {Object.entries(collectionCurlList)?.map(
+          ([collectionName, curlList], i) => {
+            return (
               <div
-                className="w-full pl-4 py-2 truncate"
-                onClick={() => {
-                  setSelectedCollection(collection.collectionName);
-                  setSelectedCurlName(collection?.curls?.[0]?.name || "");
-                  const parsed = curlConverter(
-                    collection,
-                    collection?.curls?.[0]?.name,
-                  );
-                  setSelectedCurlJson({
-                    ...parsed,
-                    collectionName: collection.collectionName,
-                    curlName: collection?.curls?.[0]?.name || "",
-                  });
-                  setEnvs(collection.env);
-                }}
+                key={i}
+                className={`group/menu flex items-center justify-between pr-2 rounded overflow-visible capitalize font-semibold ${selection.collectionName === collectionName ? "border-b-4 border-cyan-500 bg-cyan-100" : ""} cursor-pointer`}
               >
-                {collection.collectionName}
+                <div
+                  className="w-full pl-4 py-2 truncate"
+                  onClick={() => {
+                    setSelection({
+                      collectionName,
+                      curlName: curlList[0],
+                    });
+                  }}
+                >
+                  {collectionName}
+                </div>
+                <Menu
+                  type="collection"
+                  collectionCurlList={collectionCurlList}
+                  currentName={collectionName}
+                  setCollections={setCollections}
+                  setSelection={setSelection}
+                />
               </div>
-              <Menu
-                name={collection.collectionName}
-                type="collection"
-                collectionList={collectionList}
-                curlList={curlList}
-                setCollections={setCollections}
-                setSelectedCollection={setSelectedCollection}
-                setSelectedCurlName={setSelectedCurlName}
-              />
-            </div>
-          );
-        })}
+            );
+          },
+        )}
       </div>
-      <div className="h-full w-[150px] pt-4 bg-cyan-100 flex flex-col gap-2 shadow-lg shadow-cyan-500/30">
-        <EnvModal
-          selectedEnv={envs}
-          setEnvs={setEnvs}
-          selectedCollection={selectedCollection}
-          setCollections={setCollections}
-        />
-        <CreateModal
-          type="route"
-          collectionList={collectionList}
-          curlList={curlList}
-          setSelectedCollection={setSelectedCollection}
-          setSelectedCurlName={setSelectedCurlName}
-          selectedCollection={selectedCollection}
-          setCollections={setCollections}
-        />
-        {selectedRouteList()?.map((curl, i) => {
-          return (
-            <div
-              key={i}
-              className={`group/menu flex items-center justify-between pr-2 rounded overflow-visible capitalize ${selectedCurlName === curl.name ? "border-r-4 border-cyan-500 bg-white" : ""} cursor-pointer`}
-            >
+      {selection.collectionName && (
+        <div className="h-full w-[150px] pt-4 bg-cyan-100 flex flex-col gap-2 shadow-lg shadow-cyan-500/30">
+          <EnvModal
+            envs={
+              collections.filter(
+                (el) => el.collectionName == selection.collectionName,
+              )[0]?.env
+            }
+            collectionName={selection.collectionName}
+            setCollections={setCollections}
+            setSelectorResponse={setSelectorResponse}
+          />
+          <CreateModal
+            type="route"
+            selection={selection}
+            setSelection={setSelection}
+            setCollections={setCollections}
+            setSelectorResponse={setSelectorResponse}
+            collectionCurlList={collectionCurlList}
+          />
+          {collectionCurlList[selection.collectionName]?.map((curl, i) => {
+            return (
               <div
-                className="w-full pl-4 py-2 truncate"
-                onClick={() => {
-                  setSelectedCurlName(curl.name);
-                  const coll = collections.find(
-                    (c) => c.collectionName === selectedCollection,
-                  );
-                  const parsed = curlConverter(coll!, curl.name);
-                  setSelectedCurlJson({
-                    ...parsed,
-                    collectionName: selectedCollection,
-                    curlName: curl.name,
-                  });
-                  setEnvs(coll!.env);
-                }}
+                key={i}
+                className={`group/menu flex items-center justify-between pr-2 rounded overflow-visible capitalize ${selection.curlName === curl ? "border-r-4 border-cyan-500 bg-white" : ""} cursor-pointer`}
               >
-                {curl.name}
+                <div
+                  className="w-full pl-4 py-2 truncate"
+                  onClick={() => {
+                    setSelection({
+                      ...selection,
+                      curlName: curl,
+                    });
+                  }}
+                >
+                  {curl}
+                </div>
+                <Menu
+                  type="route"
+                  collectionCurlList={collectionCurlList}
+                  currentName={curl}
+                  collectionName={selection.collectionName}
+                  setCollections={setCollections}
+                  setSelection={setSelection}
+                />
               </div>
-              <Menu
-                name={curl.name}
-                type="route"
-                collectionList={collectionList}
-                curlList={curlList}
-                setCollections={setCollections}
-                setSelectedCollection={setSelectedCollection}
-                setSelectedCurlName={setSelectedCurlName}
-              />
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
 
 const Menu = ({
-  name,
   type,
-  collectionList,
-  curlList,
+  collectionCurlList,
+  currentName,
+  collectionName,
   setCollections,
-  setSelectedCollection,
-  setSelectedCurlName,
+  setSelection,
 }: {
-  name: string;
   type: "collection" | "route";
-  collectionList: string[];
-  curlList: string[];
+  collectionCurlList: { [key: string]: string[] };
+  currentName: string;
+  collectionName?: string;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectedCollection: Dispatch<SetStateAction<string>>;
-  setSelectedCurlName: (value: string) => void;
+  setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
 }) => {
   return (
     <div className="hidden group-hover/menu:flex group/tool relative items-center justify-center overflow-visible">
@@ -171,19 +169,20 @@ const Menu = ({
       <div className="hidden group-hover/tool:flex absolute left-0 top-0 ml-1 pl-2 z-50 animate-in fade-in zoom-in duration-200 overflow-visible">
         <div className="flex flex-col min-w-[120px] bg-white/90 backdrop-blur-md border border-slate-200 shadow-xl rounded-lg overflow-visible">
           <RenameModal
-            currentName={name}
+            currentName={currentName}
             type={type}
-            collectionList={collectionList}
-            curlList={curlList}
+            collectionCurlList={collectionCurlList}
+            collectionName={collectionName}
             setCollections={setCollections}
+            setSelection={setSelection}
           />
 
           <DeleteModal
-            currentName={name}
+            currentName={currentName}
             type={type}
-            setSelectedCollection={setSelectedCollection}
-            setSelectedCurlName={setSelectedCurlName}
+            collectionName={collectionName}
             setCollections={setCollections}
+            setSelection={setSelection}
           />
         </div>
       </div>

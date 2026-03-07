@@ -42,14 +42,32 @@ export const renameCollectionName = (
 export const renameCurlName = (
   prev: TPostBoxCollections,
   currentName: string,
+  collectionName: string,
   newName: string,
 ) => {
-  return prev.map((collection) => ({
-    ...collection,
-    curls: collection.curls.map((curl) =>
-      curl.name === currentName ? { ...curl, name: newName } : curl,
-    ),
-  }));
+  return prev.map((collection) => {
+    if (collection.collectionName == collectionName) {
+      return {
+        ...collection,
+        curls: collection.curls.map((curl) =>
+          curl.name === currentName ? { ...curl, name: newName } : curl,
+        ),
+      };
+    } else return collection;
+  });
+};
+
+export const isAlreadyExists = (
+  collectionCurlList: { [key: string]: string[] },
+  type: string,
+  value: string,
+  collectionName?: string,
+) => {
+  if (type === "collection") {
+    return Object.keys(collectionCurlList).includes(value.trim());
+  } else if (collectionCurlList && !!collectionName) {
+    return collectionCurlList[collectionName].includes(value.trim());
+  }
 };
 
 export const updateCurl = (
@@ -80,12 +98,17 @@ export const deleteCollectionName = (
 
 export const deleteCurlName = (
   prev: TPostBoxCollections,
+  collectionName: string,
   currentName: string,
 ) => {
-  return prev.map((collection) => ({
-    ...collection,
-    curls: collection.curls.filter((curl) => curl.name !== currentName),
-  }));
+  return prev.map((collection) => {
+    if (collection.collectionName == collectionName) {
+      return {
+        ...collection,
+        curls: collection.curls.filter((curl) => curl.name !== currentName),
+      };
+    }else return collection;
+  });
 };
 
 export const updateEnv = (

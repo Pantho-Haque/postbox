@@ -1,4 +1,4 @@
-import { TPostBoxCollection, TPostBoxCurlJson } from "@/types";
+import { TPostBoxCurlJson } from "@/types";
 
 /**
  * Parses a curl command string (including multi-line ones with \ continuations)
@@ -9,11 +9,10 @@ import { TPostBoxCollection, TPostBoxCurlJson } from "@/types";
  *     -H "Content-Type: application/json" \
  *     -d '{"title": "Marshal Post", "body": "Created via marshal", "userId": 2}'
  */
-export function curlConverter(collection?: TPostBoxCollection, curlName?: string , curlString?: string): TPostBoxCurlJson {
+export function curlConverter(curlString: string): TPostBoxCurlJson {
   // Step 1: Collapse backslash line-continuations into a single line
   // Template literals store them as literal "\" + "\n" + whitespace
-  const curl = curlString || collection?.curls.find((curl) => curl.name === curlName)?.curl || "";
-  const normalized = curl.replace(/\\\n\s*/g, " ").trim();
+  const normalized = curlString.replace(/\\\n\s*/g, " ").trim();
 
   // Step 2: Parse each flag individually
   const methodMatch = normalized.match(/curl\s+-X\s+([A-Z]+)/i);
@@ -34,9 +33,7 @@ export function curlConverter(collection?: TPostBoxCollection, curlName?: string
     method: methodMatch?.[1] ?? "GET",
     url: urlMatch?.[1] ?? "https://jsonplaceholder.typicode.com/users/1",
     headers: JSON.stringify(headersObj),
-    body: bodyMatch?.[1] ?? "",
-    collectionName: collection?.collectionName || "",
-    curlName: curlName || "",
+    body: bodyMatch?.[1] ?? ""
   };
 }
 
