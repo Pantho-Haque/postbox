@@ -1,23 +1,30 @@
-import { TabSize } from "@/types";
+import { Dispatch, SetStateAction } from "react";
 
-export const formatJson = (
-  text: string,
-  size: TabSize = "tab",
-  minify: boolean = false,
-) => {
+export const formatJson = (text: string) => {
   if (!text.trim()) {
     return { output: "", error: null };
   }
 
   try {
     const parsed = JSON.parse(text);
-    if (minify) {
-      return { output: JSON.stringify(parsed), error: null };
-    } else {
-      const space = size === "tab" ? "\t" : size;
-      return { output: JSON.stringify(parsed, null, space), error: null };
-    }
+    return { output: JSON.stringify(parsed, null, "\t"), error: null };
   } catch (e: unknown) {
-    return { output: "", error: (e as { message: string }).message || "Invalid JSON" };
+    return {
+      output: text,
+      error: (e as { message: string }).message || "Invalid JSON",
+    };
   }
+};
+
+export const formatWithErrorHandleing = (
+  text: string,
+  setError: Dispatch<SetStateAction<string | null>>,
+) => {
+  const { output, error } = formatJson(text);
+  if (!!error) {
+    setError(error);
+  } else {
+    setError(null);
+  }
+  return output;
 };

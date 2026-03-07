@@ -1,7 +1,12 @@
 import { POSTBOX_METHODS } from "@/constants";
-import { TPostBoxCollections, TPostBoxCurlJson, TPostBoxEnv } from "@/types";
+import {
+  TPostBoxCollections,
+  TPostBoxCurlJson,
+  TPostBoxEnv,
+  TPostBoxSelectorResponse,
+} from "@/types";
 import { curlConverter, jsonToCurl } from "@/utils/curlConverter";
-import { formatJson } from "@/utils/formatJson";
+import { formatJson, formatWithErrorHandleing } from "@/utils/formatJson";
 import { updateCurl } from "@/utils/postboxCollectionModifier";
 import { postboxProxy } from "@/utils/postboxProxy";
 import { AlertCircle, Loader2, MessageCircleWarning } from "lucide-react";
@@ -14,111 +19,106 @@ import {
 } from "react";
 
 export default function RequestForm({
-  selectedCurlJson,
-  envs,
-  setSelectedCurlJson,
-  setProxyResponse,
+  selectedResponse,
   setCollections,
+  setSelectorResponse,
 }: {
-  selectedCurlJson: TPostBoxCurlJson;
-  envs: TPostBoxEnv;
-  setSelectedCurlJson: (curl: TPostBoxCurlJson) => void;
-  setProxyResponse: (response: unknown) => void;
+  selectedResponse: TPostBoxSelectorResponse;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
+  setSelectorResponse: Dispatch<
+    SetStateAction<TPostBoxSelectorResponse | null>
+  >;
 }) {
-  const [activeTab, setActiveTab] = useState<"body" | "headers">("body");
-  const [rawBody, setRawBody] = useState(
-    formatJson(selectedCurlJson.body).output,
-  );
-  const [rawHeaders, setRawHeaders] = useState(
-    formatJson(selectedCurlJson.headers).output,
-  );
+  const { collectionName, curlName, env, curlJson } = selectedResponse;
 
-  const [proxyLoading, setProxyLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<"body" | "headers">("body");
   const [error, setError] = useState<string | null>(null);
-  const [cachedJson, setCachedJson] = useState(
-    JSON.stringify(selectedCurlJson),
-  );
+
+  const [formInput, setFormInput] = useState<TPostBoxCurlJson>({
+    ...curlJson,
+    body: formatJson(curlJson.body).output,
+    headers: formatJson(curlJson.headers).output,
+  });
 
   useEffect(() => {
-    setCachedJson(JSON.stringify(selectedCurlJson));
-  }, [selectedCurlJson.collectionName, selectedCurlJson.curlName]);
+    const reload = () => {
+      setFormInput({
+        ...curlJson,
+        body: formatJson(curlJson.body).output,
+        headers: formatJson(curlJson.headers).output,
+      });
+    };
+    reload();
+  }, [curlJson]);
 
-  function resolveEnv(text: string): string {
-    if (!envs) return text;
-    return text.replace(
-      /\<\<(\w+)\>\>/g,
-      (_, key) => envs[key] ?? `<<${key}>>`,
-    );
+  const [proxyLoading, setProxyLoading] = useState(false);
+
+  function resolveEnv(text: string, env?: TPostBoxEnv): string {
+    if (!env) return text;
+    return text.replace(/<<(\w+)>>/g, (_, key) => env[key] ?? `<<${key}>>`);
   }
+
+  const [proxyResponse, setProxyResponse] = useState<{
+    data?: unknown;
+    status?: number;
+    error?: string;
+  } | null>(null);
 
   const sendProxyRequest = useCallback(async () => {
     setProxyLoading(true);
     setProxyResponse(null);
     try {
       const res = await postboxProxy(
-        resolveEnv(selectedCurlJson.url),
-        selectedCurlJson.method,
-        resolveEnv(selectedCurlJson.headers),
-        resolveEnv(selectedCurlJson.body),
+        resolveEnv(formInput.url, env),
+        formInput.method,
+        resolveEnv(formInput.headers, env),
+        resolveEnv(formInput.body, env),
       );
       setProxyResponse(res);
     } catch (err) {
-      console.log(err);
       setProxyResponse({ error: String(err) });
     } finally {
       setProxyLoading(false);
     }
-  }, [selectedCurlJson, envs]);
-
-  const formatting = (text: string, type: "body" | "headers") => {
-    const { output, error } = formatJson(text);
-    if (error) {
-      setError(error);
-      return;
-    }
-    setError(null);
-    if (type === "body") {
-      setRawBody(output);
-      setSelectedCurlJson({ ...selectedCurlJson, body: output });
-    } else if (type === "headers") {
-      setRawHeaders(output);
-      setSelectedCurlJson({ ...selectedCurlJson, headers: output });
-    }
-  };
+  }, [formInput, env]);
 
   const isUnsaved = useCallback(() => {
-    return cachedJson !== JSON.stringify(selectedCurlJson);
-  }, [cachedJson, selectedCurlJson]);
+    const normalize = (s: string) => {
+      try {
+        return JSON.stringify(JSON.parse(s || "{}"));
+      } catch {
+        return s.trim();
+      }
+    };
 
-  const handleUrlInputChange = (url: string) => {
-    if (url.startsWith("curl")) {
-      const collectionName = selectedCurlJson.collectionName;
-      const curlName = selectedCurlJson.curlName;
-      setSelectedCurlJson({
-        ...curlConverter(undefined, curlName, url),
-        collectionName,
-      });
-    } else {
-      setSelectedCurlJson({ ...selectedCurlJson, url });
-    }
-  };
-  const handleSaveCollection = () => {
-    setCachedJson(JSON.stringify(selectedCurlJson));
-    console.log(selectedCurlJson);
-    setCollections((prev) =>
-      updateCurl(
-        prev,
-        selectedCurlJson.collectionName,
-        selectedCurlJson.curlName,
-        jsonToCurl(selectedCurlJson),
-      ),
+    return (
+      formInput.method !== curlJson.method ||
+      formInput.url !== curlJson.url ||
+      normalize(formInput.body) !== normalize(curlJson.body) ||
+      normalize(formInput.headers) !== normalize(curlJson.headers)
     );
-  };
+  }, [formInput, curlJson]);
+
+  const handleSaveCollection = useCallback(() => {
+    setSelectorResponse({
+      collectionName,
+      curlName,
+      env,
+      curlJson: formInput,
+    });
+    setCollections((prev) =>
+      updateCurl(prev, collectionName, curlName, jsonToCurl(formInput)),
+    );
+  }, [
+    formInput,
+    collectionName,
+    curlName,
+    env,
+    setSelectorResponse,
+    setCollections,
+  ]);
 
   useEffect(() => {
-    setRawBody(formatJson(selectedCurlJson.body).output);
-    setRawHeaders(formatJson(selectedCurlJson.headers).output);
     const listener = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "s") {
         e.preventDefault();
@@ -131,16 +131,16 @@ export default function RequestForm({
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
-  }, [selectedCurlJson, sendProxyRequest]);
+  }, [handleSaveCollection, sendProxyRequest]);
 
   return (
     <div className="h-full w-full">
       <div className="flex gap-2">
         <select
           className="w-[100px] p-2 bg-white border rounded-md cursor-pointer"
-          value={selectedCurlJson.method}
+          value={formInput.method}
           onChange={(e) =>
-            setSelectedCurlJson({ ...selectedCurlJson, method: e.target.value })
+            setFormInput({ ...formInput, method: e.target.value })
           }
         >
           {POSTBOX_METHODS.map((method) => (
@@ -152,9 +152,9 @@ export default function RequestForm({
         <input
           className="w-full p-2 border rounded-md"
           type="text"
-          value={selectedCurlJson.url}
+          value={formInput.url}
           onChange={(e) => {
-            handleUrlInputChange(e.target.value);
+            setFormInput({ ...formInput, url: e.target.value });
           }}
         />
         <button
@@ -163,12 +163,6 @@ export default function RequestForm({
         >
           {proxyLoading ? <Loader2 className="animate-spin" /> : "Send"}
         </button>
-        {/* <button
-          className="w-[100px] p-2 border border-cyan-500 bg-white rounded-md cursor-pointer"
-          onClick={() => handleSaveCollection()}
-        >
-          Save
-        </button> */}
       </div>
       <div className="">
         <div className="flex gap-2">
@@ -227,24 +221,34 @@ export default function RequestForm({
           {activeTab === "body" ? (
             <textarea
               className="w-full h-[300px] p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
-              value={rawBody}
+              value={formInput.body}
               onChange={(e) => {
-                formatting(e.target.value, "body");
-                setRawBody(e.target.value);
+                setFormInput({
+                  ...formInput,
+                  body: formatWithErrorHandleing(e.target.value, setError),
+                });
               }}
             />
           ) : (
             <textarea
               className="w-full h-[300px] p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
-              value={rawHeaders}
+              value={formInput.headers}
               onChange={(e) => {
-                formatting(e.target.value, "headers");
-                setRawHeaders(e.target.value);
+                setFormInput({
+                  ...formInput,
+                  headers: formatWithErrorHandleing(e.target.value, setError),
+                });
               }}
             />
           )}
         </div>
       </div>
+      <textarea
+        readOnly
+        value={proxyResponse ? JSON.stringify(proxyResponse, null, "\t") : ""}
+        className="w-full h-full p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
+        placeholder="The formatted JSON will appear here..."
+      />
     </div>
   );
 }

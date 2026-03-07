@@ -1,18 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
-// RequestForm,
-import {  Selector } from "@/components";
+import { RequestForm, Selector } from "@/components";
 import { TPostBoxCollections, TPostBoxSelectorResponse } from "@/types";
 // import { curlConverter } from "@/utils/curlConverter";
 import { GetPostboxCollections } from "@/services/Postbox";
 
 export default function Postbox() {
-
-  const [collections, setCollections] = useState<TPostBoxCollections>(GetPostboxCollections());
-  const [selectorResponse, setSelectorResponse] = useState<TPostBoxSelectorResponse | null>(null);
+  const [collections, setCollections] = useState<TPostBoxCollections>(
+    GetPostboxCollections(),
+  );
+  const [selectorResponse, setSelectorResponse] =
+    useState<TPostBoxSelectorResponse | null>(null);
 
   useEffect(() => {
-    // console.log("collections", collections);
+    console.log("collections", collections);
     localStorage.setItem("postbox", JSON.stringify(collections));
   }, [collections]);
 
@@ -27,35 +28,25 @@ export default function Postbox() {
         setCollections={setCollections}
         setSelectorResponse={setSelectorResponse}
       />
-      {selectorResponse && <textarea
-            readOnly
-            value={
-              selectorResponse ? JSON.stringify(selectorResponse, null, "\t") : ""
-            }
-            className="w-full h-[calc(100vh-4rem)] p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
-            placeholder="The formatted JSON will appear here..."
-          />}
-      {/* <div className="h-full w-full pt-4 flex flex-col gap-2 px-2 bg-gray-50">
-        <RequestForm
-          selectedCurlJson={selectedCurlJson}
-          envs={envs}
-          setSelectedCurlJson={setSelectedCurlJson}
-          setProxyResponse={setProxyResponse}
-          setCollections={setCollections}
+      {/* {selectorResponse && (
+        <textarea
+          readOnly
+          value={
+            selectorResponse ? JSON.stringify(selectorResponse, null, "\t") : ""
+          }
+          className="w-full h-[calc(100vh-4rem)] p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
+          placeholder="The formatted JSON will appear here..."
         />
-
-        <div className="h-full w-full border rounded-md">
-          <textarea
-            readOnly
-            disabled={!!proxyResponse}
-            value={
-              proxyResponse ? JSON.stringify(proxyResponse, null, "\t") : ""
-            }
-            className="w-full h-full p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
-            placeholder="The formatted JSON will appear here..."
+      )} */}
+      {selectorResponse && (
+        <div className="h-full w-full pt-4 flex flex-col gap-2 px-2 bg-gray-50">
+          <RequestForm
+            selectedResponse={selectorResponse}
+            setCollections={setCollections}
+            setSelectorResponse={setSelectorResponse}
           />
         </div>
-      </div> */}
+      )}
     </div>
   );
 }
