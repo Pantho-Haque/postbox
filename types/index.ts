@@ -1,5 +1,5 @@
 export * from "./notification";
-export * from "./services";
+export * from "./postbox";
 
 export type TApiResponse<T> = {
   data?: T;
