@@ -5,12 +5,12 @@ import {
   TPostBoxSelectorResponse,
   TPostBoxSelectorSelection,
 } from "@/types";
-import { createPortal } from "react-dom";
 import {
   createCollectionName,
   createCurlName,
   isAlreadyExists,
 } from "@/utils/postboxCollectionModifier";
+import { ModalInput, ModalShell, ModalActions } from "@/components";
 
 export default function CreateModal({
   type,
@@ -33,29 +33,18 @@ export default function CreateModal({
 
   const handleCreate = () => {
     if (!value.trim()) return setOpen(false);
-
-    if (
-      isAlreadyExists(collectionCurlList, type, value, selection.collectionName)
-    )
-      return setError(`${type} with name ${value} already exists`);
+    if (isAlreadyExists(collectionCurlList, type, value, selection.collectionName))
+      return setError(`"${value}" already exists`);
 
     if (type === "collection") {
-      const collectionName = value.trim();
-      setCollections((prev) => createCollectionName(prev, collectionName));
-      setSelection({
-        collectionName,
-        curlName: "",
-      });
-      setSelectorResponse(()=> null);
-    } else if (type === "route") {
-      const curlName = value.trim();
-      setCollections((prev) =>
-        createCurlName(prev, selection.collectionName, curlName),
-      );
-      setSelection({
-        collectionName: selection.collectionName,
-        curlName,
-      });
+      const name = value.trim();
+      setCollections((prev) => createCollectionName(prev, name));
+      setSelection({ collectionName: name, curlName: "" });
+      setSelectorResponse(null);
+    } else {
+      const name = value.trim();
+      setCollections((prev) => createCurlName(prev, selection.collectionName, name));
+      setSelection({ collectionName: selection.collectionName, curlName: name });
     }
     setValue("");
     setOpen(false);
@@ -64,68 +53,37 @@ export default function CreateModal({
   return (
     <>
       <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen(true);
-        }}
-        className="mx-1 p-1 py-2 flex items-center gap-1 text-sm font-semibold bg-cyan-500 text-white hover:bg-cyan-600 cursor-pointer"
+        onClick={(e) => { e.stopPropagation(); setOpen(true); }}
+        className="w-full flex items-center gap-1.5 px-2 py-1.5 text-[10px] font-semibold tracking-wider rounded-md border border-cyan-500/20 bg-cyan-500/8 text-cyan-400 hover:bg-cyan-500/15 hover:border-cyan-500/40 transition-all cursor-pointer"
       >
-        <Plus size={18} />
-        Create <span className="capitalize">{type}</span>
+        <Plus size={12} />
+        New {type === "collection" ? "Collection" : "Route"}
       </button>
-      {open &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          >
-            <div
-              className="bg-white rounded-2xl shadow-xl p-6 w-[360px] flex flex-col gap-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-sm font-bold uppercase tracking-widest text-cyan-600">
-                Create <span className="capitalize">{type}</span>
-              </h2>
 
-              {error ? (
-                <p className="text-xs text-red-500">{error}</p>
-              ) : (
-                <p className="text-xs text-gray-400 capitalize">
-                  Create a new <span className="capitalize">{type}</span>
-                  {type == "route" && (
-                    <span> on {selection.collectionName}</span>
-                  )}
-                </p>
-              )}
-
-              <input
-                autoFocus
-                className="w-full border-b-2 border-cyan-400 outline-none py-1 font-mono text-sm text-gray-800"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleCreate();
-                  if (e.key === "Escape") setOpen(false);
-                }}
-              />
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => setOpen(false)}
-                  className="px-4 py-1.5 text-sm rounded-lg border hover:bg-gray-50 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleCreate}
-                  className="px-4 py-1.5 text-sm rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 cursor-pointer"
-                >
-                  Create
-                </button>
-              </div>
-            </div>
-          </div>,
-          document.body,
-        )}
+      {open && (
+        <ModalShell
+          title={`Create ${type}`}
+          subtitle={type === "route" ? `Adding to ${selection.collectionName}` : "Start a new collection of routes"}
+          onClose={() => setOpen(false)}
+        >
+          {error && <p className="text-[10px] text-red-400 -mt-2">{error}</p>}
+          <ModalInput
+            autoFocus
+            value={value}
+            onChange={(v) => { setValue(v); setError(""); }}
+            placeholder={type === "collection" ? "my-api" : "get-users"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleCreate();
+              if (e.key === "Escape") setOpen(false);
+            }}
+          />
+          <ModalActions
+            onCancel={() => setOpen(false)}
+            onConfirm={handleCreate}
+            confirmLabel="Create"
+          />
+        </ModalShell>
+      )}
     </>
   );
 }

@@ -5,11 +5,18 @@ import {
   TPostBoxEnv,
   TPostBoxSelectorResponse,
 } from "@/types";
-import { curlConverter, jsonToCurl } from "@/utils/curlConverter";
-import { formatJson, formatWithErrorHandleing } from "@/utils/formatJson";
+import { jsonToCurl } from "@/utils/curlConverter";
+import { formatJson } from "@/utils/formatJson";
 import { updateCurl } from "@/utils/postboxCollectionModifier";
 import { postboxProxy } from "@/utils/postboxProxy";
-import { AlertCircle, Loader2, MessageCircleWarning } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
+  MessageCircleWarning,
+  Save,
+  Send,
+} from "lucide-react";
 import {
   Dispatch,
   SetStateAction,
@@ -18,6 +25,21 @@ import {
   useState,
 } from "react";
 
+function resolveEnv(text: string, env?: TPostBoxEnv): string {
+  if (!env) return text;
+  return text.replace(/<<(\w+)>>/g, (_, key) => env[key] ?? `<<${key}>>`);
+}
+
+const METHOD_COLORS: Record<string, string> = {
+  GET: "#00e5cc",
+  POST: "#4ade80",
+  PUT: "#fb923c",
+  PATCH: "#a78bfa",
+  DELETE: "#f87171",
+  HEAD: "#94a3b8",
+  OPTIONS: "#94a3b8",
+};
+
 export default function RequestForm({
   selectedResponse,
   setCollections,
@@ -25,9 +47,7 @@ export default function RequestForm({
 }: {
   selectedResponse: TPostBoxSelectorResponse;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectorResponse: Dispatch<
-    SetStateAction<TPostBoxSelectorResponse | null>
-  >;
+  setSelectorResponse: Dispatch<SetStateAction<TPostBoxSelectorResponse | null>>;
 }) {
   const { collectionName, curlName, env, curlJson } = selectedResponse;
 
@@ -41,23 +61,16 @@ export default function RequestForm({
   });
 
   useEffect(() => {
-    const reload = () => {
-      setFormInput({
-        ...curlJson,
-        body: formatJson(curlJson.body).output,
-        headers: formatJson(curlJson.headers).output,
-      });
-    };
-    reload();
+    setFormInput({
+      ...curlJson,
+      body: formatJson(curlJson.body).output,
+      headers: formatJson(curlJson.headers).output,
+    });
+    setError(null);
+    setProxyResponse(null);
   }, [curlJson]);
 
   const [proxyLoading, setProxyLoading] = useState(false);
-
-  function resolveEnv(text: string, env?: TPostBoxEnv): string {
-    if (!env) return text;
-    return text.replace(/<<(\w+)>>/g, (_, key) => env[key] ?? `<<${key}>>`);
-  }
-
   const [proxyResponse, setProxyResponse] = useState<{
     data?: unknown;
     status?: number;
@@ -84,13 +97,9 @@ export default function RequestForm({
 
   const isUnsaved = useCallback(() => {
     const normalize = (s: string) => {
-      try {
-        return JSON.stringify(JSON.parse(s || "{}"));
-      } catch {
-        return s.trim();
-      }
+      try { return JSON.stringify(JSON.parse(s || "{}")); }
+      catch { return s.trim(); }
     };
-
     return (
       formInput.method !== curlJson.method ||
       formInput.url !== curlJson.url ||
@@ -100,155 +109,181 @@ export default function RequestForm({
   }, [formInput, curlJson]);
 
   const handleSaveCollection = useCallback(() => {
-    setSelectorResponse({
-      collectionName,
-      curlName,
-      env,
-      curlJson: formInput,
-    });
+    setSelectorResponse({ collectionName, curlName, env, curlJson: formInput });
     setCollections((prev) =>
       updateCurl(prev, collectionName, curlName, jsonToCurl(formInput)),
     );
-  }, [
-    formInput,
-    collectionName,
-    curlName,
-    env,
-    setSelectorResponse,
-    setCollections,
-  ]);
+  }, [formInput, collectionName, curlName, env, setSelectorResponse, setCollections]);
 
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-        e.preventDefault();
-        handleSaveCollection();
-      }
-      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-        e.preventDefault();
-        sendProxyRequest();
-      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "s") { e.preventDefault(); handleSaveCollection(); }
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); sendProxyRequest(); }
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
   }, [handleSaveCollection, sendProxyRequest]);
 
+  const mc = METHOD_COLORS[formInput.method] ?? "#94a3b8";
+  const statusOk = proxyResponse?.status != null && proxyResponse.status < 300;
+  const statusWarn = proxyResponse?.status != null && proxyResponse.status >= 300 && proxyResponse.status < 500;
+
   return (
-    <div className="h-full w-full">
-      <div className="flex gap-2">
+    <div className="h-full w-full flex flex-col gap-4 font-mono">
+
+      {/* ── Breadcrumb ── */}
+      <div className="flex items-center gap-2">
+        <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/40">{collectionName}</span>
+        <span className="text-white/10 text-xs">/</span>
+        <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/70">{curlName}</span>
+      </div>
+
+      {/* ── URL Bar ── */}
+      <div
+        className="relative flex items-center gap-2 rounded-lg border bg-[#0a1628] px-2 py-1.5 transition-all"
+        style={{ borderColor: `${mc}33`, boxShadow: `0 0 20px ${mc}0d` }}
+      >
+        {/* Corner brackets */}
+        <span className="absolute top-0 left-0 w-3 h-3 border-t border-l rounded-tl-lg" style={{ borderColor: `${mc}44` }} />
+        <span className="absolute top-0 right-0 w-3 h-3 border-t border-r rounded-tr-lg" style={{ borderColor: `${mc}44` }} />
+        <span className="absolute bottom-0 left-0 w-3 h-3 border-b border-l rounded-bl-lg" style={{ borderColor: `${mc}44` }} />
+        <span className="absolute bottom-0 right-0 w-3 h-3 border-b border-r rounded-br-lg" style={{ borderColor: `${mc}44` }} />
+
         <select
-          className="w-[100px] p-2 bg-white border rounded-md cursor-pointer"
+          className="shrink-0 rounded-md border-0 bg-[#0e1f35] px-2 py-1.5 text-xs font-bold tracking-widest outline-none cursor-pointer"
+          style={{ color: mc }}
           value={formInput.method}
-          onChange={(e) =>
-            setFormInput({ ...formInput, method: e.target.value })
-          }
+          onChange={(e) => setFormInput({ ...formInput, method: e.target.value })}
         >
-          {POSTBOX_METHODS.map((method) => (
-            <option key={method} value={method}>
-              {method}
-            </option>
+          {POSTBOX_METHODS.map((m) => (
+            <option key={m} value={m}>{m}</option>
           ))}
         </select>
+
+        <div className="h-4 w-px bg-white/10" />
+
         <input
-          className="w-full p-2 border rounded-md"
+          className="min-w-0 flex-1 bg-transparent py-1 text-sm text-white/80 placeholder-white/20 outline-none"
           type="text"
+          placeholder="https://api.example.com/endpoint"
           value={formInput.url}
+          onChange={(e) => setFormInput({ ...formInput, url: e.target.value })}
+          spellCheck={false}
+        />
+
+        <div className="flex items-center gap-1.5">
+          <button
+            title="Save (Ctrl/Cmd+S)"
+            disabled={!isUnsaved()}
+            onClick={handleSaveCollection}
+            className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/40 transition-all hover:border-cyan-500/30 hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-20"
+          >
+            <Save className="h-3 w-3" />
+            Save
+          </button>
+
+          <button
+            title="Send (Ctrl/Cmd+Enter)"
+            disabled={proxyLoading || !!error}
+            onClick={sendProxyRequest}
+            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold text-black transition-all disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
+            style={{ background: mc, boxShadow: `0 0 12px ${mc}44` }}
+          >
+            {proxyLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+            {proxyLoading ? "Sending…" : "Send"}
+          </button>
+        </div>
+      </div>
+
+      {/* ── Status strip ── */}
+      {(isUnsaved() || error) && (
+        <div className="flex items-center gap-2">
+          {isUnsaved() && !error && (
+            <span className="flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 text-[10px] font-semibold text-amber-400 border border-amber-500/20">
+              <MessageCircleWarning className="h-3 w-3" strokeWidth={2.5} />
+              Unsaved · Ctrl/Cmd+S
+            </span>
+          )}
+          {error && (
+            <span className="flex items-center gap-1.5 rounded-md bg-red-500/10 px-2.5 py-1 text-[10px] font-semibold text-red-400 border border-red-500/20">
+              <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
+              {error}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* ── Tabs + Editor ── */}
+      <div className="flex flex-col rounded-lg border border-white/8 bg-[#0a1628]/60 overflow-hidden" style={{ minHeight: 240 }}>
+        <div className="flex items-center border-b border-white/5 bg-[#0e1f35]/50 px-1 pt-1 shrink-0">
+          {(["body", "headers"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className="relative px-4 py-2 text-[10px] font-semibold tracking-[0.2em] uppercase transition-colors"
+              style={{ color: activeTab === tab ? "#00e5cc" : "rgba(255,255,255,0.25)" }}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              {activeTab === tab && (
+                <span className="absolute bottom-0 left-3 right-3 h-px bg-cyan-400" />
+              )}
+            </button>
+          ))}
+        </div>
+
+        <textarea
+          key={activeTab}
+          className="flex-1 w-full resize-none bg-transparent p-4 text-sm text-white/70 outline-none placeholder-white/15 leading-relaxed"
+          style={{ minHeight: 200 }}
+          spellCheck={false}
+          value={activeTab === "body" ? formInput.body : formInput.headers}
+          placeholder={
+            activeTab === "body"
+              ? '{\n  "key": "value"\n}'
+              : '{\n  "Authorization": "Bearer ..."\n}'
+          }
           onChange={(e) => {
-            setFormInput({ ...formInput, url: e.target.value });
+            const val = e.target.value;
+            const { error: jsonErr } = formatJson(val);
+            setError(jsonErr);
+            setFormInput({ ...formInput, [activeTab]: val });
           }}
         />
-        <button
-          className="w-[100px] p-2 border border-cyan-500 bg-white rounded-md cursor-pointer"
-          onClick={() => sendProxyRequest()}
-        >
-          {proxyLoading ? <Loader2 className="animate-spin" /> : "Send"}
-        </button>
       </div>
-      <div className="">
-        <div className="flex gap-2">
-          <button
-            className={`px-4 py-2 ${activeTab === "body" ? "border-b-4 border-cyan-500" : ""} cursor-pointer`}
-            onClick={() => setActiveTab("body")}
-          >
-            Body
-          </button>
-          <button
-            className={`px-4 py-2 ${activeTab === "headers" ? "border-b-4 border-cyan-500" : ""} cursor-pointer`}
-            onClick={() => setActiveTab("headers")}
-          >
-            Headers
-          </button>
-          {error && (
-            <div className="mt-4 p-4 bg-red-50 border border-red-100 rounded-xl flex gap-3 animate-in fade-in slide-in-from-top-1">
-              <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
-              <div className="flex flex-col gap-1">
-                <span className="text-[10px] font-black uppercase tracking-widest text-red-400">
-                  Syntax Error
-                </span>
-                <span className="text-xs font-bold text-red-900 leading-tight">
-                  {error}
-                </span>
-              </div>
-            </div>
-          )}
 
-          {isUnsaved() && (
-            <div className="mt-2 ml-auto mr-4 px-4 py-1 bg-red-50 flex items-center justify-center animate-in fade-in slide-in-from-top-1">
-              <div className="flex flex-col items-start">
-                <div className="flex items-center gap-2">
-                  <MessageCircleWarning
-                    className="w-3 h-3 text-red-500"
-                    strokeWidth={3}
-                  />
-                  <span className="text-xs font-bold text-red-900 leading-tight">
-                    Unsaved
-                  </span>
-                </div>
-                <p className="text-[10px] font-bold text-red-900 leading-tight">
-                  (Ctrl/Cmd + S)
-                </p>
-              </div>
-              <button
-                className="px-2 py-0.5 ml-1 text-xs font-bold border border-cyan-500 bg-white rounded-md cursor-pointer"
-                onClick={() => handleSaveCollection()}
-              >
-                Save
-              </button>
-            </div>
+      {/* ── Response panel ── */}
+      <div className="rounded-lg border border-white/8 bg-[#0a1628]/60 overflow-hidden">
+        <div className="flex items-center gap-3 border-b border-white/5 bg-[#0e1f35]/50 px-4 py-2">
+          <span className="text-[9px] tracking-[0.25em] uppercase text-white/25">Response</span>
+          {proxyResponse?.status != null && (
+            <span
+              className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold border"
+              style={{
+                background: statusOk ? "rgba(74,222,128,0.08)" : statusWarn ? "rgba(251,146,60,0.08)" : "rgba(248,113,113,0.08)",
+                borderColor: statusOk ? "rgba(74,222,128,0.2)" : statusWarn ? "rgba(251,146,60,0.2)" : "rgba(248,113,113,0.2)",
+                color: statusOk ? "#4ade80" : statusWarn ? "#fb923c" : "#f87171",
+              }}
+            >
+              {statusOk ? <CheckCircle2 className="h-3 w-3" /> : <AlertCircle className="h-3 w-3" />}
+              {proxyResponse.status}
+            </span>
           )}
         </div>
-        <div className="h-full w-full pt-1">
-          {activeTab === "body" ? (
-            <textarea
-              className="w-full h-[300px] p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
-              value={formInput.body}
-              onChange={(e) => {
-                setFormInput({
-                  ...formInput,
-                  body: formatWithErrorHandleing(e.target.value, setError),
-                });
-              }}
-            />
-          ) : (
-            <textarea
-              className="w-full h-[300px] p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
-              value={formInput.headers}
-              onChange={(e) => {
-                setFormInput({
-                  ...formInput,
-                  headers: formatWithErrorHandleing(e.target.value, setError),
-                });
-              }}
-            />
-          )}
-        </div>
+
+        {proxyResponse ? (
+          <pre className="max-h-full overflow-auto p-4 text-xs text-white/60 leading-relaxed whitespace-pre-wrap wrap-words">
+            {proxyResponse.error
+              ? <span className="text-red-400">{proxyResponse.error}</span>
+              : JSON.stringify(proxyResponse.data, null, 2)
+            }
+          </pre>
+        ) : (
+          <div className="flex items-center justify-center py-8 gap-2 text-white/15">
+            <Send size={14} />
+            <span className="text-[10px] tracking-[0.2em] uppercase">Send a request to see the response</span>
+          </div>
+        )}
       </div>
-      <textarea
-        readOnly
-        value={proxyResponse ? JSON.stringify(proxyResponse, null, "\t") : ""}
-        className="w-full h-full p-6 bg-white border-2 border-gray-50 rounded-2xl font-mono text-sm text-gray-700 focus:outline-none transition-all resize-none shadow-inner leading-relaxed"
-        placeholder="The formatted JSON will appear here..."
-      />
     </div>
   );
 }

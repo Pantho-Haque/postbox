@@ -1,12 +1,16 @@
 import { Pencil } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { TPostBoxCollections, TPostBoxSelectorSelection } from "@/types";
-import { createPortal } from "react-dom";
+import {
+  TPostBoxCollections,
+  TPostBoxSelectorSelection,
+} from "@/types";
 import {
   isAlreadyExists,
   renameCollectionName,
   renameCurlName,
 } from "@/utils/postboxCollectionModifier";
+import { ModalInput, ModalShell, ModalActions } from "@/components";
+
 
 export default function RenameModal({
   currentName,
@@ -29,26 +33,15 @@ export default function RenameModal({
 
   const handleRename = () => {
     if (!value.trim() || value === currentName) return setOpen(false);
-
     if (isAlreadyExists(collectionCurlList, type, value, collectionName))
-      return setError(`${type} with name ${value} already exists`);
+      return setError(`"${value}" already exists`);
 
     if (type === "collection") {
-      const collectionName = value.trim();
-      setCollections((prev) =>
-        renameCollectionName(prev, currentName, collectionName),
-      );
-      setSelection((prev) => {
-        return { ...prev, collectionName };
-      });
-    } else if (type === "route") {
-      const curlName = value.trim();
-      setCollections((prev) =>
-        renameCurlName(prev, currentName, collectionName ||"", curlName),
-      );
-      setSelection((prev) => {
-        return { ...prev, curlName };
-      });
+      setCollections((prev) => renameCollectionName(prev, currentName, value.trim()));
+      setSelection((prev) => ({ ...prev, collectionName: value.trim() }));
+    } else {
+      setCollections((prev) => renameCurlName(prev, currentName, collectionName ?? "", value.trim()));
+      setSelection((prev) => ({ ...prev, curlName: value.trim() }));
     }
     setOpen(false);
   };
@@ -56,67 +49,36 @@ export default function RenameModal({
   return (
     <>
       <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen(true);
-        }}
-        className="flex items-center gap-2 px-3 py-2 text-sm text-black hover:bg-gray-200 hover:text-cyan-700 transition-colors w-full text-left cursor-pointer"
+        onClick={(e) => { e.stopPropagation(); setValue(currentName); setOpen(true); }}
+        className="flex items-center gap-2 px-3 py-2 text-xs text-white/50 hover:bg-white/5 hover:text-cyan-400 transition-colors w-full text-left cursor-pointer"
       >
-        <Pencil size={14} />
-        <span>Rename</span>
+        <Pencil size={12} />
+        Rename
       </button>
-      {open &&
-        createPortal(
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
-            onClick={() => setOpen(false)}
-          >
-            <div
-              className="bg-white rounded-2xl shadow-xl p-6 w-[360px] flex flex-col gap-4"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="text-sm font-bold uppercase tracking-widest text-cyan-600">
-                Rename {type}
-              </h2>
 
-              {error ? (
-                <p className="text-xs text-red-500">{error}</p>
-              ) : (
-                <p className="text-xs text-gray-400">
-                  Renaming{" "}
-                  <span className="font-mono text-gray-600">{currentName}</span>{" "}
-                  to
-                </p>
-              )}
-
-              <input
-                autoFocus
-                className="w-full border-b-2 border-cyan-400 outline-none py-1 font-mono text-sm text-gray-800"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleRename();
-                  if (e.key === "Escape") setOpen(false);
-                }}
-              />
-              <div className="flex justify-end gap-2">
-                <button
-                  onClick={() => setOpen(false)}
-                  className="px-4 py-1.5 text-sm rounded-lg border hover:bg-gray-50 cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleRename}
-                  className="px-4 py-1.5 text-sm rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 cursor-pointer"
-                >
-                  Rename
-                </button>
-              </div>
-            </div>
-          </div>,
-          document.body,
-        )}
+      {open && (
+        <ModalShell
+          title={`Rename ${type}`}
+          subtitle={`Currently: ${currentName}`}
+          onClose={() => setOpen(false)}
+        >
+          {error && <p className="text-[10px] text-red-400 -mt-2">{error}</p>}
+          <ModalInput
+            autoFocus
+            value={value}
+            onChange={(v) => { setValue(v); setError(""); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleRename();
+              if (e.key === "Escape") setOpen(false);
+            }}
+          />
+          <ModalActions
+            onCancel={() => setOpen(false)}
+            onConfirm={handleRename}
+            confirmLabel="Rename"
+          />
+        </ModalShell>
+      )}
     </>
   );
 }
