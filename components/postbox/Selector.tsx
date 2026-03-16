@@ -7,6 +7,7 @@ import {
   TPostBoxSelectorResponse,
   TPostBoxSelectorSelection,
 } from "@/types";
+import { parseStringToJson } from "@/utils/JsonStringParsing";
 
 export default function Selector({
   collections,
@@ -41,6 +42,11 @@ export default function Selector({
             .find((c) => c.collectionName === selection.collectionName)
             ?.curls.find((c) => c.name === selection.curlName)?.curl || "",
         ),
+        responseJson: parseStringToJson(
+          collections
+            .find((c) => c.collectionName === selection.collectionName)
+            ?.curls.find((c) => c.name === selection.curlName)?.response || "",
+        )
       });
     } else {
       setSelectorResponse(null);

@@ -1,11 +1,11 @@
 import { NextResponse, NextRequest } from "next/server";
-import * as parseHeadersForProxy from "@/utils/parseHeadersForProxy";
+import { parseStringToJson } from "@/utils/JsonStringParsing";
 
 export async function POST(req: NextRequest) {
   const { url, method, headers: incomingHeaders, body } = await req.json();
 
   const headers = {
-    ...parseHeadersForProxy.parseHeaders(incomingHeaders),
+    ...parseStringToJson(incomingHeaders),
     "content-type": "application/json",
   };
 
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      return NextResponse.json(errorData,{status: response.status });
+      return NextResponse.json(errorData, { status: response.status });
     }
 
     const data = await response.json();

@@ -1,4 +1,4 @@
-export function parseHeaders(raw: string): Record<string, string> {
+export function parseStringToJson(raw: string): Record<string, string> {
   if (!raw.trim()) {
     return {};
   }

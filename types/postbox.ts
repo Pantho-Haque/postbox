@@ -7,6 +7,7 @@ export type TPostBoxEnv = {
 export type TPostBoxCurl = {
   name: string;
   curl: string;
+  response: string;
 };
 
 export type TPostBoxCollection = {
@@ -29,9 +30,16 @@ export type TPostBoxSelectorSelection = {
     curlName: string;
 }
 
+export type TResponseJson = {
+    data?: unknown;
+    status?: number;
+    error?: string;
+} | null;
+
 export type TPostBoxSelectorResponse = {
     collectionName: string;
     curlName: string;
     env?: TPostBoxEnv;
     curlJson: TPostBoxCurlJson;
+    responseJson?: TResponseJson;
 };

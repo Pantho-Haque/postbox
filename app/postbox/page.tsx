@@ -12,6 +12,7 @@ export default function Postbox() {
     useState<TPostBoxSelectorResponse | null>(null);
 
   useEffect(() => {
+    console.log(collections);
     localStorage.setItem("postbox", JSON.stringify(collections));
   }, [collections]);
 
@@ -34,7 +35,7 @@ export default function Postbox() {
           {selectorResponse ? (
             <div className="h-full w-full flex flex-col overflow-auto p-6">
               <RequestForm
-                selectedResponse={selectorResponse}
+                selectorResponse={selectorResponse}
                 setCollections={setCollections}
                 setSelectorResponse={setSelectorResponse}
               />

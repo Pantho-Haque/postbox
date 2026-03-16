@@ -4,6 +4,7 @@ import {
   TPostBoxCurlJson,
   TPostBoxEnv,
   TPostBoxSelectorResponse,
+  TResponseJson,
 } from "@/types";
 import { jsonToCurl } from "@/utils/curlConverter";
 import { formatJson } from "@/utils/formatJson";
@@ -41,15 +42,15 @@ const METHOD_COLORS: Record<string, string> = {
 };
 
 export default function RequestForm({
-  selectedResponse,
+  selectorResponse,
   setCollections,
   setSelectorResponse,
 }: {
-  selectedResponse: TPostBoxSelectorResponse;
+  selectorResponse: TPostBoxSelectorResponse;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
   setSelectorResponse: Dispatch<SetStateAction<TPostBoxSelectorResponse | null>>;
 }) {
-  const { collectionName, curlName, env, curlJson } = selectedResponse;
+  const { collectionName, curlName, env, curlJson, responseJson } = selectorResponse;
 
   const [activeTab, setActiveTab] = useState<"body" | "headers">("body");
   const [error, setError] = useState<string | null>(null);
@@ -67,15 +68,11 @@ export default function RequestForm({
       headers: formatJson(curlJson.headers).output,
     });
     setError(null);
-    setProxyResponse(null);
-  }, [curlJson]);
+    setProxyResponse(responseJson ?? null);
+  }, [curlJson, responseJson]);
 
   const [proxyLoading, setProxyLoading] = useState(false);
-  const [proxyResponse, setProxyResponse] = useState<{
-    data?: unknown;
-    status?: number;
-    error?: string;
-  } | null>(null);
+  const [proxyResponse, setProxyResponse] = useState<TResponseJson>(responseJson ?? null);
 
   const sendProxyRequest = useCallback(async () => {
     setProxyLoading(true);
@@ -104,16 +101,17 @@ export default function RequestForm({
       formInput.method !== curlJson.method ||
       formInput.url !== curlJson.url ||
       normalize(formInput.body) !== normalize(curlJson.body) ||
-      normalize(formInput.headers) !== normalize(curlJson.headers)
+      normalize(formInput.headers) !== normalize(curlJson.headers) ||
+      normalize(JSON.stringify(proxyResponse)) !== normalize(JSON.stringify(responseJson))
     );
-  }, [formInput, curlJson]);
+  }, [formInput.method, formInput.url, formInput.body, formInput.headers, curlJson.method, curlJson.url, curlJson.body, curlJson.headers, proxyResponse, responseJson]);
 
   const handleSaveCollection = useCallback(() => {
-    setSelectorResponse({ collectionName, curlName, env, curlJson: formInput });
+    setSelectorResponse({ collectionName, curlName, env, curlJson: formInput, responseJson: proxyResponse });
     setCollections((prev) =>
-      updateCurl(prev, collectionName, curlName, jsonToCurl(formInput)),
+      updateCurl(prev, collectionName, curlName, jsonToCurl(formInput), JSON.stringify(proxyResponse)),
     );
-  }, [formInput, collectionName, curlName, env, setSelectorResponse, setCollections]);
+  }, [setSelectorResponse, collectionName, curlName, env, formInput, proxyResponse, setCollections]);
 
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {

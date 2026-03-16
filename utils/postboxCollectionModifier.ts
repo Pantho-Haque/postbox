@@ -75,14 +75,16 @@ export const updateCurl = (
   collectionName: string,
   curlName: string,
   curl: string,
+  response:string,
 ) => {
   return prev.map((collection) => {
     if (collection.collectionName === collectionName) {
       return {
         ...collection,
         curls: collection.curls.map((c) =>
-          c.name === curlName ? { ...c, curl } : c,
+          c.name === curlName ? { ...c, curl,response} : c,
         ),
+
       };
     }
     return collection;
