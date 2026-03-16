@@ -16,7 +16,7 @@ export const createCurlName = (
     if (collection.collectionName === selectedCollection) {
       return {
         ...collection,
-        curls: [...collection.curls, { name: currentName, curl: "" }],
+        curls: [...collection.curls, { name: currentName, curl: "", response: "" }],
       };
     }
     return collection;
