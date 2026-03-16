@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useState, useEffect } from "react";
+import { Dispatch, SetStateAction, useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { EllipsisVertical, Package2, Route } from "lucide-react";
 import { CreateModal, DeleteModal, EnvModal, RenameModal } from "@/components";
 import { curlConverter } from "@/utils/curlConverter";
@@ -56,7 +57,7 @@ export default function Selector({
   return (
     <div className="h-full flex shrink-0 border-r border-white/5">
       {/* Collections panel */}
-      <div className="h-full w-[160px] flex flex-col bg-[#0a1628]/80 border-r border-white/5">
+      <div className="h-full w-[160px] flex flex-col bg-[#0a1628]/80 border-r border-white/5 overflow-visible">
         {/* Header */}
         <div className="px-3 pt-4 pb-3 border-b border-white/5">
           <p className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/50 mb-2">Collections</p>
@@ -71,7 +72,7 @@ export default function Selector({
         </div>
 
         {/* Collection list */}
-        <div className="flex-1 overflow-y-auto py-2">
+        <div className="flex-1 py-2 overflow-visible">
           {Object.keys(collectionCurlList).length === 0 ? (
             <div className="px-3 py-6 text-center">
               <Package2 size={18} className="text-white/10 mx-auto mb-2" />
@@ -83,7 +84,7 @@ export default function Selector({
               return (
                 <div
                   key={i}
-                  className={`group/menu relative flex items-center justify-between mx-2 mb-0.5 rounded-md overflow-hidden transition-all cursor-pointer
+                  className={`group/menu relative flex items-center justify-between mx-2 mb-0.5 rounded-md overflow-visible transition-all cursor-pointer
                     ${isActive
                       ? "bg-cyan-500/10 border border-cyan-500/20"
                       : "border border-transparent hover:bg-white/4 hover:border-white/5"
@@ -115,7 +116,7 @@ export default function Selector({
 
       {/* Routes panel */}
       {selection.collectionName && (
-        <div className="h-full w-[160px] flex flex-col bg-[#0c1a2e]/60">
+        <div className="h-full w-[160px] flex flex-col bg-[#0c1a2e]/60 overflow-visible">
           {/* Header */}
           <div className="px-3 pt-4 pb-3 border-b border-white/5">
             <p className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/50 mb-2">Routes</p>
@@ -138,7 +139,7 @@ export default function Selector({
           </div>
 
           {/* Route list */}
-          <div className="flex-1 overflow-y-auto py-2">
+          <div className="flex-1 py-2 overflow-y-auto">
             {collectionCurlList[selection.collectionName]?.length === 0 ? (
               <div className="px-3 py-6 text-center">
                 <Route size={18} className="text-white/10 mx-auto mb-2" />
@@ -150,7 +151,7 @@ export default function Selector({
                 return (
                   <div
                     key={i}
-                    className={`group/menu relative flex items-center justify-between mx-2 mb-0.5 rounded-md overflow-hidden transition-all cursor-pointer
+                    className={`group/menu relative flex items-center justify-between mx-2 mb-0.5 rounded-md overflow-visible transition-all cursor-pointer
                       ${isActive
                         ? "bg-cyan-500/10 border border-cyan-500/20"
                         : "border border-transparent hover:bg-white/4 hover:border-white/5"
@@ -200,31 +201,80 @@ const Menu = ({
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
   setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
 }) => {
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+
+  const updatePos = useCallback(() => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPos({ top: rect.top, left: rect.right + 8 });
+    }
+  }, []);
+
+  const handleOpen = useCallback(() => {
+    updatePos();
+    setOpen(true);
+  }, [updatePos]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
+        dropdownRef.current && !dropdownRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    const handleScroll = () => setOpen(false);
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("scroll", handleScroll, true);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("scroll", handleScroll, true);
+    };
+  }, [open]);
+
   return (
-    <div className="hidden group-hover/menu:flex group/tool relative items-center justify-center shrink-0 pr-1">
-      <div className="p-1 rounded text-white/20 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors cursor-pointer">
+    <div className="hidden group-hover/menu:flex items-center justify-center shrink-0 pr-1">
+      <div
+        ref={triggerRef}
+        onClick={handleOpen}
+        className="p-1 rounded text-white/20 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors cursor-pointer"
+      >
         <EllipsisVertical size={14} />
       </div>
-      <div className="hidden group-hover/tool:flex absolute left-0 top-0 ml-1 pl-2 z-50 overflow-visible">
-        <div className="flex flex-col min-w-[130px] bg-[#0e1f35] border border-white/10 shadow-2xl shadow-black/60 rounded-lg overflow-hidden backdrop-blur-md">
-          <RenameModal
-            currentName={currentName}
-            type={type}
-            collectionCurlList={collectionCurlList}
-            collectionName={collectionName}
-            setCollections={setCollections}
-            setSelection={setSelection}
-          />
-          <div className="h-px bg-white/5 mx-2" />
-          <DeleteModal
-            currentName={currentName}
-            type={type}
-            collectionName={collectionName}
-            setCollections={setCollections}
-            setSelection={setSelection}
-          />
-        </div>
-      </div>
+      {open &&
+        createPortal(
+          <div
+            ref={dropdownRef}
+            className="fixed z-999"
+            style={{ top: pos.top, left: pos.left }}
+          >
+            <div className="flex flex-col min-w-[130px] bg-[#0e1f35] border border-white/10 shadow-2xl shadow-black/60 rounded-lg backdrop-blur-md">
+              <RenameModal
+                currentName={currentName}
+                type={type}
+                collectionCurlList={collectionCurlList}
+                collectionName={collectionName}
+                setCollections={setCollections}
+                setSelection={setSelection}
+              />
+              <div className="h-px bg-white/5 mx-2" />
+              <DeleteModal
+                currentName={currentName}
+                type={type}
+                collectionName={collectionName}
+                setCollections={setCollections}
+                setSelection={setSelection}
+              />
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };
+

@@ -31,7 +31,7 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
 
   return {
     method: methodMatch?.[1] ?? "GET",
-    url: urlMatch?.[1] ?? "https://jsonplaceholder.typicode.com/users/1",
+    url: urlMatch?.[1] ?? "",
     headers: JSON.stringify(headersObj),
     body: bodyMatch?.[1] ?? ""
   };
