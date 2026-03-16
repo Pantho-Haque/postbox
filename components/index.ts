@@ -4,6 +4,7 @@ import RenameModal from "./postbox/RenameModal";
 import DeleteModal from "./postbox/DeleteModal";
 import CreateModal from "./postbox/CreateModal";
 import EnvModal from "./postbox/EnvModal";
+import SyntaxHighlighter from "./postbox/SyntaxHighlighter";
 export * from "./postbox/SharedModal";
 
 export {
@@ -12,5 +13,6 @@ export {
     RenameModal,
     DeleteModal,
     CreateModal,
-    EnvModal
+    EnvModal,
+    SyntaxHighlighter
 }

@@ -17,7 +17,7 @@ export default function Postbox() {
   }, [collections]);
 
   return (
-    <div className="h-screen w-full flex bg-[#080f1a] overflow-hidden font-mono">
+    <div className="h-full w-full flex bg-[#080f1a] overflow-hidden font-mono">
       {/* Ambient background glow */}
       <div className="pointer-events-none fixed inset-0 z-0">
         <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[120px]" />

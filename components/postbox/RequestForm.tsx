@@ -25,6 +25,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import SyntaxHighlighter from "./SyntaxHighlighter";
 
 function resolveEnv(text: string, env?: TPostBoxEnv): string {
   if (!env) return text;
@@ -272,7 +273,7 @@ export default function RequestForm({
           <pre className="max-h-full overflow-auto p-4 text-xs text-white/60 leading-relaxed whitespace-pre-wrap wrap-words">
             {proxyResponse.error
               ? <span className="text-red-400">{proxyResponse.error}</span>
-              : JSON.stringify(proxyResponse.data, null, 2)
+              : <SyntaxHighlighter data={proxyResponse.data} />
             }
           </pre>
         ) : (

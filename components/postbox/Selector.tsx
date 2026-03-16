@@ -84,6 +84,7 @@ export default function Selector({
               return (
                 <div
                   key={i}
+                  title={collectionName}
                   className={`group/menu relative flex items-center justify-between mx-2 mb-0.5 rounded-md overflow-visible transition-all cursor-pointer
                     ${isActive
                       ? "bg-cyan-500/10 border border-cyan-500/20"
@@ -151,6 +152,7 @@ export default function Selector({
                 return (
                   <div
                     key={i}
+                    title={curl}
                     className={`group/menu relative flex items-center justify-between mx-2 mb-0.5 rounded-md overflow-visible transition-all cursor-pointer
                       ${isActive
                         ? "bg-cyan-500/10 border border-cyan-500/20"
