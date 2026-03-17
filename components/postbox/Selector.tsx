@@ -1,7 +1,6 @@
-import { Dispatch, SetStateAction, useState, useEffect, useRef, useCallback } from "react";
-import { createPortal } from "react-dom";
-import { EllipsisVertical, Package2, Route } from "lucide-react";
-import { CreateModal, DeleteModal, EnvModal, RenameModal } from "@/components";
+import { Dispatch, SetStateAction, useState, useEffect } from "react";
+import { Package2, Route } from "lucide-react";
+import { CreateModal , EnvModal, Menu } from "@/components";
 import { curlConverter } from "@/utils/curlConverter";
 import {
   TPostBoxCollections,
@@ -187,96 +186,3 @@ export default function Selector({
     </div>
   );
 }
-
-const Menu = ({
-  type,
-  collectionCurlList,
-  currentName,
-  collectionName,
-  setCollections,
-  setSelection,
-}: {
-  type: "collection" | "route";
-  collectionCurlList: { [key: string]: string[] };
-  currentName: string;
-  collectionName?: string;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
-}) => {
-  const [open, setOpen] = useState(false);
-  const triggerRef = useRef<HTMLDivElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ top: 0, left: 0 });
-
-  const updatePos = useCallback(() => {
-    if (triggerRef.current) {
-      const rect = triggerRef.current.getBoundingClientRect();
-      setPos({ top: rect.top, left: rect.right + 8 });
-    }
-  }, []);
-
-  const handleOpen = useCallback(() => {
-    updatePos();
-    setOpen(true);
-  }, [updatePos]);
-
-  useEffect(() => {
-    if (!open) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        triggerRef.current && !triggerRef.current.contains(e.target as Node) &&
-        dropdownRef.current && !dropdownRef.current.contains(e.target as Node)
-      ) {
-        setOpen(false);
-      }
-    };
-    const handleScroll = () => setOpen(false);
-    document.addEventListener("mousedown", handleClickOutside);
-    document.addEventListener("scroll", handleScroll, true);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-      document.removeEventListener("scroll", handleScroll, true);
-    };
-  }, [open]);
-
-  return (
-    <div className="hidden group-hover/menu:flex items-center justify-center shrink-0 pr-1">
-      <div
-        ref={triggerRef}
-        onClick={handleOpen}
-        className="p-1 rounded text-white/20 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors cursor-pointer"
-      >
-        <EllipsisVertical size={14} />
-      </div>
-      {open &&
-        createPortal(
-          <div
-            ref={dropdownRef}
-            className="fixed z-999"
-            style={{ top: pos.top, left: pos.left }}
-          >
-            <div className="flex flex-col min-w-[130px] bg-[#0e1f35] border border-white/10 shadow-2xl shadow-black/60 rounded-lg backdrop-blur-md">
-              <RenameModal
-                currentName={currentName}
-                type={type}
-                collectionCurlList={collectionCurlList}
-                collectionName={collectionName}
-                setCollections={setCollections}
-                setSelection={setSelection}
-              />
-              <div className="h-px bg-white/5 mx-2" />
-              <DeleteModal
-                currentName={currentName}
-                type={type}
-                collectionName={collectionName}
-                setCollections={setCollections}
-                setSelection={setSelection}
-              />
-            </div>
-          </div>,
-          document.body,
-        )}
-    </div>
-  );
-};
-

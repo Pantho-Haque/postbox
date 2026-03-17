@@ -1,4 +1,3 @@
-
 import { createPortal } from "react-dom";
 
 export function ModalShell({
@@ -14,13 +13,20 @@ export function ModalShell({
 }) {
   return createPortal(
     <div
+      data-modal
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
-      onClick={onClose}
+      onMouseDown={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div
         className="relative bg-[#0a1628] border border-white/10 rounded-xl shadow-2xl shadow-black/80 p-6 w-[380px] flex flex-col gap-5 font-mono"
+        onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
-        style={{ boxShadow: "0 0 0 1px rgba(0,229,204,0.08), 0 24px 80px rgba(0,0,0,0.8)" }}
+        style={{
+          boxShadow:
+            "0 0 0 1px rgba(0,229,204,0.08), 0 24px 80px rgba(0,0,0,0.8)",
+        }}
       >
         {/* Corner brackets */}
         <span className="absolute top-0 left-0 w-4 h-4 border-t border-l border-cyan-500/30 rounded-tl-xl" />
@@ -29,7 +35,9 @@ export function ModalShell({
         <span className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-cyan-500/30 rounded-br-xl" />
 
         <div>
-          <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/60 mb-1">Postbox</p>
+          <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/60 mb-1">
+            Postbox
+          </p>
           <h2 className="text-sm font-bold text-white/90">{title}</h2>
           {subtitle && <p className="text-xs text-white/30 mt-1">{subtitle}</p>}
         </div>
@@ -90,8 +98,16 @@ export function ModalActions({
         className="px-4 py-1.5 text-xs rounded-md font-bold transition-all cursor-pointer active:scale-95"
         style={
           confirmDanger
-            ? { background: "rgba(248,113,113,0.15)", border: "1px solid rgba(248,113,113,0.3)", color: "#f87171" }
-            : { background: "rgba(0,229,204,0.15)", border: "1px solid rgba(0,229,204,0.3)", color: "#00e5cc" }
+            ? {
+                background: "rgba(248,113,113,0.15)",
+                border: "1px solid rgba(248,113,113,0.3)",
+                color: "#f87171",
+              }
+            : {
+                background: "rgba(0,229,204,0.15)",
+                border: "1px solid rgba(0,229,204,0.3)",
+                color: "#00e5cc",
+              }
         }
       >
         {confirmLabel}

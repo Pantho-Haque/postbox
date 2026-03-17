@@ -5,6 +5,7 @@ import DeleteModal from "./postbox/DeleteModal";
 import CreateModal from "./postbox/CreateModal";
 import EnvModal from "./postbox/EnvModal";
 import SyntaxHighlighter from "./postbox/SyntaxHighlighter";
+import Menu from "./postbox/Menu";
 export * from "./postbox/SharedModal";
 
 export {
@@ -14,5 +15,6 @@ export {
     DeleteModal,
     CreateModal,
     EnvModal,
+    Menu,
     SyntaxHighlighter
 }
