@@ -18,6 +18,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "PostBox",
   description: "Test Your API",
+  keywords: ["PostBox", "Test Your API", "API", "Post", "Get", "Put", "Delete", "Postman", "Insomnia", "API Testing", "API Client", "API Tool", "API Tester", "API Client", "API Tool"],
+  openGraph: {
+    title: 'PostBox',
+    description: 'Test Your API',
+    url: 'https://postbox-pantho.vercel.app/'
+  }
 };
 
 export default async function RootLayout({
