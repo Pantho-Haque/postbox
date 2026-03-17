@@ -1,3 +1,4 @@
+"use client";
 import { POSTBOX_METHODS } from "@/constants";
 import {
   TPostBoxCollections,
@@ -49,9 +50,12 @@ export default function RequestForm({
 }: {
   selectorResponse: TPostBoxSelectorResponse;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectorResponse: Dispatch<SetStateAction<TPostBoxSelectorResponse | null>>;
+  setSelectorResponse: Dispatch<
+    SetStateAction<TPostBoxSelectorResponse | null>
+  >;
 }) {
-  const { collectionName, curlName, env, curlJson, responseJson } = selectorResponse;
+  const { collectionName, curlName, env, curlJson, responseJson } =
+    selectorResponse;
 
   const [activeTab, setActiveTab] = useState<"body" | "headers">("body");
   const [error, setError] = useState<string | null>(null);
@@ -73,7 +77,9 @@ export default function RequestForm({
   }, [curlJson, responseJson]);
 
   const [proxyLoading, setProxyLoading] = useState(false);
-  const [proxyResponse, setProxyResponse] = useState<TResponseJson>(responseJson ?? null);
+  const [proxyResponse, setProxyResponse] = useState<TResponseJson>(
+    responseJson ?? null,
+  );
 
   const sendProxyRequest = useCallback(async () => {
     setProxyLoading(true);
@@ -95,29 +101,70 @@ export default function RequestForm({
 
   const isUnsaved = useCallback(() => {
     const normalize = (s: string) => {
-      try { return JSON.stringify(JSON.parse(s || "{}")); }
-      catch { return s.trim(); }
+      try {
+        return JSON.stringify(JSON.parse(s || "{}"));
+      } catch {
+        return s.trim();
+      }
     };
     return (
       formInput.method !== curlJson.method ||
       formInput.url !== curlJson.url ||
       normalize(formInput.body) !== normalize(curlJson.body) ||
       normalize(formInput.headers) !== normalize(curlJson.headers) ||
-      normalize(JSON.stringify(proxyResponse)) !== normalize(JSON.stringify(responseJson))
+      normalize(JSON.stringify(proxyResponse)) !==
+        normalize(JSON.stringify(responseJson))
     );
-  }, [formInput.method, formInput.url, formInput.body, formInput.headers, curlJson.method, curlJson.url, curlJson.body, curlJson.headers, proxyResponse, responseJson]);
+  }, [
+    formInput.method,
+    formInput.url,
+    formInput.body,
+    formInput.headers,
+    curlJson.method,
+    curlJson.url,
+    curlJson.body,
+    curlJson.headers,
+    proxyResponse,
+    responseJson,
+  ]);
 
   const handleSaveCollection = useCallback(() => {
-    setSelectorResponse({ collectionName, curlName, env, curlJson: formInput, responseJson: proxyResponse });
+    setSelectorResponse({
+      collectionName,
+      curlName,
+      env,
+      curlJson: formInput,
+      responseJson: proxyResponse,
+    });
     setCollections((prev) =>
-      updateCurl(prev, collectionName, curlName, jsonToCurl(formInput), JSON.stringify(proxyResponse)),
+      updateCurl(
+        prev,
+        collectionName,
+        curlName,
+        jsonToCurl(formInput),
+        JSON.stringify(proxyResponse),
+      ),
     );
-  }, [setSelectorResponse, collectionName, curlName, env, formInput, proxyResponse, setCollections]);
+  }, [
+    setSelectorResponse,
+    collectionName,
+    curlName,
+    env,
+    formInput,
+    proxyResponse,
+    setCollections,
+  ]);
 
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "s") { e.preventDefault(); handleSaveCollection(); }
-      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); sendProxyRequest(); }
+      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+        e.preventDefault();
+        handleSaveCollection();
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        sendProxyRequest();
+      }
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
@@ -125,16 +172,22 @@ export default function RequestForm({
 
   const mc = METHOD_COLORS[formInput.method] ?? "#94a3b8";
   const statusOk = proxyResponse?.status != null && proxyResponse.status < 300;
-  const statusWarn = proxyResponse?.status != null && proxyResponse.status >= 300 && proxyResponse.status < 500;
+  const statusWarn =
+    proxyResponse?.status != null &&
+    proxyResponse.status >= 300 &&
+    proxyResponse.status < 500;
 
   return (
     <div className="h-full w-full flex flex-col gap-4 font-mono">
-
       {/* ── Breadcrumb ── */}
       <div className="flex items-center gap-2">
-        <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/40">{collectionName}</span>
+        <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/40">
+          {collectionName}
+        </span>
         <span className="text-white/10 text-xs">/</span>
-        <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/70">{curlName}</span>
+        <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/70">
+          {curlName}
+        </span>
       </div>
 
       {/* ── URL Bar ── */}
@@ -143,19 +196,35 @@ export default function RequestForm({
         style={{ borderColor: `${mc}33`, boxShadow: `0 0 20px ${mc}0d` }}
       >
         {/* Corner brackets */}
-        <span className="absolute top-0 left-0 w-3 h-3 border-t border-l rounded-tl-lg" style={{ borderColor: `${mc}44` }} />
-        <span className="absolute top-0 right-0 w-3 h-3 border-t border-r rounded-tr-lg" style={{ borderColor: `${mc}44` }} />
-        <span className="absolute bottom-0 left-0 w-3 h-3 border-b border-l rounded-bl-lg" style={{ borderColor: `${mc}44` }} />
-        <span className="absolute bottom-0 right-0 w-3 h-3 border-b border-r rounded-br-lg" style={{ borderColor: `${mc}44` }} />
+        <span
+          className="absolute top-0 left-0 w-3 h-3 border-t border-l rounded-tl-lg"
+          style={{ borderColor: `${mc}44` }}
+        />
+        <span
+          className="absolute top-0 right-0 w-3 h-3 border-t border-r rounded-tr-lg"
+          style={{ borderColor: `${mc}44` }}
+        />
+        <span
+          className="absolute bottom-0 left-0 w-3 h-3 border-b border-l rounded-bl-lg"
+          style={{ borderColor: `${mc}44` }}
+        />
+        <span
+          className="absolute bottom-0 right-0 w-3 h-3 border-b border-r rounded-br-lg"
+          style={{ borderColor: `${mc}44` }}
+        />
 
         <select
           className="shrink-0 rounded-md border-0 bg-[#0e1f35] px-2 py-1.5 text-xs font-bold tracking-widest outline-none cursor-pointer"
           style={{ color: mc }}
           value={formInput.method}
-          onChange={(e) => setFormInput({ ...formInput, method: e.target.value })}
+          onChange={(e) =>
+            setFormInput({ ...formInput, method: e.target.value })
+          }
         >
           {POSTBOX_METHODS.map((m) => (
-            <option key={m} value={m}>{m}</option>
+            <option key={m} value={m}>
+              {m}
+            </option>
           ))}
         </select>
 
@@ -188,7 +257,11 @@ export default function RequestForm({
             className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold text-black transition-all disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
             style={{ background: mc, boxShadow: `0 0 12px ${mc}44` }}
           >
-            {proxyLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <Send className="h-3 w-3" />}
+            {proxyLoading ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <Send className="h-3 w-3" />
+            )}
             {proxyLoading ? "Sending…" : "Send"}
           </button>
         </div>
@@ -213,14 +286,19 @@ export default function RequestForm({
       )}
 
       {/* ── Tabs + Editor ── */}
-      <div className="flex flex-col rounded-lg border border-white/8 bg-[#0a1628]/60 overflow-hidden" style={{ minHeight: 240 }}>
+      <div
+        className="flex flex-col rounded-lg border border-white/8 bg-[#0a1628]/60 overflow-hidden"
+        style={{ minHeight: 240 }}
+      >
         <div className="flex items-center border-b border-white/5 bg-[#0e1f35]/50 px-1 pt-1 shrink-0">
           {(["body", "headers"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className="relative px-4 py-2 text-[10px] font-semibold tracking-[0.2em] uppercase transition-colors"
-              style={{ color: activeTab === tab ? "#00e5cc" : "rgba(255,255,255,0.25)" }}
+              style={{
+                color: activeTab === tab ? "#00e5cc" : "rgba(255,255,255,0.25)",
+              }}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
               {activeTab === tab && (
@@ -253,17 +331,35 @@ export default function RequestForm({
       {/* ── Response panel ── */}
       <div className="rounded-lg border border-white/8 bg-[#0a1628]/60 overflow-hidden">
         <div className="flex items-center gap-3 border-b border-white/5 bg-[#0e1f35]/50 px-4 py-2">
-          <span className="text-[9px] tracking-[0.25em] uppercase text-white/25">Response</span>
+          <span className="text-[9px] tracking-[0.25em] uppercase text-white/25">
+            Response
+          </span>
           {proxyResponse?.status != null && (
             <span
               className="flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-bold border"
               style={{
-                background: statusOk ? "rgba(74,222,128,0.08)" : statusWarn ? "rgba(251,146,60,0.08)" : "rgba(248,113,113,0.08)",
-                borderColor: statusOk ? "rgba(74,222,128,0.2)" : statusWarn ? "rgba(251,146,60,0.2)" : "rgba(248,113,113,0.2)",
-                color: statusOk ? "#4ade80" : statusWarn ? "#fb923c" : "#f87171",
+                background: statusOk
+                  ? "rgba(74,222,128,0.08)"
+                  : statusWarn
+                    ? "rgba(251,146,60,0.08)"
+                    : "rgba(248,113,113,0.08)",
+                borderColor: statusOk
+                  ? "rgba(74,222,128,0.2)"
+                  : statusWarn
+                    ? "rgba(251,146,60,0.2)"
+                    : "rgba(248,113,113,0.2)",
+                color: statusOk
+                  ? "#4ade80"
+                  : statusWarn
+                    ? "#fb923c"
+                    : "#f87171",
               }}
             >
-              {statusOk ? <CheckCircle2 className="h-3 w-3" /> : <AlertCircle className="h-3 w-3" />}
+              {statusOk ? (
+                <CheckCircle2 className="h-3 w-3" />
+              ) : (
+                <AlertCircle className="h-3 w-3" />
+              )}
               {proxyResponse.status}
             </span>
           )}
@@ -271,15 +367,18 @@ export default function RequestForm({
 
         {proxyResponse ? (
           <pre className="max-h-full overflow-auto p-4 text-xs text-white/60 leading-relaxed whitespace-pre-wrap wrap-words">
-            {proxyResponse.error
-              ? <span className="text-red-400">{proxyResponse.error}</span>
-              : <SyntaxHighlighter data={proxyResponse.data} />
-            }
+            {proxyResponse.error ? (
+              <span className="text-red-400">{proxyResponse.error}</span>
+            ) : (
+              <SyntaxHighlighter data={proxyResponse.data} />
+            )}
           </pre>
         ) : (
           <div className="flex items-center justify-center py-8 gap-2 text-white/15">
             <Send size={14} />
-            <span className="text-[10px] tracking-[0.2em] uppercase">Send a request to see the response</span>
+            <span className="text-[10px] tracking-[0.2em] uppercase">
+              Send a request to see the response
+            </span>
           </div>
         )}
       </div>

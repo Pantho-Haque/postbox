@@ -27,23 +27,20 @@ function TerminalDemo() {
   }, []);
 
   return (
-    <div className="relative w-full max-w-lg font-mono text-xs rounded-xl border border-white/8 bg-[#070e1a] overflow-hidden shadow-2xl shadow-black/60"
-      style={{ boxShadow: "0 0 0 1px rgba(0,229,204,0.06), 0 32px 80px rgba(0,0,0,0.7)" }}>
-      {/* Corner brackets */}
+    <div
+      className="relative w-full max-w-lg font-mono text-xs rounded-xl border border-white/8 bg-[#070e1a] overflow-hidden shadow-2xl"
+      style={{ boxShadow: "0 0 0 1px rgba(0,229,204,0.06), 0 32px 80px rgba(0,0,0,0.7)" }}
+    >
       <span className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-cyan-500/40 rounded-tl-xl" />
       <span className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-cyan-500/40 rounded-tr-xl" />
       <span className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-cyan-500/40 rounded-bl-xl" />
       <span className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-cyan-500/40 rounded-br-xl" />
-
-      {/* Title bar */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5 bg-[#0a1628]/80">
         <span className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
         <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
         <span className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
-        <span className="ml-3 text-[10px] tracking-widest uppercase text-white/20">postbox · marshal / create-user</span>
+        <span className="ml-3 text-[10px] tracking-widest uppercase text-white/20">postbox · shop / create-user</span>
       </div>
-
-      {/* Lines */}
       <div className="p-5 flex flex-col gap-1.5 min-h-[220px]">
         {DEMO_LINES.map((line, i) => (
           <div
@@ -54,12 +51,8 @@ function TerminalDemo() {
               transform: visible.includes(i) ? "translateY(0)" : "translateY(4px)",
             }}
           >
-            {line.type === "label" && (
-              <span className="text-[#4ade80] font-bold tracking-wider">{line.text}</span>
-            )}
-            {line.type === "divider" && (
-              <div className="h-px bg-white/5 my-1" />
-            )}
+            {line.type === "label" && <span className="text-[#4ade80] font-bold tracking-wider">{line.text}</span>}
+            {line.type === "divider" && <div className="h-px bg-white/5 my-1" />}
             {(line.type === "key" || line.type === "response") && (
               <span>
                 <span className="text-cyan-400/70">{line.text}</span>
@@ -74,14 +67,12 @@ function TerminalDemo() {
             )}
           </div>
         ))}
-        {/* Cursor blink */}
         <span className="inline-block w-1.5 h-3.5 bg-cyan-400/70 rounded-sm animate-pulse mt-1" />
       </div>
     </div>
   );
 }
 
-// ── Feature card ──────────────────────────────────────────────────────────────
 function FeatureCard({ icon, title, desc, delay }: { icon: string; title: string; desc: string; delay: string }) {
   return (
     <div
@@ -97,7 +88,6 @@ function FeatureCard({ icon, title, desc, delay }: { icon: string; title: string
   );
 }
 
-// ── Keyboard shortcut badge ───────────────────────────────────────────────────
 function KbdBadge({ keys, label }: { keys: string[]; label: string }) {
   return (
     <div className="flex items-center gap-3">
@@ -111,24 +101,38 @@ function KbdBadge({ keys, label }: { keys: string[]; label: string }) {
   );
 }
 
+// ── Social link ───────────────────────────────────────────────────────────────
+function SocialLink({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex items-center gap-2 px-3 py-2 rounded-lg border border-white/8 bg-white/3 text-white/40 hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-cyan-500/5 transition-all text-[11px] tracking-wide"
+    >
+      {children}
+      {label}
+    </a>
+  );
+}
+
 // ── Main page ─────────────────────────────────────────────────────────────────
 export default function HomePage() {
   return (
-    <main className="min-h-screen bg-[#080f1a] text-white overflow-x-hidden font-mono selection:bg-cyan-500/30">
+    <main className="min-h-full bg-[#080f1a] text-white overflow-x-hidden font-mono selection:bg-cyan-500/30">
 
       {/* Ambient glows */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div className="absolute top-[-15%] left-[20%] w-[600px] h-[600px] rounded-full bg-cyan-500/6 blur-[140px]" />
         <div className="absolute top-[40%] right-[-10%] w-[400px] h-[400px] rounded-full bg-cyan-400/4 blur-[100px]" />
         <div className="absolute bottom-[-10%] left-[-5%] w-[300px] h-[300px] rounded-full bg-cyan-500/3 blur-[80px]" />
-        {/* Grid pattern */}
-        <div className="absolute inset-0 opacity-[0.015]"
+        <div
+          className="absolute inset-0 opacity-[0.015]"
           style={{
             backgroundImage: "linear-gradient(rgba(0,229,204,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,204,1) 1px, transparent 1px)",
             backgroundSize: "60px 60px",
           }}
         />
-        {/* Geometric corner brackets scattered */}
         {[
           { top: "8%", left: "4%", size: 32 },
           { top: "8%", right: "4%", size: 24 },
@@ -138,9 +142,7 @@ export default function HomePage() {
           { bottom: "10%", right: "5%", size: 22 },
         ].map((pos, i) => (
           <svg key={i} width={pos.size} height={pos.size} viewBox="0 0 32 32" fill="none"
-            className="absolute opacity-20"
-            style={pos as React.CSSProperties}
-          >
+            className="absolute opacity-20" style={pos as React.CSSProperties}>
             <path d="M8 0 L0 0 L0 8" stroke="#00e5cc" strokeWidth="2" />
             <path d="M24 32 L32 32 L32 24" stroke="#00e5cc" strokeWidth="2" />
           </svg>
@@ -149,47 +151,13 @@ export default function HomePage() {
 
       <div className="relative z-10">
 
-        {/* ── Nav ── */}
-        <nav className="flex items-center justify-between px-8 py-5 border-b border-white/5 max-w-6xl mx-auto">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-md border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center">
-              <span className="text-cyan-400 text-xs font-bold">P</span>
-            </div>
-            <span className="text-sm font-bold tracking-wider text-white/80">Postbox</span>
-          </div>
-          <div className="flex items-center gap-6">
-            <a href="#features" className="text-[11px] tracking-[0.15em] uppercase text-white/35 hover:text-cyan-400 transition-colors">Features</a>
-            <a href="#shortcuts" className="text-[11px] tracking-[0.15em] uppercase text-white/35 hover:text-cyan-400 transition-colors">Shortcuts</a>
-            <a
-              href="https://github.com/pantho-haque/postbox"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-[11px] tracking-[0.15em] uppercase text-white/35 hover:text-white/70 transition-colors"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013.01-.4c1.02 0 2.05.14 3.01.4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
-              GitHub
-            </a>
-            <Link
-              href="/postbox"
-              className="px-4 py-2 text-[11px] font-bold tracking-[0.15em] uppercase rounded-md text-black transition-all hover:scale-105 active:scale-95"
-              style={{ background: "#00e5cc", boxShadow: "0 0 20px rgba(0,229,204,0.35)" }}
-            >
-              Open App →
-            </Link>
-          </div>
-        </nav>
-
         {/* ── Hero ── */}
-        <section className="max-w-6xl mx-auto px-8 pt-24 pb-20 flex flex-col lg:flex-row items-center gap-16">
-          {/* Left copy */}
+        <section className="max-w-6xl mx-auto px-8 pt-20 pb-20 flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1 flex flex-col gap-6">
             <div className="inline-flex w-fit items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/8">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
               <span className="text-[10px] tracking-[0.25em] uppercase text-cyan-400/80">Open Source · MIT License</span>
             </div>
-
             <h1 className="text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
               <span className="text-white">API testing,</span>
               <br />
@@ -197,11 +165,9 @@ export default function HomePage() {
               <br />
               <span className="text-white">the bloat.</span>
             </h1>
-
             <p className="text-sm text-white/40 leading-relaxed max-w-md">
               Postbox is a keyboard-driven HTTP client that lives in your browser. Collections, environment variables, curl import, and a server-side proxy — everything you need, nothing you don&apos;t.
             </p>
-
             <div className="flex items-center gap-3 flex-wrap">
               <Link
                 href="/postbox"
@@ -210,23 +176,21 @@ export default function HomePage() {
               >
                 Launch Postbox
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                  <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </Link>
               <a
-                href="https://github.com/pantho-haque/postbox"
+                href="https://github.com/Pantho-Haque/postbox"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase rounded-lg border border-white/10 text-white/50 hover:border-white/20 hover:text-white/80 transition-all"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013.01-.4c1.02 0 2.05.14 3.01.4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013.01-.4c1.02 0 2.05.14 3.01.4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z" />
                 </svg>
                 Star on GitHub
               </a>
             </div>
-
-            {/* Quick stats */}
             <div className="flex items-center gap-6 pt-2">
               {[
                 { val: "Zero", label: "config needed" },
@@ -240,8 +204,6 @@ export default function HomePage() {
               ))}
             </div>
           </div>
-
-          {/* Right: terminal demo */}
           <div className="flex-1 flex justify-center lg:justify-end">
             <TerminalDemo />
           </div>
@@ -262,7 +224,6 @@ export default function HomePage() {
             <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/50 mb-2">What you get</p>
             <h2 className="text-2xl font-black text-white/85">Built for developers who move fast.</h2>
           </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
               { icon: "📁", title: "Collections & Routes", desc: "Organize every API endpoint into named collections. Create, rename, delete — full control with instant feedback.", delay: "0ms" },
@@ -282,12 +243,10 @@ export default function HomePage() {
           <div className="rounded-xl border border-white/6 bg-[#0a1628]/40 p-8 relative overflow-hidden">
             <span className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-cyan-500/25 rounded-tl-xl" />
             <span className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-cyan-500/25 rounded-br-xl" />
-
             <div className="mb-8">
               <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/50 mb-2">How it works</p>
               <h2 className="text-xl font-black text-white/85">From collection to response in seconds.</h2>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-4 gap-0">
               {[
                 { step: "01", title: "Create a collection", desc: "Group related API routes under a named collection." },
@@ -327,9 +286,10 @@ export default function HomePage() {
 
         {/* ── Open source CTA ── */}
         <section className="max-w-6xl mx-auto px-8 py-16">
-          <div className="relative rounded-xl border border-cyan-500/15 bg-[#0a1628]/60 p-10 text-center overflow-hidden"
-            style={{ boxShadow: "0 0 60px rgba(0,229,204,0.05)" }}>
-            {/* Glow */}
+          <div
+            className="relative rounded-xl border border-cyan-500/15 bg-[#0a1628]/60 p-10 text-center overflow-hidden"
+            style={{ boxShadow: "0 0 60px rgba(0,229,204,0.05)" }}
+          >
             <div className="absolute inset-0 pointer-events-none">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[200px] bg-cyan-500/6 blur-[80px] rounded-full" />
             </div>
@@ -337,7 +297,6 @@ export default function HomePage() {
             <span className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-cyan-500/30 rounded-tr-xl" />
             <span className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-cyan-500/30 rounded-bl-xl" />
             <span className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-cyan-500/30 rounded-br-xl" />
-
             <div className="relative z-10 flex flex-col items-center gap-5">
               <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/60">Open Source</p>
               <h2 className="text-3xl font-black text-white/90">Built in public. Free forever.</h2>
@@ -346,13 +305,13 @@ export default function HomePage() {
               </p>
               <div className="flex items-center gap-3 flex-wrap justify-center">
                 <a
-                  href="https://github.com/pantho-haque/postbox"
+                  href="https://github.com/Pantho-Haque/postbox"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase rounded-lg border border-white/15 text-white/60 hover:border-cyan-500/30 hover:text-cyan-400 transition-all"
                 >
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013.01-.4c1.02 0 2.05.14 3.01.4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013.01-.4c1.02 0 2.05.14 3.01.4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z" />
                   </svg>
                   View on GitHub
                 </a>
@@ -368,6 +327,48 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* ── Built by ── */}
+        <section className="max-w-6xl mx-auto px-8 py-10">
+          <div className="flex flex-col sm:flex-row items-center gap-8 rounded-xl border border-white/6 bg-[#0a1628]/40 p-8 relative overflow-hidden">
+            <span className="absolute top-0 left-0 w-4 h-4 border-t border-l border-cyan-500/20 rounded-tl-xl" />
+            <span className="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-cyan-500/20 rounded-br-xl" />
+
+            {/* Avatar placeholder */}
+            <div className="shrink-0 w-16 h-16 rounded-full border-2 border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center text-2xl font-black text-cyan-400">
+              P
+            </div>
+
+            {/* Info */}
+            <div className="flex flex-col gap-1 text-center sm:text-left">
+              <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/50">Built by</p>
+              <h3 className="text-base font-black text-white/85 tracking-wide">Pantho Haque</h3>
+              <p className="text-xs text-white/30 leading-relaxed max-w-sm">
+                Full-stack developer passionate about clean tooling and great DX. Postbox was built out of frustration with bloated API clients.
+              </p>
+            </div>
+
+            {/* Social links */}
+            <div className="flex flex-wrap items-center gap-2 sm:ml-auto justify-center sm:justify-end">
+              <SocialLink href="https://panthohaque.vercel.app" label="Portfolio">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+              </SocialLink>
+              <SocialLink href="https://github.com/Pantho-Haque" label="GitHub">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013.01-.4c1.02 0 2.05.14 3.01.4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z" />
+                </svg>
+              </SocialLink>
+              <SocialLink href="https://www.linkedin.com/in/panthohaque/" label="LinkedIn">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                </svg>
+              </SocialLink>
+            </div>
+          </div>
+        </section>
+
         {/* ── Footer ── */}
         <footer className="max-w-6xl mx-auto px-8 py-8 border-t border-white/5 flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
@@ -377,9 +378,12 @@ export default function HomePage() {
             <span className="text-[11px] text-white/25">Postbox · MIT License</span>
           </div>
           <div className="flex items-center gap-5">
-            <span className="text-[11px] text-white/20">by Pantho Haque</span>
-            <a href="https://github.com/pantho-haque/postbox" target="_blank" rel="noopener noreferrer"
+            <a href="https://panthohaque.vercel.app" target="_blank" rel="noopener noreferrer"
+              className="text-[11px] text-white/25 hover:text-cyan-400 transition-colors">Pantho Haque</a>
+            <a href="https://github.com/Pantho-Haque" target="_blank" rel="noopener noreferrer"
               className="text-[11px] text-white/25 hover:text-cyan-400 transition-colors">GitHub</a>
+            <a href="https://www.linkedin.com/in/panthohaque/" target="_blank" rel="noopener noreferrer"
+              className="text-[11px] text-white/25 hover:text-cyan-400 transition-colors">LinkedIn</a>
             <Link href="/postbox" className="text-[11px] text-white/25 hover:text-cyan-400 transition-colors">App</Link>
           </div>
         </footer>

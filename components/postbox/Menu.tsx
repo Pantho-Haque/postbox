@@ -1,3 +1,5 @@
+"use client";
+
 import { Dispatch, SetStateAction, useState, useEffect, useRef } from "react";
 import { EllipsisVertical } from "lucide-react";
 import { TPostBoxCollections, TPostBoxSelectorSelection } from "@/types";

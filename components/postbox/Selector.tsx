@@ -1,3 +1,5 @@
+"use client";
+
 import { Dispatch, SetStateAction, useState, useEffect } from "react";
 import { Package2, Route } from "lucide-react";
 import { CreateModal , EnvModal, Menu } from "@/components";

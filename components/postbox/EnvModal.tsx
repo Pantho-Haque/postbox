@@ -1,3 +1,5 @@
+"use client";
+
 import { Plus, Settings2, Trash2 } from "lucide-react";
 import {
   Dispatch,

@@ -6,6 +6,7 @@ import CreateModal from "./postbox/CreateModal";
 import EnvModal from "./postbox/EnvModal";
 import SyntaxHighlighter from "./postbox/SyntaxHighlighter";
 import Menu from "./postbox/Menu";
+import Topbar from "./TopBar";
 export * from "./postbox/SharedModal";
 
 export {
@@ -16,5 +17,6 @@ export {
     CreateModal,
     EnvModal,
     Menu,
-    SyntaxHighlighter
+    SyntaxHighlighter,
+    Topbar
 }

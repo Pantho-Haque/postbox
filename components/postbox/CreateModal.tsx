@@ -1,3 +1,5 @@
+"use client";
+
 import { Plus } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import {
