@@ -98,7 +98,7 @@ export default function Topbar() {
       </div>
 
       {/* Bottom glow line */}
-      <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-cyan-500/20 to-transparent" />
     </header>
   );
 }
