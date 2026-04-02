@@ -33,6 +33,9 @@ export type TPostBoxSelectorSelection = {
 export type TResponseJson = {
     data?: unknown;
     status?: number;
+    statusText?: string;
+    ok?: boolean;
+    headers?: unknown;
     error?: string;
 } | null;
 

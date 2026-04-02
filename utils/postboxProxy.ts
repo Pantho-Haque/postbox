@@ -50,10 +50,11 @@ async function fetchViaProxy(
   const responseData = await response.json();
 
   return {
-    data: responseData,
-    status: response.status,
-    ok: response.ok,
-    headers: response.headers,
+    data: responseData.data,
+    status: responseData.status,
+    statusText: responseData.statusText,
+    ok: responseData.ok,
+    headers: responseData.headers,
   };
 }
 

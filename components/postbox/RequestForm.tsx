@@ -360,7 +360,8 @@ export default function RequestForm({
               ) : (
                 <AlertCircle className="h-3 w-3" />
               )}
-              {proxyResponse.status}
+              {proxyResponse.status}{" "}
+              {proxyResponse.statusText}
             </span>
           )}
         </div>

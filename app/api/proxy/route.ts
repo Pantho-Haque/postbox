@@ -11,11 +11,11 @@ export async function POST(req: NextRequest) {
 
   try {
     const noBodyMethods = ["GET", "DELETE", "HEAD"];
-    const hasBody = noBodyMethods.includes(method);
+    const hasBody = !noBodyMethods.includes(method);
     const response = await fetch(url, {
       method,
       headers,
-      body: hasBody ? undefined : body || undefined,
+      body: hasBody ? body || undefined : undefined,
     });
 
     if (!response.ok) {
@@ -26,13 +26,21 @@ export async function POST(req: NextRequest) {
     // HEAD responses have no body — return headers instead
     if (method === "HEAD") {
       const headersObj: Record<string, string> = {};
-      response.headers.forEach((value, key) => { headersObj[key] = value; });
+      response.headers.forEach((value, key) => {
+        headersObj[key] = value;
+      });
       return NextResponse.json(headersObj);
     }
 
     const text = await response.text();
     const data = text ? JSON.parse(text) : {};
-    return NextResponse.json(data);
+    return NextResponse.json({
+      data,
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+      headers: response.headers,
+    });
   } catch (error) {
     console.error("Error fetching posts:", error);
     return NextResponse.json(
