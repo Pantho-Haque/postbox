@@ -10,8 +10,15 @@ import {
   TPostBoxSelectorSelection,
 } from "@/types";
 import { parseStringToJson } from "@/utils/JsonStringParsing";
+import { useRouter, useSearchParams } from "next/navigation";
 
-function EmptyState({ icon: Icon, label }: { icon: typeof Package2; label: string }) {
+function EmptyState({
+  icon: Icon,
+  label,
+}: {
+  icon: typeof Package2;
+  label: string;
+}) {
   return (
     <div className="px-3 py-6 text-center">
       <Icon size={18} className="text-white/10 mx-auto mb-2" />
@@ -35,9 +42,10 @@ function PanelItem({
     <div
       title={name}
       className={`group/menu relative flex items-center justify-between mx-2 mb-0.5 rounded-md overflow-visible transition-all cursor-pointer
-        ${isActive
-          ? "bg-cyan-500/10 border border-cyan-500/20"
-          : "border border-transparent hover:bg-white/4 hover:border-white/5"
+        ${
+          isActive
+            ? "bg-cyan-500/10 border border-cyan-500/20"
+            : "border border-transparent hover:bg-white/4 hover:border-white/5"
         }`}
     >
       {isActive && (
@@ -55,7 +63,6 @@ function PanelItem({
   );
 }
 
-
 export default function Selector({
   collections,
   setCollections,
@@ -63,13 +70,12 @@ export default function Selector({
 }: {
   collections: TPostBoxCollections;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectorResponse: Dispatch<SetStateAction<TPostBoxSelectorResponse | null>>;
+  setSelectorResponse: Dispatch<
+    SetStateAction<TPostBoxSelectorResponse | null>
+  >;
 }) {
-  const [hideSidebar, setHideSidebar] = useState(false);
-  const [selection, setSelection] = useState<TPostBoxSelectorSelection>({
-    collectionName: "",
-    curlName: "",
-  });
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const collectionCurlList = collections.reduce(
     (acc, c) => {
@@ -79,10 +85,18 @@ export default function Selector({
     {} as Record<string, string[]>,
   );
 
+  const [hideSidebar, setHideSidebar] = useState(false);
+  const [selection, setSelection] = useState<TPostBoxSelectorSelection>({
+    collectionName: searchParams.get("c") ?? "",
+    curlName: searchParams.get("r") ?? collectionCurlList[searchParams.get("c") ?? ""]?.[0] ?? "",
+  });
+
   useEffect(() => {
     if (!selection.curlName) return setSelectorResponse(null);
 
-    const collection = collections.find((c) => c.collectionName === selection.collectionName);
+    const collection = collections.find(
+      (c) => c.collectionName === selection.collectionName,
+    );
     const curl = collection?.curls.find((c) => c.name === selection.curlName);
 
     setSelectorResponse({
@@ -94,26 +108,34 @@ export default function Selector({
     });
   }, [selection, collections, setSelectorResponse]);
 
-  useEffect(()=>{
-    const handleKeydown = (e:KeyboardEvent)=>{
-      if(e.key === "ArrowLeft"){
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
         setHideSidebar(true);
       }
-      if(e.key === "ArrowRight"){
+      if (e.key === "ArrowRight") {
         setHideSidebar(false);
       }
-    }
-    document.addEventListener("keydown",handleKeydown);
-    return ()=> document.removeEventListener("keydown",handleKeydown);
-  },[])
+    };
+    document.addEventListener("keydown", handleKeydown);
+    return () => document.removeEventListener("keydown", handleKeydown);
+  }, []);
+
+  const handleSelect = (collectionName: string, curlName: string) => {
+    setSelection({ collectionName, curlName });
+    router.push(`/postbox?c=${encodeURIComponent(collectionName)}&r=${encodeURIComponent(curlName)}`);
+  };
 
   const collectionsPanel = (
-    <div className={`h-full flex flex-col bg-[#0a1628]/80 border-r border-white/5 overflow-visible transition-all duration-200 ${hideSidebar ? "w-[40px]" : "w-[160px]"}`}>
-
+    <div
+      className={`h-full flex flex-col bg-[#0a1628]/80 border-r border-white/5 overflow-visible transition-all duration-200 ${hideSidebar ? "w-[40px]" : "w-[160px]"}`}
+    >
       {/* Header */}
       <div className="px-3 pt-4 pb-3 border-b border-white/5 flex items-center justify-between gap-2">
         {!hideSidebar && (
-          <p className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/50">Collections</p>
+          <p className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/50">
+            Collections
+          </p>
         )}
         <button
           onClick={() => setHideSidebar((prev) => !prev)}
@@ -141,23 +163,27 @@ export default function Selector({
             {Object.keys(collectionCurlList).length === 0 ? (
               <EmptyState icon={Package2} label="No collections" />
             ) : (
-              Object.entries(collectionCurlList).map(([collectionName, curlList], i) => (
-                <PanelItem
-                  key={i}
-                  name={collectionName}
-                  isActive={selection.collectionName === collectionName}
-                  onClick={() => setSelection({ collectionName, curlName: curlList[0] ?? "" })}
-                  menuSlot={
-                    <Menu
-                      type="collection"
-                      collectionCurlList={collectionCurlList}
-                      currentName={collectionName}
-                      setCollections={setCollections}
-                      setSelection={setSelection}
-                    />
-                  }
-                />
-              ))
+              Object.entries(collectionCurlList).map(
+                ([collectionName, curlList], i) => (
+                  <PanelItem
+                    key={i}
+                    name={collectionName}
+                    isActive={selection.collectionName === collectionName}
+                    onClick={() =>
+                      handleSelect(collectionName, curlList[0] ?? "")
+                    }
+                    menuSlot={
+                      <Menu
+                        type="collection"
+                        collectionCurlList={collectionCurlList}
+                        currentName={collectionName}
+                        setCollections={setCollections}
+                        setSelection={setSelection}
+                      />
+                    }
+                  />
+                ),
+              )
             )}
           </div>
         </>
@@ -165,17 +191,20 @@ export default function Selector({
     </div>
   );
 
-  
-
   const routesPanel = selection.collectionName && !hideSidebar && (
     <div className="h-full w-[160px] flex flex-col bg-[#0c1a2e]/60 overflow-visible">
-
       {/* Header */}
       <div className="px-3 pt-4 pb-3 border-b border-white/5">
-        <p className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/50 mb-2">Routes</p>
+        <p className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/50 mb-2">
+          Routes
+        </p>
         <div className="flex flex-col gap-1.5">
           <EnvModal
-            envs={collections.find((el) => el.collectionName === selection.collectionName)?.env ?? {}}
+            envs={
+              collections.find(
+                (el) => el.collectionName === selection.collectionName,
+              )?.env ?? {}
+            }
             collectionName={selection.collectionName}
             setCollections={setCollections}
             setSelectorResponse={setSelectorResponse}
@@ -201,7 +230,7 @@ export default function Selector({
               key={i}
               name={curl}
               isActive={selection.curlName === curl}
-              onClick={() => setSelection({ ...selection, curlName: curl })}
+              onClick={() => handleSelect(selection.collectionName, curl)}
               menuSlot={
                 <Menu
                   type="route"

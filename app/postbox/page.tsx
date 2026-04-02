@@ -12,7 +12,6 @@ export default function Postbox() {
     useState<TPostBoxSelectorResponse | null>(null);
 
   useEffect(() => {
-    console.log(collections);
     localStorage.setItem("postbox", JSON.stringify(collections));
   }, [collections]);
 
