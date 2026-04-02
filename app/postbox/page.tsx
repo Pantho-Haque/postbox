@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { RequestForm, Selector, ImportModal } from "@/components";
 import { TPostBoxCollections, TPostBoxSelectorResponse } from "@/types";
 import { GetPostboxCollections } from "@/services/Postbox";
@@ -24,12 +24,13 @@ export default function Postbox() {
       </div>
 
       <div className="flex h-full w-full">
-        <Selector
-          collections={collections}
-          setCollections={setCollections}
-          setSelectorResponse={setSelectorResponse}
-        />
-
+        <Suspense fallback={null}>
+          <Selector
+            collections={collections}
+            setCollections={setCollections}
+            setSelectorResponse={setSelectorResponse}
+          />
+        </Suspense>
         <div className="flex-1 h-full overflow-auto">
           {selectorResponse ? (
             <div className="h-full w-full flex flex-col p-6">
@@ -43,9 +44,12 @@ export default function Postbox() {
             <EmptyState hasCollections={collections.length > 0} />
           )}
         </div>
-        
+
         <div className="w-12 h-full border-l border-white/5 bg-[#0a1628]/80 flex items-start justify-center">
-          <ImportModal collections={collections} setCollections={setCollections} />
+          <ImportModal
+            collections={collections}
+            setCollections={setCollections}
+          />
         </div>
       </div>
     </div>
@@ -63,16 +67,28 @@ function EmptyState({ hasCollections }: { hasCollections: boolean }) {
         <span className="absolute -bottom-6 -right-6 w-6 h-6 border-b-2 border-r-2 border-cyan-500/40" />
 
         <div className="w-16 h-16 rounded-full border border-cyan-500/20 bg-cyan-500/5 flex items-center justify-center">
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#00e5cc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6">
-            <path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/>
-            <path d="M12 12h.01"/>
-            <path d="M8 12h.01"/>
-            <path d="M16 12h.01"/>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#00e5cc"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.6"
+          >
+            <path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" />
+            <path d="M12 12h.01" />
+            <path d="M8 12h.01" />
+            <path d="M16 12h.01" />
           </svg>
         </div>
 
         <div>
-          <p className="text-[10px] tracking-[0.3em] uppercase text-cyan-500/60 mb-2">Postbox</p>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-cyan-500/60 mb-2">
+            Postbox
+          </p>
           <h2 className="text-xl font-bold text-white/80 mb-2">
             {hasCollections ? "Select a route" : "No collections yet"}
           </h2>
