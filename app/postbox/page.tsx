@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { RequestForm, Selector } from "@/components";
+import { RequestForm, Selector, ImportModal } from "@/components";
 import { TPostBoxCollections, TPostBoxSelectorResponse } from "@/types";
 import { GetPostboxCollections } from "@/services/Postbox";
 
@@ -23,16 +23,16 @@ export default function Postbox() {
         <div className="absolute bottom-[-20%] right-[-10%] w-[400px] h-[400px] rounded-full bg-cyan-400/4 blur-[100px]" />
       </div>
 
-      <div className="relative z-10 flex h-full w-full">
+      <div className="flex h-full w-full">
         <Selector
           collections={collections}
           setCollections={setCollections}
           setSelectorResponse={setSelectorResponse}
         />
 
-        <div className="flex-1 h-full overflow-hidden">
+        <div className="flex-1 h-full overflow-auto">
           {selectorResponse ? (
-            <div className="h-full w-full flex flex-col overflow-auto p-6">
+            <div className="h-full w-full flex flex-col p-6">
               <RequestForm
                 selectorResponse={selectorResponse}
                 setCollections={setCollections}
@@ -42,6 +42,10 @@ export default function Postbox() {
           ) : (
             <EmptyState hasCollections={collections.length > 0} />
           )}
+        </div>
+        
+        <div className="w-12 h-full border-l border-white/5 bg-[#0a1628]/80 flex items-start justify-center">
+          <ImportModal collections={collections} setCollections={setCollections} />
         </div>
       </div>
     </div>

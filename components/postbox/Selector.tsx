@@ -99,6 +99,7 @@ export default function Selector({
     );
     const curl = collection?.curls.find((c) => c.name === selection.curlName);
 
+    router.push(`/postbox?c=${encodeURIComponent(selection.collectionName)}&r=${encodeURIComponent(selection.curlName)}`);
     setSelectorResponse({
       collectionName: selection.collectionName,
       curlName: selection.curlName,
@@ -106,7 +107,7 @@ export default function Selector({
       curlJson: curlConverter(curl?.curl || ""),
       responseJson: parseStringToJson(curl?.response || ""),
     });
-  }, [selection, collections, setSelectorResponse]);
+  }, [selection, collections, setSelectorResponse,router]);
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
@@ -177,6 +178,7 @@ export default function Selector({
                         type="collection"
                         collectionCurlList={collectionCurlList}
                         currentName={collectionName}
+                        exportString={JSON.stringify(collections.find((el) => el.collectionName === collectionName))}
                         setCollections={setCollections}
                         setSelection={setSelection}
                       />

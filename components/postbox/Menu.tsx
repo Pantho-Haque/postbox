@@ -3,13 +3,14 @@
 import { Dispatch, SetStateAction, useState, useEffect, useRef } from "react";
 import { EllipsisVertical } from "lucide-react";
 import { TPostBoxCollections, TPostBoxSelectorSelection } from "@/types";
-import { DeleteModal, RenameModal } from "@/components";
+import { DeleteModal, ExportModal, RenameModal } from "@/components";
 
 export default function Menu({
   type,
   collectionCurlList,
   currentName,
   collectionName,
+  exportString,
   setCollections,
   setSelection,
 }: {
@@ -17,11 +18,14 @@ export default function Menu({
   collectionCurlList: { [key: string]: string[] };
   currentName: string;
   collectionName?: string;
+  exportString?: string;
   setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
   setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
 }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0 });
+  const triggerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -39,10 +43,17 @@ export default function Menu({
   return (
     <div
       ref={menuRef}
-      className="hidden group-hover/menu:flex items-center justify-center shrink-0 pr-1 relative"
+      className="hidden group-hover/menu:flex items-center justify-center shrink-0 pr-1"
     >
       <div
-        onClick={() => setOpen((prev) => !prev)}
+        onClick={() => {
+          if (!open && triggerRef.current) {
+            const rect = triggerRef.current.getBoundingClientRect();
+            setPos({ top: rect.top, left: rect.right + 4 });
+          }
+          setOpen((prev) => !prev);
+        }}
+        ref={triggerRef}
         className="p-1 rounded text-white/20 hover:text-cyan-400 hover:bg-cyan-500/10 transition-colors cursor-pointer"
       >
         <EllipsisVertical size={14} />
@@ -50,7 +61,15 @@ export default function Menu({
 
       {open && (
         <div className="absolute left-full top-0 z-999">
-          <div className="flex flex-col min-w-[130px] bg-[#0e1f35] border border-white/10 shadow-2xl shadow-black/60 rounded-lg backdrop-blur-md">
+          <div
+            style={{
+              position: "fixed",
+              top: pos.top,
+              left: pos.left,
+              zIndex: 9999,
+            }}
+            className="flex flex-col min-w-[130px] bg-[#0e1f35] border border-white/10 shadow-2xl shadow-black/60 rounded-lg backdrop-blur-md"
+          >
             <RenameModal
               currentName={currentName}
               type={type}
@@ -67,6 +86,13 @@ export default function Menu({
               setCollections={setCollections}
               setSelection={setSelection}
             />
+            <div className="h-px bg-white/5 mx-2" />
+            {exportString && (
+              <ExportModal
+                exportString={exportString}
+                collectionName={currentName}
+              />
+            )}
           </div>
         </div>
       )}

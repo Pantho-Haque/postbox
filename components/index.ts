@@ -1,13 +1,15 @@
 import Selector from "./postbox/Selector";
 import RequestForm from "./postbox/RequestForm";
-import RenameModal from "./postbox/RenameModal";
-import DeleteModal from "./postbox/DeleteModal";
-import CreateModal from "./postbox/CreateModal";
-import EnvModal from "./postbox/EnvModal";
+import RenameModal from "./modals/RenameModal";
+import DeleteModal from "./modals/DeleteModal";
+import CreateModal from "./modals/CreateModal";
+import EnvModal from "./modals/EnvModal";
+import ImportModal from "./modals/ImportModal";
+import ExportModal from "./modals/ExportModal";
 import SyntaxHighlighter from "./postbox/SyntaxHighlighter";
 import Menu from "./postbox/Menu";
 import Topbar from "./TopBar";
-export * from "./postbox/SharedModal";
+export * from "./ui/SharedModal";
 
 export {
     Selector,
@@ -16,6 +18,8 @@ export {
     DeleteModal,
     CreateModal,
     EnvModal,
+    ImportModal,
+    ExportModal,
     Menu,
     SyntaxHighlighter,
     Topbar
