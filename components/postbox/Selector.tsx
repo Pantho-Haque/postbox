@@ -91,6 +91,12 @@ export default function Selector({
     curlName: searchParams.get("r") ?? collectionCurlList[searchParams.get("c") ?? ""]?.[0] ?? "",
   });
 
+  const handleSelect = (collectionName: string, curlName: string) => {
+    setSelection({ collectionName, curlName });
+    router.push(`/postbox?c=${encodeURIComponent(collectionName)}&r=${encodeURIComponent(curlName)}`);
+  };
+
+
   useEffect(() => {
     if (!selection.curlName) return setSelectorResponse(null);
 
@@ -122,10 +128,7 @@ export default function Selector({
     return () => document.removeEventListener("keydown", handleKeydown);
   }, []);
 
-  const handleSelect = (collectionName: string, curlName: string) => {
-    setSelection({ collectionName, curlName });
-    router.push(`/postbox?c=${encodeURIComponent(collectionName)}&r=${encodeURIComponent(curlName)}`);
-  };
+  
 
   const collectionsPanel = (
     <div

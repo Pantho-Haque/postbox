@@ -11,14 +11,16 @@ export const createCurlName = (
   prev: TPostBoxCollections,
   selectedCollection: string,
   currentName: string,
+  curlString: string,
 ) => {
   return prev.map((collection) => {
     if (collection.collectionName === selectedCollection) {
       return {
         ...collection,
-        curls: [...collection.curls, { name: currentName, curl: "", response: "" }],
+        curls: [...collection.curls, { name: currentName, curl: curlString, response: "" }],
       };
     }
+    
     return collection;
   });
 };

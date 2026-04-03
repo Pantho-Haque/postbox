@@ -66,15 +66,6 @@ export default function RequestForm({
     headers: formatJson(curlJson.headers).output,
   });
 
-  useEffect(() => {
-    setFormInput({
-      ...curlJson,
-      body: formatJson(curlJson.body).output,
-      headers: formatJson(curlJson.headers).output,
-    });
-    setError(null);
-    setProxyResponse(responseJson ?? null);
-  }, [curlJson, responseJson]);
 
   const [proxyLoading, setProxyLoading] = useState(false);
   const [proxyResponse, setProxyResponse] = useState<TResponseJson>(
@@ -155,6 +146,16 @@ export default function RequestForm({
     setCollections,
   ]);
 
+  useEffect(() => {
+    setFormInput({
+      ...curlJson,
+      body: formatJson(curlJson.body).output,
+      headers: formatJson(curlJson.headers).output,
+    });
+    setError(null);
+    setProxyResponse(responseJson ?? null);
+  }, [curlJson, responseJson]);
+  
   useEffect(() => {
     const listener = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "s") {

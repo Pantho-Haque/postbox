@@ -10,20 +10,21 @@ import { TPostBoxCurlJson } from "@/types";
  *     -d '{"title": "Marshal Post", "body": "Created via marshal", "userId": 2}'
  */
 export function curlConverter(curlString: string): TPostBoxCurlJson {
-  // 1. Clean up line breaks
+  // 1. Clean up line continuations
   const normalized = curlString.replace(/\\\n\s*/g, " ").trim();
 
-  // 2. Handle Method
+  // 2. Method — handle both -X and --request
   let method = "GET";
-  if (normalized.includes(" -I") || normalized.includes(" --head")) {
+  if (normalized.includes(" -I ") || normalized.includes(" --head ")) {
     method = "HEAD";
   } else {
-    const methodMatch = normalized.match(/-X\s+([A-Z]+)/i);
+    const methodMatch = normalized.match(/(?:-X|--request)\s+([A-Z]+)/i); // ← add --request
+    console.log(methodMatch)
     method = methodMatch?.[1].toUpperCase() ?? "GET";
   }
 
-  // 3. Extract Headers
-  const headerMatches = [...normalized.matchAll(/-H\s+["']([^"']+)["']/g)];
+  // 3. Headers — handle both -H and --header
+  const headerMatches = [...normalized.matchAll(/(?:-H|--header)\s+["']([^"']+)["']/g)]; // ← add --header
   const headersObj = headerMatches.reduce((acc, match) => {
     const parts = match[1].split(":");
     const key = parts[0].trim();
@@ -32,25 +33,26 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
     return acc;
   }, {} as Record<string, string>);
 
-  // 4. Extract Body
-  const bodyMatch = normalized.match(/-d\s+['"]([\s\S]+?)['"](?:\s|$)/);
+  // 4. Body — handle -d and --data
+  const bodyMatch = normalized.match(/(?:-d|--data)\s+['"]([\s\S]+?)['"](?:\s|$)/); // ← add --data
 
-  // 5. Extract URL (The Trickiest Part)
-  // Remove the 'curl' command and all known flags/values to find the naked URL
+  // 5. URL — handle --url flag AND naked URLs
   let url = "";
-  const words = normalized.split(/\s+/);
-  for (let i = 1; i < words.length; i++) {
-    const word = words[i];
-    const prev = words[i - 1];
-
-    // If the word is a flag or a value belonging to a flag, skip it
-    if (word.startsWith("-")) continue;
-    if (["-X", "-H", "-d", "--data"].includes(prev)) continue;
-    
-    // The first word that isn't a flag or a flag-value is usually our URL
-    if (word.startsWith("http")) {
-      url = word.replace(/['"]/g, ""); // Remove quotes if present
-      break;
+  const urlFlagMatch = normalized.match(/--url\s+["']?([^\s"']+)["']?/); // ← add --url
+  if (urlFlagMatch) {
+    url = urlFlagMatch[1];
+  } else {
+    const words = normalized.split(/\s+/);
+    const skipNext = new Set(["-X", "--request", "-H", "--header", "-d", "--data", "--url"]);
+    for (let i = 1; i < words.length; i++) {
+      const word = words[i];
+      const prev = words[i - 1];
+      if (word.startsWith("-")) continue;
+      if (skipNext.has(prev)) continue;
+      if (word.startsWith("http")) {
+        url = word.replace(/['"]/g, "");
+        break;
+      }
     }
   }
 
@@ -58,7 +60,7 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
     method,
     url,
     headers: JSON.stringify(headersObj),
-    body: bodyMatch?.[1] ?? ""
+    body: bodyMatch?.[1] ?? "",
   };
 }
 

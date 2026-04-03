@@ -41,7 +41,7 @@ export function ModalShell({
             Postbox
           </p>
           <h2 className="text-sm font-bold text-white/90">{title}</h2>
-          {subtitle && <p className="text-xs text-white/30 mt-1">{subtitle}</p>}
+          {subtitle && <p className="text-xs text-white/30 mt-1 capitalize">{subtitle}</p>}
         </div>
 
         {children}
