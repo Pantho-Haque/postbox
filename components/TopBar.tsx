@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import LocalConnectionModal from "./modals/LocalConnectionModal";
 export default function Topbar() {
   const pathname = usePathname();
   const isApp = pathname === "/postbox";
@@ -59,7 +58,7 @@ export default function Topbar() {
       <div className="flex items-center gap-3">
         {isApp ? (
           <>
-            <LocalConnectionModal />
+            {/* <LocalConnectionModal /> */}
           </>
         ) : (
           <Link
