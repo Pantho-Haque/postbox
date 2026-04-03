@@ -2,7 +2,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { RequestForm, Selector, ImportModal } from "@/components";
 import { TPostBoxCollections, TPostBoxSelectorResponse } from "@/types";
-import { GetPostboxCollections } from "@/services/Postbox";
+import { GetPostboxCollections } from "@/services";
 
 export default function Postbox() {
   const [collections, setCollections] = useState<TPostBoxCollections>(

@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/companion-pkg/node_modules
 /.pnpm
 /.pnpm.*
 /.pnpm-store
