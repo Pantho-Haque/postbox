@@ -15,7 +15,6 @@ import {
   AlertCircle,
   CheckCircle2,
   Code2,
-  Copy,
   Loader2,
   MessageCircleWarning,
   Save,
@@ -29,6 +28,7 @@ import {
   useState,
 } from "react";
 import SyntaxHighlighter from "./SyntaxHighlighter";
+import { useExtension } from "@/hooks/useExtension";
 
 function resolveEnv(text: string, env?: TPostBoxEnv): string {
   if (!env) return text;
@@ -63,6 +63,8 @@ export default function RequestForm({
   const [curlCopied, setCurlCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const extensionAvailable = useExtension();
+
   const [formInput, setFormInput] = useState<TPostBoxCurlJson>({
     ...curlJson,
     body: formatJson(curlJson.body).output,
@@ -84,6 +86,7 @@ export default function RequestForm({
         formInput.method,
         resolveEnv(formInput.headers, env),
         resolveEnv(formInput.body, env),
+        extensionAvailable
       );
       setProxyResponse(res);
     } catch (err) {
@@ -91,7 +94,7 @@ export default function RequestForm({
     } finally {
       setProxyLoading(false);
     }
-  }, [formInput, env]);
+  }, [formInput, env, extensionAvailable]);
 
   const isUnsaved = useCallback(() => {
     const normalize = (s: string) => {

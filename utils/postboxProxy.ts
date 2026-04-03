@@ -9,28 +9,31 @@ function isLocalUrl(url: string): boolean {
   }
 }
 
-async function fetchDirect(
+
+export function fetchViaExtension(
   url: string,
   method: string,
-  headers: string,
-  body: unknown,
-) {
-  const parsedHeaders = typeof headers === "string" ? JSON.parse(headers || "{}") : headers;
+  headers: Record<string, string>,
+  body: string | null,
+): Promise<{ data: unknown; status: number; ok: boolean; error?: string }> {
+  return new Promise((resolve, reject) => {
+    window.postMessage({ type: "POSTBOX_REQUEST", payload: { url, method, headers, body } }, "*");
 
-  const response = await fetch(url, {
-    method,
-    headers: parsedHeaders,
-    body: ["GET", "HEAD"].includes(method.toUpperCase()) ? undefined : JSON.stringify(body),
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type !== "POSTBOX_RESPONSE") return;
+      window.removeEventListener("message", handler);
+      if (event.data.success) resolve(event.data);
+      else reject(new Error(event.data.error));
+    };
+
+    window.addEventListener("message", handler);
+
+    // Timeout after 10s
+    setTimeout(() => {
+      window.removeEventListener("message", handler);
+      reject(new Error("Extension request timed out"));
+    }, 10000);
   });
-
-  const responseData = await response.json();
-
-  return {
-    data: responseData,
-    status: response.status,
-    ok: response.ok,
-    headers: response.headers,
-  };
 }
 
 async function fetchViaProxy(
@@ -62,20 +65,17 @@ export async function postboxProxy(
   url: string,
   method: string,
   headers: string,
-  body: unknown,
+  body: string,
+  extensionAvailable: boolean,
 ) {
-  try {
-    if (isLocalUrl(url)) {
-      return await fetchDirect(url, method, headers, body);
-    }
-    return await fetchViaProxy(url, method, headers, body);
-  } catch (error) {
-    console.error("Proxy Error:", error);
-    return {
-      data: { error: "Network request failed" },
-      status: 500,
-      ok: false,
-      headers: {},
-    };
+  const isLocal = isLocalUrl(url);
+  if (isLocal && extensionAvailable) {
+    return fetchViaExtension(url, method, JSON.parse(headers), body);
   }
+
+  if (isLocal && !extensionAvailable) {
+    throw new Error("Install the Postbox Extension to make localhost requests");
+  }
+
+  return fetchViaProxy(url, method, headers, body); // existing server proxy
 }

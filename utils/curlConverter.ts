@@ -19,7 +19,6 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
     method = "HEAD";
   } else {
     const methodMatch = normalized.match(/(?:-X|--request)\s+([A-Z]+)/i); // ← add --request
-    console.log(methodMatch)
     method = methodMatch?.[1].toUpperCase() ?? "GET";
   }
 

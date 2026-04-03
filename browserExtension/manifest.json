@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Postbox Companion",
+  "version": "1.0.0",
+  "permissions": ["declarativeNetRequest", "cookies"],
+  "host_permissions": [
+    "http://localhost/*",
+    "http://127.0.0.1/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://postbox-pantho.vercel.app/*",
+        "http://localhost:3000/*"
+      ],
+      "js": ["content.js"]
+    }
+  ]
+}
