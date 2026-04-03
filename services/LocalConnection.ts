@@ -1,6 +1,8 @@
-export const getToken =()=>sessionStorage.getItem("local-token");
-const setToken=(token:string)=>sessionStorage.setItem("local-token", token);
-const removeToken=()=>sessionStorage.removeItem("local-token");
+const isBrowser = typeof window !== "undefined";
+
+export const getToken = () => isBrowser ? sessionStorage.getItem("local-token") : null;
+const setToken = (token: string) => isBrowser && sessionStorage.setItem("local-token", token);
+const removeToken = () => isBrowser && sessionStorage.removeItem("local-token");
 
 
 const checkConnection = async (
