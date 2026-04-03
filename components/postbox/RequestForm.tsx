@@ -14,6 +14,8 @@ import { postboxProxy } from "@/utils/postboxProxy";
 import {
   AlertCircle,
   CheckCircle2,
+  Code2,
+  Copy,
   Loader2,
   MessageCircleWarning,
   Save,
@@ -58,6 +60,7 @@ export default function RequestForm({
     selectorResponse;
 
   const [activeTab, setActiveTab] = useState<"body" | "headers">("body");
+  const [curlCopied, setCurlCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const [formInput, setFormInput] = useState<TPostBoxCurlJson>({
@@ -145,6 +148,12 @@ export default function RequestForm({
     proxyResponse,
     setCollections,
   ]);
+
+  const handleCopyCurl = () => {
+    navigator.clipboard.writeText(jsonToCurl(formInput));
+    setCurlCopied(true);
+    setTimeout(() => setCurlCopied(false), 2000);
+  }
 
   useEffect(() => {
     setFormInput({
@@ -264,6 +273,21 @@ export default function RequestForm({
               <Send className="h-3 w-3" />
             )}
             {proxyLoading ? "Sending…" : "Send"}
+          </button>
+
+
+          <button
+            title="Copy as CURL"
+            disabled={curlCopied}
+            onClick={handleCopyCurl}
+            className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold text-black transition-all disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
+            style={{ background: mc, boxShadow: `0 0 12px ${mc}44` }}
+          >
+            {curlCopied ? (
+              <CheckCircle2 className="h-3 w-3" />
+            ) : (
+              <Code2 className="h-3 w-3" />
+            )}
           </button>
         </div>
       </div>
