@@ -1,0 +1,29 @@
+name: Release Extension
+
+on:
+  push:
+    tags:
+      - "v*" # triggers on v1.0.0, v1.2.3 etc
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Zip extension
+        run: |
+          cd browserExtension && zip -r ../postbox-extension.zip . \
+            --exclude ".git/*" \
+            --exclude ".github/*" \
+            --exclude "*.md"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: postbox-extension.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

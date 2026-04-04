@@ -2,16 +2,25 @@
 
 import { createPortal } from "react-dom";
 
+const sizes = {
+  sm: "w-[380px]",
+  md: "w-[80%] h-[60%]",
+  lg: "w-[90%] h-[80%]",
+}
+
+
 export function ModalShell({
   title,
   subtitle,
   onClose,
   children,
+  size = "sm",
 }: {
   title: string;
   subtitle?: string;
   onClose: () => void;
   children: React.ReactNode;
+  size?: keyof typeof sizes;
 }) {
   return createPortal(
     <div
@@ -22,7 +31,7 @@ export function ModalShell({
       }}
     >
       <div
-        className="relative bg-[#0a1628] border border-white/10 rounded-xl shadow-2xl shadow-black/80 p-6 w-[380px] flex flex-col gap-5 font-mono"
+        className={`relative bg-[#0a1628] border border-white/10 rounded-xl shadow-2xl shadow-black/80 p-6 ${sizes[size]}  flex flex-col gap-5 font-mono`}
         onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => e.stopPropagation()}
         style={{
@@ -80,23 +89,25 @@ export function ModalActions({
   onCancel,
   onConfirm,
   confirmLabel,
+  cancelLabel="Cancel",
   confirmDanger,
   loading,
 }: {
   onCancel: () => void;
   onConfirm: () => void;
   confirmLabel: string;
+  cancelLabel?: string;
   confirmDanger?: boolean;
   loading?: boolean;
 }) {
   return (
-    <div className="flex justify-end gap-2 pt-1">
+    <div className="flex justify-end gap-2 pt-1 mt-auto">
       <button
         onClick={onCancel}
         disabled={loading}
         className="px-4 py-1.5 text-xs rounded-md border border-white/10 text-white/40 hover:bg-white/5 hover:text-white/70 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        Cancel
+        {cancelLabel}
       </button>
       <button
         onClick={onConfirm}

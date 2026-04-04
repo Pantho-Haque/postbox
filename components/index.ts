@@ -6,6 +6,7 @@ import CreateModal from "./modals/CreateModal";
 import EnvModal from "./modals/EnvModal";
 import ImportModal from "./modals/ImportModal";
 import ExportModal from "./modals/ExportModal";
+import NoExtensionModal from "./modals/NoExtensionModal";
 import SyntaxHighlighter from "./postbox/SyntaxHighlighter";
 import Menu from "./postbox/Menu";
 import Topbar from "./TopBar";
@@ -22,5 +23,6 @@ export {
     ExportModal,
     Menu,
     SyntaxHighlighter,
-    Topbar
+    Topbar,
+    NoExtensionModal
 }

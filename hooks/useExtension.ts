@@ -8,23 +8,27 @@ declare global {
 
 export function useExtension() {
   const [available, setAvailable] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const handler = (e: MessageEvent) => {
       if (e.data?.type === "POSTBOX_EXTENSION_READY") {
         window.__postboxExtension = true;
         setAvailable(true);
+        setChecked(true);
       }
     };
 
     window.addEventListener("message", handler);
 
-    // Poll every 500ms for 5s then give up
     let attempts = 0;
     const poll = setInterval(() => {
       window.postMessage({ type: "POSTBOX_PING" }, "*");
       attempts++;
-      if (attempts >= 10) clearInterval(poll);
+      if (attempts >= 10) {
+        clearInterval(poll);
+        setChecked(true); // ← gave up, mark as checked
+      }
     }, 500);
 
     return () => {
@@ -33,5 +37,5 @@ export function useExtension() {
     };
   }, []);
 
-  return available;
+  return { available, checked };
 }

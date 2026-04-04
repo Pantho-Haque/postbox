@@ -29,6 +29,7 @@ import {
 } from "react";
 import SyntaxHighlighter from "./SyntaxHighlighter";
 import { useExtension } from "@/hooks/useExtension";
+import NoExtensionModal from "../modals/NoExtensionModal";
 
 function resolveEnv(text: string, env?: TPostBoxEnv): string {
   if (!env) return text;
@@ -63,7 +64,9 @@ export default function RequestForm({
   const [curlCopied, setCurlCopied] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const extensionAvailable = useExtension();
+  const { available: extensionAvailable, checked: extensionChecked } =
+  useExtension();
+
 
   const [formInput, setFormInput] = useState<TPostBoxCurlJson>({
     ...curlJson,
@@ -193,6 +196,10 @@ export default function RequestForm({
   return (
     <div className="h-full w-full flex flex-col gap-4 font-mono">
       {/* ── Breadcrumb ── */}
+      <NoExtensionModal
+        checked={extensionChecked}
+        available={extensionAvailable}
+      />
       <div className="flex items-center gap-2">
         <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/40">
           {collectionName}
