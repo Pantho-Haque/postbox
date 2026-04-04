@@ -1,51 +1,68 @@
 import { NextResponse, NextRequest } from "next/server";
-import { parseStringToJson } from "@/utils/JsonStringParsing";
 
 export async function POST(req: NextRequest) {
-  const { url, method, headers: incomingHeaders, body } = await req.json();
+  const { url, method, headers: clientHeaders, body } = await req.json();
 
-  const headers = {
-    ...parseStringToJson(incomingHeaders),
-    "content-type": "application/json",
-  };
-
+  let parsedHeaders: Record<string, string> = {};
   try {
-    const noBodyMethods = ["GET", "DELETE", "HEAD"];
-    const hasBody = !noBodyMethods.includes(method);
-    const response = await fetch(url, {
-      method,
-      headers,
-      body: hasBody ? body || undefined : undefined,
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      return NextResponse.json(errorData, { status: response.status });
-    }
-
-    // HEAD responses have no body — return headers instead
-    if (method === "HEAD") {
-      const headersObj: Record<string, string> = {};
-      response.headers.forEach((value, key) => {
-        headersObj[key] = value;
-      });
-      return NextResponse.json(headersObj);
-    }
-
-    const text = await response.text();
-    const data = text ? JSON.parse(text) : {};
-    return NextResponse.json({
-      data,
-      status: response.status,
-      statusText: response.statusText,
-      ok: response.ok,
-      headers: response.headers,
-    });
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch posts" },
-      { status: 500 },
-    );
+    parsedHeaders = typeof clientHeaders === "string"
+      ? JSON.parse(clientHeaders || "{}")
+      : clientHeaders ?? {};
+  } catch {
+    parsedHeaders = {};
   }
+
+  const blocked = ["host", "content-length", "transfer-encoding", "connection"];
+  blocked.forEach((h) => {
+    delete parsedHeaders[h];
+    delete parsedHeaders[h.toLowerCase()];
+  });
+
+  const noBody = ["GET", "HEAD"].includes(method.toUpperCase());
+  const bodyToSend = noBody
+    ? undefined
+    : typeof body === "string" ? body : JSON.stringify(body);
+
+
+  const upstream = await fetch(url, {
+    method: method.toUpperCase(),
+    headers: parsedHeaders,
+    body: bodyToSend,
+  });
+
+  const isHead = method.toUpperCase() === "HEAD";
+  const contentType = upstream.headers.get("content-type") ?? "";
+  const data = isHead
+    ? null
+    : contentType.includes("application/json")
+      ? await upstream.json()
+      : await upstream.text();
+
+  const responseHeaders: Record<string, string> = {};
+  upstream.headers.forEach((value, key) => {
+    responseHeaders[key] = value;
+  });
+
+  const cookies: Record<string, string> = {};
+  const setCookie = upstream.headers.get("set-cookie");
+  if (setCookie) {
+    setCookie.split(",").forEach((part) => {
+      const [pair] = part.trim().split(";");
+      const eqIdx = pair.indexOf("=");
+      if (eqIdx !== -1) {
+        const k = pair.slice(0, eqIdx).trim();
+        const v = pair.slice(eqIdx + 1).trim();
+        cookies[k] = v;
+      }
+    });
+  }
+
+  return NextResponse.json({
+    data: isHead ? responseHeaders : data,
+    status: upstream.status,
+    statusText: upstream.statusText,
+    ok: upstream.ok,
+    headers: responseHeaders,
+    cookies,
+  });
 }

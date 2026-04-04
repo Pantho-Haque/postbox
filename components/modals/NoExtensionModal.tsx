@@ -20,7 +20,7 @@ export default function NoExtensionModal({
   useEffect(() => {
     const checkExtension = () => {
       if (checked && !available) {
-        console.log("Extension not available");
+        console.error("Extension not available");
         setOpen(true);
       }
     };

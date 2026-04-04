@@ -9,6 +9,17 @@ export const POSTBOX_METHODS = [
   "HEAD",
 ];
 
+
+export const METHOD_COLORS: Record<string, string> = {
+  GET: "#00e5cc",
+  POST: "#4ade80",
+  PUT: "#fb923c",
+  PATCH: "#a78bfa",
+  DELETE: "#f87171",
+  HEAD: "#94a3b8",
+  OPTIONS: "#94a3b8",
+};
+
 export const collections: TPostBoxCollections = [
   {
     collectionName: "JSONPlaceholder Lab",

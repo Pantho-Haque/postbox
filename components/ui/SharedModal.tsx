@@ -1,13 +1,13 @@
 "use client";
 
+import { useEffect } from "react";
 import { createPortal } from "react-dom";
 
 const sizes = {
   sm: "w-[380px]",
   md: "w-[80%] h-[60%]",
   lg: "w-[90%] h-[80%]",
-}
-
+};
 
 export function ModalShell({
   title,
@@ -50,7 +50,9 @@ export function ModalShell({
             Postbox
           </p>
           <h2 className="text-sm font-bold text-white/90">{title}</h2>
-          {subtitle && <p className="text-xs text-white/30 mt-1 capitalize">{subtitle}</p>}
+          {subtitle && (
+            <p className="text-xs text-white/30 mt-1 capitalize">{subtitle}</p>
+          )}
         </div>
 
         {children}
@@ -89,7 +91,7 @@ export function ModalActions({
   onCancel,
   onConfirm,
   confirmLabel,
-  cancelLabel="Cancel",
+  cancelLabel = "Cancel",
   confirmDanger,
   loading,
 }: {
@@ -100,6 +102,16 @@ export function ModalActions({
   confirmDanger?: boolean;
   loading?: boolean;
 }) {
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        onCancel();
+      }
+    };
+    document.addEventListener("keydown", handleKeydown);
+    return () => document.removeEventListener("keydown", handleKeydown);
+  }, [onConfirm, onCancel]);
   return (
     <div className="flex justify-end gap-2 pt-1 mt-auto">
       <button
@@ -115,8 +127,16 @@ export function ModalActions({
         className="px-4 py-1.5 text-xs rounded-md font-bold transition-all active:scale-95 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60 flex items-center gap-1.5"
         style={
           confirmDanger
-            ? { background: "rgba(248,113,113,0.15)", border: "1px solid rgba(248,113,113,0.3)", color: "#f87171" }
-            : { background: "rgba(0,229,204,0.15)", border: "1px solid rgba(0,229,204,0.3)", color: "#00e5cc" }
+            ? {
+                background: "rgba(248,113,113,0.15)",
+                border: "1px solid rgba(248,113,113,0.3)",
+                color: "#f87171",
+              }
+            : {
+                background: "rgba(0,229,204,0.15)",
+                border: "1px solid rgba(0,229,204,0.3)",
+                color: "#00e5cc",
+              }
         }
       >
         {loading && (
@@ -126,8 +146,19 @@ export function ModalActions({
             fill="none"
             viewBox="0 0 24 24"
           >
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            />
           </svg>
         )}
         {loading ? "Loading..." : confirmLabel}

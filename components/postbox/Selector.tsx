@@ -117,10 +117,10 @@ export default function Selector({
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
+      if ((e.metaKey || e.ctrlKey) && e.key === "ArrowLeft") {
         setHideSidebar(true);
       }
-      if (e.key === "ArrowRight") {
+      if ((e.metaKey || e.ctrlKey) && e.key === "ArrowRight") {
         setHideSidebar(false);
       }
     };

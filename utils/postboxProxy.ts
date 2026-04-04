@@ -44,6 +44,7 @@ async function fetchViaProxy(
 ) {
   const response = await fetch("/api/proxy", {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
@@ -51,14 +52,7 @@ async function fetchViaProxy(
   });
 
   const responseData = await response.json();
-
-  return {
-    data: responseData.data,
-    status: responseData.status,
-    statusText: responseData.statusText,
-    ok: responseData.ok,
-    headers: responseData.headers,
-  };
+  return responseData;
 }
 
 export async function postboxProxy(
@@ -77,5 +71,5 @@ export async function postboxProxy(
     throw new Error("Install the Postbox Extension to make localhost requests");
   }
 
-  return fetchViaProxy(url, method, headers, body); // existing server proxy
+  return fetchViaProxy(url, method, headers, body);
 }
