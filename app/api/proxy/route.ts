@@ -5,9 +5,10 @@ export async function POST(req: NextRequest) {
 
   let parsedHeaders: Record<string, string> = {};
   try {
-    parsedHeaders = typeof clientHeaders === "string"
-      ? JSON.parse(clientHeaders || "{}")
-      : clientHeaders ?? {};
+    parsedHeaders =
+      typeof clientHeaders === "string"
+        ? JSON.parse(clientHeaders || "{}")
+        : (clientHeaders ?? {});
   } catch {
     parsedHeaders = {};
   }
@@ -21,8 +22,9 @@ export async function POST(req: NextRequest) {
   const noBody = ["GET", "HEAD"].includes(method.toUpperCase());
   const bodyToSend = noBody
     ? undefined
-    : typeof body === "string" ? body : JSON.stringify(body);
-
+    : typeof body === "string"
+      ? body
+      : JSON.stringify(body);
 
   const upstream = await fetch(url, {
     method: method.toUpperCase(),
@@ -31,12 +33,34 @@ export async function POST(req: NextRequest) {
   });
 
   const isHead = method.toUpperCase() === "HEAD";
-  const contentType = upstream.headers.get("content-type") ?? "";
-  const data = isHead
-    ? null
-    : contentType.includes("application/json")
-      ? await upstream.json()
-      : await upstream.text();
+  const isNoBody =
+    method.toUpperCase() === "HEAD" ||
+    [100, 101, 102, 103, 204, 205, 304].includes(upstream.status);
+
+  let data = null;
+
+  if (!isNoBody) {
+    const contentType = upstream.headers.get("content-type") ?? "";
+    const raw = await upstream.text();
+
+    if (!raw) {
+      data = null;
+    } else if (contentType.includes("application/json")) {
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        data = raw;
+      }
+    } else if (
+      contentType.includes("text/") ||
+      contentType.includes("application/xml") ||
+      contentType.includes("application/javascript")
+    ) {
+      data = raw;
+    } else {
+      data = raw;
+    }
+  }
 
   const responseHeaders: Record<string, string> = {};
   upstream.headers.forEach((value, key) => {
