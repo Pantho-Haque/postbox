@@ -36,7 +36,7 @@ export default function ImportModal({
           e.stopPropagation();
           setOpen(true);
         }}
-        className="text-white/30 hover:text-cyan-400 transition-colors p-2 border border-white/5 hover:border-cyan-500/20 cursor-pointer rounded-full mt-2"
+        className="modal-button-mini mt-2"
       >
         <Import size={14} />
       </button>

@@ -34,6 +34,7 @@ export default function NoExtensionModal({
           title={`No Extension Found`}
           subtitle={`To get connected to localhost make sure to install PostBox Extension`}
           onClose={() => setOpen(false)}
+          isOnBlurPressClose={false}
         >
           <ol className="text-xs text-white/50 space-y-1">
             <li>1. Download and unzip the extension</li>

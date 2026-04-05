@@ -4,6 +4,7 @@ import CreateModal from "./modals/CreateModal";
 import EnvModal from "./modals/EnvModal";
 import ImportModal from "./modals/ImportModal";
 import ExportModal from "./modals/ExportModal";
+import InfoModal from "./modals/InfoModal";
 
 import ResponsePanel from "./RequestForm/ResponsePanel";
 import TabEditor from "./RequestForm/TabEditor";
@@ -25,6 +26,7 @@ export {
     EnvModal,
     ImportModal,
     ExportModal,
+    InfoModal,
     
     ResponsePanel,
     TabEditor,

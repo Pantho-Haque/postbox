@@ -5,19 +5,21 @@ import { createPortal } from "react-dom";
 
 const sizes = {
   sm: "w-[380px]",
-  md: "w-[80%] h-[60%]",
+  md: "w-[60%] h-[60%]",
   lg: "w-[90%] h-[80%]",
 };
 
 export function ModalShell({
   title,
   subtitle,
+  isOnBlurPressClose = true,
   onClose,
   children,
   size = "sm",
 }: {
   title: string;
   subtitle?: string;
+  isOnBlurPressClose?: boolean;
   onClose: () => void;
   children: React.ReactNode;
   size?: keyof typeof sizes;
@@ -27,7 +29,7 @@ export function ModalShell({
       data-modal
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
       onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (isOnBlurPressClose && e.target === e.currentTarget) onClose();
       }}
     >
       <div

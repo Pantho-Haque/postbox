@@ -35,3 +35,7 @@
 .btn-outline-secondary {
   @apply border border-gray-400 text-gray-700 bg-transparent hover:bg-gray-50;
 }
+
+.kbd{
+  @apply inline-flex items-center rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-white/50;
+}
