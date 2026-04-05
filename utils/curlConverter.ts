@@ -33,11 +33,11 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
   }, {} as Record<string, string>);
 
   // 4. Body — handle -d and --data
-  const bodyMatch = normalized.match(/(?:-d|--data)\s+['"]([\s\S]+?)['"](?:\s|$)/); // ← add --data
+  const bodyMatch = normalized.match(/(?:-d|--data)\s+'([\s\S]+)'/);
 
   // 5. URL — handle --url flag AND naked URLs
   let url = "";
-  const urlFlagMatch = normalized.match(/--url\s+["']?([^\s"']+)["']?/); // ← add --url
+  const urlFlagMatch = normalized.match(/(?:--url|--location)\s+["']?([^\s"']+)["']?/); 
   if (urlFlagMatch) {
     url = urlFlagMatch[1];
   } else {
