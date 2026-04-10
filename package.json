@@ -11,6 +11,7 @@
     "commitlint": "commitlint --edit"
   },
   "dependencies": {
+    "@bany/curl-to-json": "^1.2.10",
     "@radix-ui/react-accordion": "^1.2.12",
     "@tanstack/react-query": "^5.81.5",
     "axios": "^1.13.3",

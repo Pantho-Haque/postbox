@@ -5,6 +5,11 @@ import EnvModal from "./modals/EnvModal";
 import ImportModal from "./modals/ImportModal";
 import ExportModal from "./modals/ExportModal";
 import InfoModal from "./modals/InfoModal";
+import NoteModal from "./modals/NoteModal";
+
+import NotePills from "./notes/NotePills";
+import NoteEditor from "./notes/NoteEditor";
+
 
 import ResponsePanel from "./RequestForm/ResponsePanel";
 import TabEditor from "./RequestForm/TabEditor";
@@ -27,7 +32,12 @@ export {
     ImportModal,
     ExportModal,
     InfoModal,
+    NoteModal,
     
+    NotePills,
+    NoteEditor,
+    
+
     ResponsePanel,
     TabEditor,
     UrlBar,

@@ -137,7 +137,7 @@ export default function UrlBar({
           title="Save (Ctrl/Cmd+S)"
           disabled={!isUnsaved()}
           onClick={handleSaveCollection}
-          className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/40 transition-all hover:border-cyan-500/30 hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-20"
+          className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/40 transition-all cursor-pointer hover:border-cyan-500/30 hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-20"
         >
           <Save className="h-3 w-3" />
           Save
@@ -147,7 +147,7 @@ export default function UrlBar({
           title="Send (Ctrl/Cmd+Enter)"
           disabled={proxyLoading || !!error}
           onClick={sendProxyRequest}
-          className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold text-black transition-all disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
+          className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold text-black transition-all  cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
           style={{ background: mc, boxShadow: `0 0 12px ${mc}44` }}
         >
           {proxyLoading ? (
@@ -162,7 +162,7 @@ export default function UrlBar({
           title="Copy as CURL"
           disabled={curlCopied}
           onClick={handleCopyCurl}
-          className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold text-black transition-all disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
+          className="flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-bold text-black transition-all cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 active:scale-95"
           style={{ background: mc, boxShadow: `0 0 12px ${mc}44` }}
         >
           {curlCopied ? (

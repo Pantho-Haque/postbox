@@ -1,6 +1,6 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
-import { RequestForm, Selector, ImportModal, InfoModal } from "@/components";
+import { RequestForm, Selector, ImportModal, InfoModal, NoteModal } from "@/components";
 import { TPostBoxCollections, TPostBoxSelectorResponse } from "@/types";
 import { GetPostboxCollections } from "@/services";
 
@@ -50,6 +50,7 @@ export default function Postbox() {
             collections={collections}
             setCollections={setCollections}
           />
+          <NoteModal />
           <InfoModal />
         </div>
       </div>
