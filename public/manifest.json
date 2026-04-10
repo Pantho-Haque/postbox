@@ -1,0 +1,16 @@
+{
+  "name": "Postbox",
+  "short_name": "Postbox",
+  "description": "Premium API Testing Client for Developers",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080f1a",
+  "theme_color": "#00e5cc",
+  "icons": [
+    {
+      "src": "/assets/images/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

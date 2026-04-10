@@ -159,7 +159,7 @@ export default function HomePage() {
               <span className="text-[10px] tracking-[0.25em] uppercase text-cyan-400/80">Open Source · MIT License</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
-              <span className="text-white">API testing,</span>
+              <span className="text-white">Postbox: API testing,</span>
               <br />
               <span style={{ color: "#00e5cc" }}>without</span>
               <br />
