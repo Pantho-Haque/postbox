@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 
 export const formatJson = (text: string) => {
-  if (!text.trim()) {
+  if (!text?.trim()) {
     return { output: "", error: null };
   }
 
