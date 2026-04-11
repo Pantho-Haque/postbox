@@ -104,6 +104,7 @@ export default function Selector({
       (c) => c.collectionName === selection.collectionName,
     );
     const curl = collection?.curls.find((c) => c.name === selection.curlName);
+    console.log(curl)
 
     router.push(`/postbox?c=${encodeURIComponent(selection.collectionName)}&r=${encodeURIComponent(selection.curlName)}`);
     setSelectorResponse({

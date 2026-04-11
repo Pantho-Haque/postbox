@@ -12,7 +12,12 @@ import parse from "@bany/curl-to-json";
  */
 export function curlConverter(curlString: string): TPostBoxCurlJson {
   // 1. Clean up line continuations
-  const parsed = parse(curlString);
+  const parsed =curlString?  parse(curlString): {
+    method: "GET",
+    url: "",
+    header: {},
+    data: {},
+  };
   // const normalized = curlString.replace(/\\\n\s*/g, " ").trim();
 
   // // 2. Method — handle both -X and --request

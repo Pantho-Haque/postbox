@@ -24,7 +24,7 @@ export default function TabEditor({
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className="relative px-4 py-2 text-[10px] font-semibold tracking-[0.2em] uppercase transition-colors"
+            className="relative px-4 py-2 text-[10px] font-semibold tracking-[0.2em] uppercase transition-colors cursor-pointer"
             style={{
               color: activeTab === tab ? "#00e5cc" : "rgba(255,255,255,0.25)",
             }}
