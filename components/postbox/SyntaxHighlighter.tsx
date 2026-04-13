@@ -11,7 +11,7 @@ export default function SyntaxHighlighter({ data }: { data: unknown }) {
   const JSON_TOKEN = new RegExp(`(${STRING}|${BOOLEAN}|${NUMBER})`, 'g');
   const URL_PATTERN = /https?:\/\/[^\s"'<>]+/g;
 
-  const highlighted = jsonString.replace(JSON_TOKEN, (match) => {
+  const highlighted = jsonString?.replace(JSON_TOKEN, (match) => {
     if (/^"/.test(match) && /:$/.test(match)) {
       return `<span class="text-gray-300">${match}</span>`;
     }

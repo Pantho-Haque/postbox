@@ -70,8 +70,8 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
   // };
   return {
     method: parsed.method || "GET",
-    url: parsed.url,
-    headers: JSON.stringify(parsed.header),
+    url: parsed.url || "",
+    headers: JSON.stringify(parsed.header) || "",
     body: JSON.stringify(parsed.data) || "",
   }
 }
