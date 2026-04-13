@@ -1,6 +1,6 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState, useEffect } from "react";
+import { Dispatch, SetStateAction, useState, useEffect, useCallback } from "react";
 import { Package2, Route, ChevronLeft, ChevronRight } from "lucide-react";
 import { CreateModal, EnvModal, Menu } from "@/components";
 import { curlConverter } from "@/utils/curlConverter";
@@ -12,6 +12,8 @@ import {
 import { parseStringToJson } from "@/utils/JsonStringParsing";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useShortcuts } from "@/context/ShortcutKeypressProvider";
+import useKeypress from "@/hooks/useKeypress";
+import { createCurlName, isAlreadyExists } from "@/utils/postboxCollectionModifier";
 
 function EmptyState({
   icon: Icon,
@@ -86,7 +88,7 @@ export default function Selector({
   );
 
   const { shortcuts: { toggleSidebar }, toggle } = useShortcuts();
-  
+
   const [selection, setSelection] = useState<TPostBoxSelectorSelection>({
     collectionName: searchParams.get("c") ?? "",
     curlName: searchParams.get("r") ?? collectionCurlList[searchParams.get("c") ?? ""]?.[0] ?? "",
@@ -97,6 +99,28 @@ export default function Selector({
     router.push(`/postbox?c=${encodeURIComponent(collectionName)}&r=${encodeURIComponent(curlName)}`);
   };
 
+  const createNewRoute = useCallback(() => {
+    if (!selection.collectionName) return;
+
+    let newName = "Untitled";
+    while (isAlreadyExists(collectionCurlList, "route", newName, selection.collectionName)) {
+      newName += " - New";
+    }
+
+    setCollections((prev) =>
+      createCurlName(prev, selection.collectionName, newName, ""),
+    );
+    setSelection({
+      collectionName: selection.collectionName,
+      curlName: newName,
+    });
+  }, [selection, collectionCurlList, setCollections]);
+
+  useKeypress({
+    key: "t",
+    isShift: true,
+    func: createNewRoute
+  })
 
   useEffect(() => {
     if (!selection.curlName) return setSelectorResponse(null);

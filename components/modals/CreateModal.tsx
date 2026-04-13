@@ -14,6 +14,7 @@ import {
 } from "@/utils/postboxCollectionModifier";
 import { ModalInput, ModalShell, ModalActions } from "@/components";
 
+
 export default function CreateModal({
   type,
   selection,
@@ -36,28 +37,28 @@ export default function CreateModal({
 
   const handleCreate = () => {
     if (!value.trim()) return setOpen(false);
-    if (isAlreadyExists(collectionCurlList, type, value, selection.collectionName))
-      return setError(`"${value}" already exists`);
+    let newName = value.trim()
+    if (isAlreadyExists(collectionCurlList, type, newName, selection.collectionName))
+      newName += " - New";
 
     if (type === "collection") {
-      const name = value.trim();
-      setCollections((prev) => createCollectionName(prev, name));
-      setSelection({ collectionName: name, curlName: "" });
+      setCollections((prev) => createCollectionName(prev, newName));
+      setSelection({ collectionName: newName, curlName: "" });
       setSelectorResponse(null);
     } else {
-      const name = value.trim();
       setCollections((prev) =>
-        createCurlName(prev, selection.collectionName, name, curlString),
+        createCurlName(prev, selection.collectionName, newName, curlString),
       );
       setSelection({
         collectionName: selection.collectionName,
-        curlName: name,
+        curlName: newName,
       });
     }
     setValue("");
     setCurlString("");
     setOpen(false);
   };
+
 
   return (
     <>

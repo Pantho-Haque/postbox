@@ -62,13 +62,13 @@ export const renameCurlName = (
 export const isAlreadyExists = (
   collectionCurlList: { [key: string]: string[] },
   type: string,
-  value: string,
+  newName: string,
   collectionName?: string,
 ) => {
   if (type === "collection") {
-    return Object.keys(collectionCurlList).includes(value.trim());
+    return Object.keys(collectionCurlList).includes(newName);
   } else if (collectionCurlList && !!collectionName) {
-    return collectionCurlList[collectionName].includes(value.trim());
+    return collectionCurlList[collectionName].includes(newName);
   }
 };
 
