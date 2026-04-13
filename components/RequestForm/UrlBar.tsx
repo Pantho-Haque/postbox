@@ -1,6 +1,7 @@
 "use client";
 
 import { METHOD_COLORS, POSTBOX_METHODS } from "@/constants";
+import useKeypress from "@/hooks/useKeypress";
 import { TPostBoxCurlJson, TPostBoxEnv, TResponseJson } from "@/types";
 import { jsonToCurl } from "@/utils/curlConverter";
 import { postboxProxy } from "@/utils/postboxProxy";
@@ -70,20 +71,19 @@ export default function UrlBar({
     extensionAvailable,
   ]);
 
-  useEffect(() => {
-    const listener = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-        e.preventDefault();
-        handleSaveCollection();
-      }
-      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-        e.preventDefault();
-        sendProxyRequest();
-      }
-    };
-    window.addEventListener("keydown", listener);
-    return () => window.removeEventListener("keydown", listener);
-  }, [handleSaveCollection, sendProxyRequest]);
+  useKeypress({
+    key: "Enter",
+    isMeta: true,
+    func: sendProxyRequest,
+  });
+
+  useKeypress({
+    key: "s",
+    isMeta: true,
+    func: handleSaveCollection,
+  });
+
+  
 
   return (
     <div

@@ -57,7 +57,7 @@ export const NotificationProvider = ({
         ).map(([position, msgs]) => (
           <div
             key={position}
-            className={`fixed z-50 ${positionClass(
+            className={`fixed z-999 ${positionClass(
               position as TNotificationPosition
             )}`}
             style={{
@@ -81,18 +81,18 @@ export const NotificationProvider = ({
                   }}
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   key={msg.id}
-                  className="rounded-md shadow-lg overflow-hidden transition-all duration-300 transform max-w-[320px]"
+                  className="rounded-md shadow-lg overflow-hidden truncate transition-all duration-300 transform max-w-[320px]"
                 >
                   <div
                     className={`flex items-start p-4 border-l-4 ${modeClass(
                       msg.mode as TNotificationMode
                     )}`}
                   >
-                    <div className="flex-1 ml-3">
-                      <p className="font-medium text-gray-900 dark:text-white">
+                    <div className="flex-1 ml-2">
+                      <p className="font-medium ">
                         {msg.title}
                       </p>
-                      <p className="text-sm text-gray-500 dark:text-white">
+                      <p className="text-sm truncate">
                         {msg.description}
                       </p>
                     </div>
@@ -102,7 +102,7 @@ export const NotificationProvider = ({
                           prev.filter((m) => m.id !== msg.id)
                         )
                       }
-                      className="ml-4 text-gray-400 hover:text-gray-500"
+                      className="ml-4"
                     >
                       ×
                     </button>
@@ -131,14 +131,15 @@ const positionClass = (position: TNotificationPosition) => {
 };
 
 const modeClass = (mode: TNotificationMode) => {
+  const textColor= 'text-zinc-700 dark:text-zinc-200'
   switch (mode) {
     case "info":
-      return "border-l-blue-500 bg-blue-100 dark:bg-blue-300";
+      return textColor + "border-l-blue-500 bg-blue-100 dark:bg-blue-300 ";
     case "success":
-      return "border-l-green-500 bg-green-100 dark:bg-green-400";
+      return textColor + "border-l-green-500 bg-green-100 dark:bg-green-400";
     case "error":
-      return "border-l-red-500 bg-red-100 dark:bg-red-400";
+      return textColor + "border-l-red-500 bg-red-100 dark:bg-red-400";
     default:
-      return "border-l-blue-500 bg-blue-100 dark:bg-blue-300";
+      return textColor + "border-l-blue-500 bg-blue-100 dark:bg-blue-300";
   }
 };

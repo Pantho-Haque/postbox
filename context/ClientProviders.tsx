@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { ShortcutProvider } from "./ShortcutKeypressProvider";
 
 export default function ClientProviders({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -19,7 +20,9 @@ export default function ClientProviders({ children }: { children: React.ReactNod
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <ShortcutProvider>
+        {children}
+      </ShortcutProvider>
     </QueryClientProvider>
   );
 }
