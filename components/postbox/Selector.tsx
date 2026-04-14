@@ -1,6 +1,12 @@
 "use client";
 
-import { Dispatch, SetStateAction, useState, useEffect, useCallback } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import { Package2, Route, ChevronLeft, ChevronRight } from "lucide-react";
 import { CreateModal, EnvModal, Menu } from "@/components";
 import { curlConverter } from "@/utils/curlConverter";
@@ -79,24 +85,57 @@ export default function Selector({
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const collectionCurlList = collections.reduce(
-    (acc, c) => {
-      acc[c.collectionName] = c.curls.map((curl) => curl.name);
-      return acc;
-    },
-    {} as Record<string, string[]>,
+  const collectionCurlList = useMemo(
+    () =>
+      collections.reduce(
+        (acc, c) => {
+          acc[c.collectionName] = c.curls.map((curl) => curl.name);
+          return acc;
+        },
+        {} as Record<string, string[]>,
+      ),
+    [collections],
   );
 
   const { shortcuts: { toggleSidebar }, toggle } = useShortcuts();
 
-  const [selection, setSelection] = useState<TPostBoxSelectorSelection>({
-    collectionName: searchParams.get("c") ?? "",
-    curlName: searchParams.get("r") ?? collectionCurlList[searchParams.get("c") ?? ""]?.[0] ?? "",
-  });
+  const selection = useMemo<TPostBoxSelectorSelection>(() => {
+    const c = searchParams.get("c") ?? "";
+    const defaultRoute = collectionCurlList[c]?.[0] ?? "";
+    const r = searchParams.get("r") ?? defaultRoute;
+    return { collectionName: c, curlName: r };
+  }, [searchParams, collectionCurlList]);
+
+  const setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>> =
+    useCallback(
+      (valueOrUpdater) => {
+        const next =
+          typeof valueOrUpdater === "function"
+            ? valueOrUpdater(selection)
+            : valueOrUpdater;
+
+        const c = next.collectionName ?? "";
+        const r = next.curlName ?? "";
+
+        if (!c) {
+          router.push("/postbox");
+          return;
+        }
+
+        if (!r) {
+          router.push(`/postbox?c=${encodeURIComponent(c)}`);
+          return;
+        }
+
+        router.push(
+          `/postbox?c=${encodeURIComponent(c)}&r=${encodeURIComponent(r)}`,
+        );
+      },
+      [router, selection],
+    );
 
   const handleSelect = (collectionName: string, curlName: string) => {
     setSelection({ collectionName, curlName });
-    router.push(`/postbox?c=${encodeURIComponent(collectionName)}&r=${encodeURIComponent(curlName)}`);
   };
 
   const createNewRoute = useCallback(() => {
@@ -110,17 +149,14 @@ export default function Selector({
     setCollections((prev) =>
       createCurlName(prev, selection.collectionName, newName, ""),
     );
-    setSelection({
-      collectionName: selection.collectionName,
-      curlName: newName,
-    });
-  }, [selection, collectionCurlList, setCollections]);
+    setSelection({ collectionName: selection.collectionName, curlName: newName });
+  }, [selection.collectionName, collectionCurlList, setCollections, setSelection]);
 
   useKeypress({
     key: "t",
     isShift: true,
-    func: createNewRoute
-  })
+    func: createNewRoute,
+  });
 
   useEffect(() => {
     if (!selection.curlName) return setSelectorResponse(null);
@@ -130,7 +166,6 @@ export default function Selector({
     );
     const curl = collection?.curls.find((c) => c.name === selection.curlName);
 
-    router.push(`/postbox?c=${encodeURIComponent(selection.collectionName)}&r=${encodeURIComponent(selection.curlName)}`);
     setSelectorResponse({
       collectionName: selection.collectionName,
       curlName: selection.curlName,
@@ -138,7 +173,7 @@ export default function Selector({
       curlJson: curlConverter(curl?.curl || ""),
       responseJson: parseStringToJson(curl?.response || ""),
     });
-  }, [selection, collections, setSelectorResponse, router]);
+  }, [selection, collections, setSelectorResponse]);
 
 
 

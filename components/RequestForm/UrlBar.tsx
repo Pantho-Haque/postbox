@@ -10,7 +10,6 @@ import {
   Dispatch,
   SetStateAction,
   useCallback,
-  useEffect,
   useState,
 } from "react";
 
@@ -55,7 +54,6 @@ export default function UrlBar({
         resolveEnv(formInput.body, env),
         extensionAvailable,
       );
-      console.log(formInput);
       setProxyResponse(res);
     } catch (err) {
       setProxyResponse({ error: String(err) });
@@ -74,18 +72,18 @@ export default function UrlBar({
 
   function handleUrlPaste(e: React.ClipboardEvent<HTMLInputElement>) {
     const pasted = e.clipboardData.getData("text").trim();
-    setFormInput({ ...formInput, url: pasted })
-  
-    // only intercept if it looks like a curl command
+
     if (!pasted.startsWith("curl ")) return;
-  
+
+    setFormInput({ ...formInput, url: pasted });
+
     e.preventDefault(); // stop it from being typed into the input
     const parsed = curlConverter(pasted);
     setTimeout(() => {
       setFormInput(parsed);
     }, 1000);
   }
-  
+
   useKeypress({
     key: "Enter",
     isMeta: true,
@@ -97,8 +95,6 @@ export default function UrlBar({
     isMeta: true,
     func: handleSaveCollection,
   });
-
-  
 
   return (
     <div
