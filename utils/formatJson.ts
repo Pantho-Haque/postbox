@@ -1,7 +1,20 @@
 import { Dispatch, SetStateAction } from "react";
 
-export const formatJson = (text: string) => {
-  if (!text?.trim()) {
+export const formatJson = (input: unknown) => {
+  if (input === null || input === undefined) {
+    return { output: "", error: null };
+  }
+
+  if (typeof input !== "string") {
+    try {
+      return { output: JSON.stringify(input, null, "\t"), error: null };
+    } catch {
+      return { output: String(input), error: "Unable to stringify JSON value" };
+    }
+  }
+
+  const text = input;
+  if (!text.trim()) {
     return { output: "", error: null };
   }
 
@@ -17,10 +30,10 @@ export const formatJson = (text: string) => {
 };
 
 export const formatWithErrorHandleing = (
-  text: string,
+  input: unknown,
   setError: Dispatch<SetStateAction<string | null>>,
 ) => {
-  const { output, error } = formatJson(text);
+  const { output, error } = formatJson(input);
   if (!!error) {
     setError(error);
   } else {

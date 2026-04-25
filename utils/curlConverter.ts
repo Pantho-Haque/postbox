@@ -1,5 +1,6 @@
 import { TPostBoxCurlJson } from "@/types";
 import parse from "@bany/curl-to-json";
+import { formatJson } from "./formatJson";
 
 export function curlConverter(curlString: string): TPostBoxCurlJson {
 
@@ -46,11 +47,11 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
   return {
     method: parsed.method || "GET",
     url: rawUrlFromCurl || parsed.url || "",
-    params: JSON.stringify(
+    params: formatJson(
       Object.keys(rawParams).length ? rawParams : (parsed.params ?? {}),
-    ),
-    headers: JSON.stringify(parsed.header) || "",
-    body: JSON.stringify(parsed.data) || "",
+    ).output,
+    headers: formatJson(parsed.header ?? {}).output,
+    body: formatJson(parsed.data ?? {}).output,
   }
 }
 
