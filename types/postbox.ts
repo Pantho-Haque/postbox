@@ -23,6 +23,7 @@ export type TPostBoxCurlJson = {
   url: string;
   headers: string;
   body: string;
+  params:string;
 };
 
 export type TPostBoxSelectorSelection = {

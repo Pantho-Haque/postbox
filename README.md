@@ -24,6 +24,15 @@
 
 Postbox is a lightweight, open-source HTTP API client that runs entirely in your browser. It hits the "sweet spot" between simplified online testers and heavy desktop apps like Postman.
 
+### 🆕 What's New (April 2026)
+- **Import/Export Collections** - Share and backup your route configurations
+- **Enhanced cURL Support** - Copy routes as curl, paste curl directly in URL bar, and import from curl
+- **Browser Extension** - Seamless localhost API testing with automatic extension detection
+- **Clickable Response Links** - Navigate URLs directly from responses
+- **New Shortcuts** - `Shift+T` for quick route creation
+- **Info Modal** - Quick reference for all shortcuts and setup guides
+- **URL-based Routing** - Share and select routes via URL parameters
+
 ### Why Postbox?
 - **Zero Install**: Lives in your browser, persistent to `localStorage`.
 - **CORS Bypass**: Integrated server-side proxy eliminates CORS headaches during development.
@@ -35,10 +44,18 @@ Postbox is a lightweight, open-source HTTP API client that runs entirely in your
 ## ✨ Key Features
 
 - **📂 Smart Collections**: Group routes into logical folders. Rename or delete them with the integrated context menu.
+- **🔄 Import/Export**: Export your collections and import them back anytime. Share configurations with your team.
 - **🌐 Environment Variables**: Define `<<KEY>>` placeholders. Perfect for switching between `localhost:3000` and `api.production.com`.
-- **⚡ curl to App**: Paste a raw `curl` command into the URL bar. Postbox instantly parses headers, method, and body.
+- **⚡ curl Integration**: 
+  - Paste a raw `curl` command into the URL bar for instant parsing
+  - Copy any route as a `curl` command with one click
+  - Import routes directly from `curl` commands
+- **🔗 Browser Extension**: Optional extension for seamless localhost API testing with automatic detection.
+- **🖱️ Clickable Links**: Response URLs and links are directly clickable for quick navigation.
 - **🛠 Integrated Proxy**: Optional server-side proxy (`/api/proxy`) to test APIs that don't have permissive CORS headers.
-- **⌨️ Pro Shortcuts**: `Cmd/Ctrl + Enter` to send, `Cmd/Ctrl + S` to save.
+- **⌨️ Pro Shortcuts**: `Cmd/Ctrl + Enter` to send, `Cmd/Ctrl + S` to save, `Shift + T` for new route.
+- **📋 Info Modal**: Quick access to all keyboard shortcuts and extension setup instructions.
+- **🔍 URL-based Routing**: Select and share routes directly via URL parameters.
 - **🛡️ Type Safe**: Built with strict TypeScript for maximum reliability and great developer experience.
 - **🔍 SEO Optimized**: Metadata and sitemaps are ready for public deployment.
 
@@ -111,8 +128,11 @@ One-click deployment to Vercel:
 | :--- | :--- |
 | `Ctrl/Cmd + Enter` | **Send Request** |
 | `Ctrl/Cmd + S` | **Save to Collection** |
+| `Shift + T` | **Create New Untitled Route** |
 | `Esc` | **Close Modal** |
 | `Enter` (in modal) | **Confirm Action** |
+
+> 💡 Press the **Info button** in the app to view the complete list of keybindings and extension instructions.
 
 ---
 
@@ -120,15 +140,21 @@ One-click deployment to Vercel:
 
 - [x] Collections & Route management
 - [x] Environment Variables (`<<VAR>>` syntax)
-- [x] curl command auto-import
+- [x] curl command auto-import & export
+- [x] Copy route as curl command
+- [x] Import/Export collections
 - [x] Server-side CORS Proxy
+- [x] Browser extension for localhost testing
 - [x] Keyboard-driven UI
 - [x] Context Menu (Rename/Delete)
+- [x] Clickable response links
 - [x] SEO & Sitemap support
-- [ ] Collection Import/Export (JSON/OpenAPI)
+- [x] URL-based route selection
+- [x] Info modal with shortcuts
 - [ ] Response History
 - [ ] Auth presets (OAuth2, AWS Signature)
 - [ ] Multi-window layout
+- [ ] OpenAPI/Swagger import
 
 ---
 

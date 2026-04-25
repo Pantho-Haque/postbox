@@ -13,14 +13,14 @@ export default function TabEditor({
   setFormInput: Dispatch<SetStateAction<TPostBoxCurlJson>>;
   setError: Dispatch<SetStateAction<string | null>>;
 }) {
-    const [activeTab, setActiveTab] = useState<"body" | "headers">("body");
+    const [activeTab, setActiveTab] = useState<"params" | "body" | "headers">("body");
   return (
     <div
       className="flex flex-col rounded-lg border border-white/8 bg-[#0a1628]/60 overflow-hidden"
       style={{ minHeight: 240 }}
     >
       <div className="flex items-center border-b border-white/5 bg-[#0e1f35]/50 px-1 pt-1 shrink-0">
-        {(["body", "headers"] as const).map((tab) => (
+        {(["params","body", "headers"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -42,7 +42,7 @@ export default function TabEditor({
         className="flex-1 w-full resize-none bg-transparent p-4 text-[12px] text-white/70 outline-none placeholder-white/15 leading-relaxed"
         style={{ minHeight: 200 }}
         spellCheck={false}
-        value={activeTab === "body" ? formInput.body : formInput.headers}
+        value={formInput[activeTab]}
         placeholder={
           activeTab === "body"
             ? '{\n  "key": "value"\n}'
@@ -50,9 +50,9 @@ export default function TabEditor({
         }
         onChange={(e) => {
           const val = e.target.value;
-          const { error: jsonErr } = formatJson(val);
+          const {output, error: jsonErr } = formatJson(val);
           setError(jsonErr);
-          setFormInput({ ...formInput, [activeTab]: val });
+          setFormInput({ ...formInput, [activeTab]: output });
         }}
       />
     </div>
