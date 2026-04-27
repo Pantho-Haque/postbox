@@ -46,3 +46,16 @@ export function countMatches(value: JsonValue, query: string): number {
   }
   return count;
 }
+
+
+export function modifyUrlForNewParams(url:string , newParams:string):string{
+    const parsedUrl = new URL(url);
+    const searchParams = new URLSearchParams(parsedUrl.search);
+    const newParamsObj = JSON.parse(newParams);
+    Object.keys(newParamsObj).forEach((key) => {
+        searchParams.set(key, newParamsObj[key]);
+    });
+    parsedUrl.search = searchParams.toString();
+    return decodeURIComponent(parsedUrl.toString());
+}
+

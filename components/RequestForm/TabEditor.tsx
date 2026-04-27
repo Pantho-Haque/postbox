@@ -3,6 +3,7 @@
 import { formatJson } from "@/utils/formatJson";
 import { TPostBoxCurlJson } from "@/types";
 import { Dispatch, SetStateAction, useState } from "react";
+import { modifyUrlForNewParams } from "@/utils/responsePanelUtils";
 
 export default function TabEditor({
   formInput,
@@ -56,7 +57,13 @@ export default function TabEditor({
           const val = e.target.value;
           const { output, error: jsonErr } = formatJson(val);
           setError(jsonErr);
-          setFormInput({ ...formInput, [activeTab]: output });
+          if(activeTab == "params")
+          {
+            const newUrl = modifyUrlForNewParams(formInput.url , output);
+            setFormInput((prev) => ({ ...prev, url:newUrl , [activeTab]: output }));
+          }else{
+            setFormInput((prev) => ({ ...prev, [activeTab]: output }));
+          }
         }}
       />
     </div>

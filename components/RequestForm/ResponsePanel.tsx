@@ -2,7 +2,7 @@
 
 import { JsonValue, TResponseJson } from "@/types";
 import { CheckCircle2, AlertCircle, Send, Search } from "lucide-react";
-import { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import {
   MatchCtx,
   FloatingSearch,
@@ -34,13 +34,7 @@ export default function ResponsePanel({
     };
   }, []);
 
-  // useEffect(() => {
-  //   matchEls.current = [];
-  //   setActiveIndex(0);
-  // }, [searchQuery]);
-
   const scrollToMatch = useCallback((idx: number) => {
-    // Small timeout lets React flush the re-render first
     setTimeout(() => {
       const el = matchEls.current[idx];
       if (!el) return;
