@@ -13,8 +13,13 @@ import NoteEditor from "./notes/NoteEditor";
 
 import ResponsePanel from "./RequestForm/ResponsePanel";
 import TabEditor from "./RequestForm/TabEditor";
-import UrlBar from "./RequestForm/UrlBar"
+import UrlBar from "./RequestForm/UrlBar";
 
+import CopyButton from "./RequestForm/ResponsePanelComponents/CopyButton";
+import FloatingSearch from "./RequestForm/ResponsePanelComponents/FloatingSearch";
+import {Highlight,MatchMark} from "./RequestForm/ResponsePanelComponents/Highlight";
+import JsonNode from "./RequestForm/ResponsePanelComponents/JsonNode";
+import {MatchCtx,MatchRegistry} from "./RequestForm/ResponsePanelComponents/MatchContext";
 
 import Selector from "./postbox/Selector";
 import RequestForm from "./postbox/RequestForm";
@@ -41,6 +46,13 @@ export {
     ResponsePanel,
     TabEditor,
     UrlBar,
+
+    CopyButton,
+    FloatingSearch,
+    Highlight,
+    MatchMark,
+    JsonNode,
+    MatchCtx,
     
     
     Selector,
@@ -50,3 +62,4 @@ export {
     Topbar,
     NoExtensionModal
 }
+export type {MatchRegistry}

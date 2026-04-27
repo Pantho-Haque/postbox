@@ -47,3 +47,11 @@ export type TPostBoxSelectorResponse = {
     curlJson: TPostBoxCurlJson;
     responseJson?: TResponseJson;
 };
+
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [k: string]: JsonValue };

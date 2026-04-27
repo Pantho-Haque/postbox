@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { formatJson } from "@/utils/formatJson";
 import { TPostBoxCurlJson } from "@/types";
@@ -13,14 +13,18 @@ export default function TabEditor({
   setFormInput: Dispatch<SetStateAction<TPostBoxCurlJson>>;
   setError: Dispatch<SetStateAction<string | null>>;
 }) {
-    const [activeTab, setActiveTab] = useState<"params" | "body" | "headers">("body");
+
+  const [activeTab, setActiveTab] = useState<"params" | "body" | "headers">(
+    "params",
+  );
+
   return (
     <div
       className="flex flex-col rounded-lg border border-white/8 bg-[#0a1628]/60 overflow-hidden"
       style={{ minHeight: 240 }}
     >
       <div className="flex items-center border-b border-white/5 bg-[#0e1f35]/50 px-1 pt-1 shrink-0">
-        {(["params","body", "headers"] as const).map((tab) => (
+        {(["params", "body", "headers"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -50,7 +54,7 @@ export default function TabEditor({
         }
         onChange={(e) => {
           const val = e.target.value;
-          const {output, error: jsonErr } = formatJson(val);
+          const { output, error: jsonErr } = formatJson(val);
           setError(jsonErr);
           setFormInput({ ...formInput, [activeTab]: output });
         }}
