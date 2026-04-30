@@ -1,58 +1,61 @@
 import { TPostBoxCurlJson } from "@/types";
-import parse from "@bany/curl-to-json";
+import parse, { ResultJSON } from "@bany/curl-to-json";
 import { formatJson } from "./formatJson";
 
 export function curlConverter(curlString: string): TPostBoxCurlJson {
+  if (!curlString) return { method: "GET", url: "", params: "{}", headers: "{}", body: "{}" };
 
-  const parsed =curlString?  parse(curlString): {
-    method: "GET",
-    url: "",
-    params:{},
-    header: {},
-    data: {},
+  // 1. REGEX to extract the URL before the parser breaks
+  // This looks for anything after 'curl', '-X GET', etc., that looks like a URL/Placeholder
+  const urlRegex = /(?:https?:\/\/|<<)[^\s"']+/;
+  const rawUrlFromCurl = curlString.match(urlRegex)?.[0] || "";
+
+  // 2. SHIELD the entire curl string 
+  // Replace <<var>> with a safe word so the Parser doesn't crash
+  const shieldedCurl = curlString.replace(/<<(\w+)>>/g, 'PH_$1_PH');
+
+  let parsed: ResultJSON;
+  try {
+    // We parse the shielded version
+    parsed = parse(shieldedCurl);
+  } catch {
+    // Fallback if the parser still hates the string
+    parsed = { url: rawUrlFromCurl, origin: rawUrlFromCurl, method: "GET", header: {}, data: {} };
+  }
+
+  // 3. Helper to swap "PH_var_PH" back to "<<var>>"
+  const unshield = (val: string): string => {
+    return val.replace(/PH_(\w+)_PH/g, '<<$1>>');
   };
-  // Keep URL exactly as written in curl input to avoid
-  // any query re-encoding (e.g. "+" -> "%2B", ":" -> "%3A").
-  const rawUrlFromCurl =
-    curlString.match(/https?:\/\/[^\s"'\\]+/)?.[0] ||
-    curlString.match(/(['"])(https?:\/\/.*?)(\1)/)?.[2] ||
-    "";
 
-  const extractRawParams = (url: string): Record<string, string | string[]> => {
-    const query = url.split("?")[1]?.split("#")[0] || "";
-    if (!query) return {};
-
-    return query.split("&").reduce<Record<string, string | string[]>>((acc, pair) => {
-      if (!pair) return acc;
-      const [rawKey, ...rawValueParts] = pair.split("=");
-      if (!rawKey) return acc;
-
-      const rawValue = rawValueParts.join("=");
-      const existing = acc[rawKey];
-
-      if (existing === undefined) {
-        acc[rawKey] = rawValue;
-      } else if (Array.isArray(existing)) {
-        existing.push(rawValue);
-      } else {
-        acc[rawKey] = [existing, rawValue];
-      }
-
+  // 4. Manual Query Parameter Extraction (to avoid URL encoding issues)
+  const extractParams = (url: string) => {
+    const queryPart = url.split('?')[1];
+    if (!queryPart) return {};
+    
+    return queryPart.split('&').reduce((acc: Record<string, string>, pair: string) => {
+      const [k, v] = pair.split('=');
+      if (k) acc[unshield(k)] = unshield(v || "");
       return acc;
     }, {});
   };
 
-  const rawParams = extractRawParams(rawUrlFromCurl || parsed.url || "");
+  // 5. Clean up Headers and Body
+  const cleanObj = (obj: Record<string, string>) => {
+    const newObj: Record<string, string> = {};
+    Object.entries(obj || {}).forEach(([k, v]) => {
+      newObj[unshield(k)] = unshield(v);
+    });
+    return newObj;
+  };
 
   return {
     method: parsed.method || "GET",
-    url: rawUrlFromCurl || parsed.url || "",
-    params: formatJson(
-      Object.keys(rawParams).length ? rawParams : (parsed.params ?? {}),
-    ).output,
-    headers: formatJson(parsed.header ?? {}).output,
-    body: formatJson(parsed.data ?? {}).output,
-  }
+    url: rawUrlFromCurl, // Use the raw one we grabbed at the start
+    params: formatJson(extractParams(rawUrlFromCurl)).output,
+    headers: formatJson(cleanObj(parsed.header as Record<string, string>)).output,
+    body: formatJson(cleanObj(parsed.data)).output,
+  };
 }
 
 

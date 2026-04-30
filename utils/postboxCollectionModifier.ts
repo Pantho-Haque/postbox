@@ -1,4 +1,4 @@
-import { TPostBoxCollections } from "@/types";
+import { TPostBoxCollections, TPostBoxCurlJson, TPostBoxEnv } from "@/types";
 
 export const createCollectionName = (
   prev: TPostBoxCollections,
@@ -130,3 +130,19 @@ export const updateEnv = (
     return collection;
   });
 };
+
+
+export function resolveEnv(formInput: TPostBoxCurlJson, env?: TPostBoxEnv): TPostBoxCurlJson {
+  if (!env) return formInput;
+  const newFormInput: TPostBoxCurlJson = { ...formInput };
+  Object.entries(newFormInput).forEach(([key, val]) => {
+    if (typeof val === 'string') {
+      newFormInput[key as keyof TPostBoxCurlJson] = val.replace(
+        /<<(\w+)>>/g, 
+        (_, envKey) => env[envKey] ?? `<<${envKey}>>`
+      );
+    }
+  });
+
+  return newFormInput;
+}

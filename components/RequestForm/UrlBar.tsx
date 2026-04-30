@@ -48,10 +48,8 @@ export default function UrlBar({
     setProxyResponse(null);
     try {
       const res = await postboxProxy(
-        resolveEnv(formInput.url, env),
-        formInput.method,
-        resolveEnv(formInput.headers, env),
-        resolveEnv(formInput.body, env),
+        formInput,
+        env,
         extensionAvailable,
       );
       setProxyResponse(res);
@@ -62,10 +60,7 @@ export default function UrlBar({
     }
   }, [
     setProxyResponse,
-    formInput.url,
-    formInput.method,
-    formInput.headers,
-    formInput.body,
+    formInput,
     env,
     extensionAvailable,
   ]);
@@ -186,9 +181,4 @@ export default function UrlBar({
       </div>
     </div>
   );
-}
-
-function resolveEnv(text: string, env?: TPostBoxEnv): string {
-  if (!env) return text;
-  return text.replace(/<<(\w+)>>/g, (_, key) => env[key] ?? `<<${key}>>`);
 }

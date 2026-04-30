@@ -60,7 +60,7 @@ export default function ResponsePanel({
     key: "f",
     isMeta: true,
     func: () => {
-      setSearchOpen(true);
+      setSearchOpen(o => !o);
     },
   });
 

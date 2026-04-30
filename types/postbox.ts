@@ -38,6 +38,7 @@ export type TResponseJson = {
     ok?: boolean;
     headers?: unknown;
     error?: string;
+    cookies?: unknown;
 } | null;
 
 export type TPostBoxSelectorResponse = {

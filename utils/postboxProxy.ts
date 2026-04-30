@@ -1,3 +1,6 @@
+import { TPostBoxCurlJson, TPostBoxEnv } from "@/types";
+import { resolveEnv } from "./postboxCollectionModifier";
+
 const LOCAL_HOSTNAMES = ["localhost", "127.0.0.1", "0.0.0.0"];
 
 function isLocalUrl(url: string): boolean {
@@ -56,12 +59,12 @@ async function fetchViaProxy(
 }
 
 export async function postboxProxy(
-  url: string,
-  method: string,
-  headers: string,
-  body: string,
+  formInput: TPostBoxCurlJson,
+  env: TPostBoxEnv | undefined,
   extensionAvailable: boolean,
 ) {
+  const {url, method, headers, body} = resolveEnv(formInput, env);
+  
   const isLocal = isLocalUrl(url);
   if (isLocal && extensionAvailable) {
     return fetchViaExtension(url, method, JSON.parse(headers), body);
@@ -73,3 +76,4 @@ export async function postboxProxy(
 
   return fetchViaProxy(url, method, headers, body);
 }
+
