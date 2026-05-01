@@ -1,6 +1,6 @@
 // background.js
 chrome.runtime.onMessage.addListener((message, _, sendResponse) => {
-  if (message.type !== "POSTBOX_REQUEST") return;
+  if (message.type !== "HITTABLE_REQUEST") return;
 
   const { url, method, headers, body } = message.payload;
   const upperMethod = method.toUpperCase();

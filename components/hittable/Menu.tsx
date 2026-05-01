@@ -2,7 +2,7 @@
 
 import { Dispatch, SetStateAction, useState, useEffect, useRef } from "react";
 import { EllipsisVertical } from "lucide-react";
-import { TPostBoxCollections, TPostBoxSelectorSelection } from "@/types";
+import { THittableCollections, THittableSelectorSelection } from "@/types";
 import { DeleteModal, ExportModal, RenameModal } from "@/components";
 
 export default function Menu({
@@ -19,8 +19,8 @@ export default function Menu({
   currentName: string;
   collectionName?: string;
   exportString?: string;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
+  setCollections: Dispatch<SetStateAction<THittableCollections>>;
+  setSelection: Dispatch<SetStateAction<THittableSelectorSelection>>;
 }) {
   const [open, setOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);

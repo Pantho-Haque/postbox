@@ -128,7 +128,7 @@ function EmptyState() {
 
         <div>
           <p className="text-[10px] tracking-[0.3em] uppercase text-cyan-500/60 mb-2">
-            Postbox
+            Hittable
           </p>
           <h2 className="text-xl font-bold text-white/80 mb-2">
             {hasCollections ? "Select a route" : "No collections yet"}

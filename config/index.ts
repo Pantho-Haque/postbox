@@ -6,6 +6,6 @@ const config = {
 };
 
 export const EXTENSION_URL =
-  "https://github.com/Pantho-Haque/postbox/releases/latest/download/postbox-extension.zip";
+  "https://github.com/Pantho-Haque/hittable/releases/latest/download/hittable-extension.zip";
 
 export default config;

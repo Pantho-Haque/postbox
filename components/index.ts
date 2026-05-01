@@ -21,11 +21,11 @@ import {Highlight,MatchMark} from "./RequestForm/ResponsePanelComponents/Highlig
 import JsonNode from "./RequestForm/ResponsePanelComponents/JsonNode";
 import {MatchCtx,MatchRegistry} from "./RequestForm/ResponsePanelComponents/MatchContext";
 
-import Selector from "./postbox/Selector";
-import RequestForm from "./postbox/RequestForm";
+import Selector from "./hittable/Selector";
+import RequestForm from "./hittable/RequestForm";
 import NoExtensionModal from "./modals/NoExtensionModal";
-import SyntaxHighlighter from "./postbox/SyntaxHighlighter";
-import Menu from "./postbox/Menu";
+import SyntaxHighlighter from "./hittable/SyntaxHighlighter";
+import Menu from "./hittable/Menu";
 import Topbar from "./TopBar";
 export * from "./ui/SharedModal";
 

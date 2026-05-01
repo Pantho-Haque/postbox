@@ -49,7 +49,7 @@ export function ModalShell({
 
         <div>
           <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/60 mb-1">
-            Postbox
+            Hittable
           </p>
           <h2 className="text-sm font-bold text-white/90">{title}</h2>
           {subtitle && (

@@ -1,6 +1,6 @@
-import { TPostBoxCollections } from "@/types";
+import { THittableCollections } from "@/types";
 
-export const POSTBOX_METHODS = [
+export const HITTABLE_METHODS = [
   "GET",
   "POST",
   "PUT",
@@ -20,7 +20,7 @@ export const METHOD_COLORS: Record<string, string> = {
   OPTIONS: "#94a3b8",
 };
 
-export const collections: TPostBoxCollections = [
+export const collections: THittableCollections = [
   {
     collectionName: "JSONPlaceholder Lab",
     curls: [

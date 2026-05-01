@@ -1,6 +1,6 @@
 {
-  "name": "Postbox",
-  "short_name": "Postbox",
+  "name": "Hittable",
+  "short_name": "Hittable",
   "description": "Premium API Testing Client for Developers",
   "start_url": "/",
   "display": "standalone",

@@ -4,7 +4,7 @@ import { Import } from "lucide-react";
 import { useState } from "react";
 import { ModalShell, ModalActions } from "@/components";
 import { decompressString } from "@/utils/compressString";
-import { TPostBoxCollection } from "@/types";
+import { THittableCollection } from "@/types";
 import { useDataContext } from "@/context/dataContext";
 
 export default function ImportModal() {
@@ -16,7 +16,7 @@ export default function ImportModal() {
 
   const importCollection = () => {
     const decompressed = decompressString(compressedString);
-    const parsed = JSON.parse(decompressed) as TPostBoxCollection;
+    const parsed = JSON.parse(decompressed) as THittableCollection;
     let importedCollectionName = parsed.collectionName;
     importedCollectionName = collections.map((collection) => collection.collectionName).includes(importedCollectionName) 
         ? `${importedCollectionName} - New` 

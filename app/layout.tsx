@@ -16,9 +16,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Postbox | API Testing Client for Developers",
+  title: "Hittable | API Testing Client for Developers",
   description: "A professional, minimalist, and keyboard-driven API testing client. Import curl, manage collections, and test endpoints without the bloat. The modern alternative to Postman and Insomnia.",
-  keywords: ["Postbox", "API Client", "API Testing Tool", "Postman Alternative", "Insomnia Alternative", "HTTP Client", "CORS-free API test", "Software Development Tool"],
+  keywords: ["Hittable", "API Client", "API Testing Tool", "Postman Alternative", "Insomnia Alternative", "HTTP Client", "CORS-free API test", "Software Development Tool"],
   authors: [{ name: "Pantho Haque", url: "https://panthohaque.vercel.app" }],
   creator: "Pantho Haque",
   publisher: "Pantho Haque",
@@ -27,22 +27,22 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://postbox-pantho.vercel.app'),
+  metadataBase: new URL('https://hittable-pantho.vercel.app'),
   alternates: {
     canonical: '/',
   },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'Postbox | API Testing Client for Developers',
+    title: 'Hittable | API Testing Client for Developers',
     description: 'Minimalist, keyboard-driven API testing client for modern developers.',
-    url: 'https://postbox-pantho.vercel.app/',
-    siteName: 'Postbox',
+    url: 'https://hittable-pantho.vercel.app/',
+    siteName: 'Hittable',
     images: [
       {
         url: '/assets/images/logo.png', // Ideally a PNG/JPG for better social sharing, but using logo for now
         width: 1200,
         height: 630,
-        alt: 'Postbox Logo',
+        alt: 'Hittable Logo',
       },
     ],
     locale: 'en_US',
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Postbox | API Testing Client for Developers',
+    title: 'Hittable | API Testing Client for Developers',
     description: 'Minimalist, keyboard-driven API testing client for modern developers.',
     creator: '@xxxxx', // Assuming this is the handle
     images: ['/assets/images/logo.png'],
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'Postbox',
+  name: 'Hittable',
   operatingSystem: 'Web',
   applicationCategory: 'DeveloperApplication',
   offers: {
@@ -85,7 +85,7 @@ const jsonLd = {
     url: 'https://panthohaque.vercel.app',
   },
   description: 'A professional, minimalist, and keyboard-driven API testing client. The modern alternative to Postman and Insomnia.',
-  screenshot: 'https://postbox-pantho.vercel.app/assets/images/logo.svg',
+  screenshot: 'https://hittable-pantho.vercel.app/assets/images/logo.svg',
   softwareVersion: '1.0.0',
 };
 

@@ -8,11 +8,11 @@ import {
   useEffect,
   useState,
 } from "react";
-import { TPostBoxCollections, TPostBoxSelectorSelection } from "@/types";
+import { THittableCollections, THittableSelectorSelection } from "@/types";
 import {
   deleteCollectionName,
   deleteCurlName,
-} from "@/utils/postboxCollectionModifier";
+} from "@/utils/hittableCollectionModifier";
 import { ModalActions, ModalShell } from "@/components";
 
 export default function DeleteModal({
@@ -25,8 +25,8 @@ export default function DeleteModal({
   currentName: string;
   type: "collection" | "route";
   collectionName?: string;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
+  setCollections: Dispatch<SetStateAction<THittableCollections>>;
+  setSelection: Dispatch<SetStateAction<THittableSelectorSelection>>;
 }) {
   const [open, setOpen] = useState(false);
 

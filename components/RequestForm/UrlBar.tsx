@@ -1,9 +1,9 @@
 "use client";
 
-import { METHOD_COLORS, POSTBOX_METHODS } from "@/constants";
+import { METHOD_COLORS, HITTABLE_METHODS } from "@/constants";
 import useKeypress from "@/hooks/useKeypress";
 import { curlConverter, jsonToCurl } from "@/utils/curlConverter";
-import { postboxProxy } from "@/utils/postboxProxy";
+import { hittableProxy } from "@/utils/hittableProxy";
 import { getParamsfromUrl } from "@/utils/responsePanelUtils";
 import { CheckCircle2, Code2, Loader2, Save, Send } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -36,7 +36,7 @@ export default function UrlBar({
     setProxyLoading(true);
     setProxyResponse(null);
     try {
-      const res = await postboxProxy(
+      const res = await hittableProxy(
         formInput,
         env,
         extensionAvailable,
@@ -109,7 +109,7 @@ export default function UrlBar({
         value={formInput.method}
         onChange={(e) => setFormInput({ ...formInput, method: e.target.value })}
       >
-        {POSTBOX_METHODS.map((m) => (
+        {HITTABLE_METHODS.map((m) => (
           <option key={m} value={m}>
             {m}
           </option>

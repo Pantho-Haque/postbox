@@ -4,7 +4,7 @@ import { Upload } from "lucide-react";
 import { useCallback, useState } from "react";
 import { ModalShell, ModalActions } from "@/components";
 import { compressString } from "@/utils/compressString";
-import { TPostBoxCurl } from "@/types";
+import { THittableCurl } from "@/types";
 
 export default function ExportModal({
   exportString,
@@ -19,7 +19,7 @@ export default function ExportModal({
     const parsed = JSON.parse(exportString);
     const stripped = {
       ...parsed,
-      curls: parsed.curls?.map((c: TPostBoxCurl) => ({ ...c, response: "" })),
+      curls: parsed.curls?.map((c: THittableCurl) => ({ ...c, response: "" })),
     };
     return compressString(JSON.stringify(stripped));
   }, [exportString]);

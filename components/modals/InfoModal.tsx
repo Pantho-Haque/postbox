@@ -44,7 +44,7 @@ export default function InfoModal() {
 
       {open && (
         <ModalShell
-          title="Postbox Info"
+          title="Hittable Info"
           subtitle=""
           onClose={() => setOpen(false)}
           size="md"
@@ -102,7 +102,7 @@ function LocalExtension() {
   return (
     <div className="flex flex-col gap-3">
       <p className="text-white/30 leading-relaxed">
-        To send requests to your local servers, install the Postbox browser
+        To send requests to your local servers, install the Hittable browser
         extension.
       </p>
       <ol className="flex flex-col gap-1.5 text-white/30">
@@ -119,7 +119,7 @@ function LocalExtension() {
         ))}
       </ol>
       <a
-        href="https://github.com/pantho-haque/postbox-extension/releases/latest/download/postbox-extension.zip"
+        href="https://github.com/pantho-haque/hittable-extension/releases/latest/download/hittable-extension.zip"
         target="_blank"
         rel="noreferrer"
         className="flex items-center justify-center gap-2 rounded-md border border-cyan-500/20 bg-cyan-500/5 px-3 py-1.5 text-[10px] font-semibold text-cyan-400 transition-colors hover:bg-cyan-500/10"

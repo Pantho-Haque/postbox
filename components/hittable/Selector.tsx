@@ -11,13 +11,13 @@ import { Package2, Route, ChevronLeft, ChevronRight } from "lucide-react";
 import { CreateModal, EnvModal, Menu } from "@/components";
 import { curlConverter } from "@/utils/curlConverter";
 import {
-  TPostBoxSelectorSelection,
+  THittableSelectorSelection,
 } from "@/types";
 import { parseStringToJson } from "@/utils/JsonStringParsing";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useShortcuts } from "@/context/ShortcutKeypressProvider";
 import useKeypress from "@/hooks/useKeypress";
-import { createCurlName, isAlreadyExists } from "@/utils/postboxCollectionModifier";
+import { createCurlName, isAlreadyExists } from "@/utils/hittableCollectionModifier";
 import { useDataContext } from "@/context/dataContext";
 
 function EmptyState({
@@ -91,14 +91,14 @@ export default function Selector() {
 
   const { shortcuts: { toggleSidebar }, toggle } = useShortcuts();
 
-  const selection = useMemo<TPostBoxSelectorSelection>(() => {
+  const selection = useMemo<THittableSelectorSelection>(() => {
     const c = searchParams.get("c") ?? "";
     const defaultRoute = collectionCurlList[c]?.[0] ?? "";
     const r = searchParams.get("r") ?? defaultRoute;
     return { collectionName: c, curlName: r };
   }, [searchParams, collectionCurlList]);
 
-  const setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>> =
+  const setSelection: Dispatch<SetStateAction<THittableSelectorSelection>> =
     useCallback(
       (valueOrUpdater) => {
         const next =
@@ -110,17 +110,17 @@ export default function Selector() {
         const r = next.curlName ?? "";
 
         if (!c) {
-          router.push("/postbox");
+          router.push("/hittable");
           return;
         }
 
         if (!r) {
-          router.push(`/postbox?c=${encodeURIComponent(c)}`);
+          router.push(`/hittable?c=${encodeURIComponent(c)}`);
           return;
         }
 
         router.push(
-          `/postbox?c=${encodeURIComponent(c)}&r=${encodeURIComponent(r)}`,
+          `/hittable?c=${encodeURIComponent(c)}&r=${encodeURIComponent(r)}`,
         );
       },
       [router, selection],

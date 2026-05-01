@@ -4,18 +4,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 export default function Topbar() {
   const pathname = usePathname();
-  const isApp = pathname === "/postbox";
+  const isApp = pathname === "/hittable";
 
   return (
     <header className="relative z-50 flex items-center justify-between px-6 h-11 border-b border-white/5 bg-[#060d18]/90 backdrop-blur-md shrink-0">
       {/* Left — logo + breadcrumb */}
       <div className="flex items-center gap-3">
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-6 h-6 rounded border border-cyan-500/30 bg-cyan-500/10 flex items-center justify-center transition-all group-hover:border-cyan-400/60 group-hover:bg-cyan-500/20">
-            <span className="text-cyan-400 text-[11px] font-black">P</span>
+        <Link href="/" className="flex items-center gap-3 group outline-none">
+          <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-b from-zinc-800 to-zinc-900 border border-white/10 shadow-[0_2px_10px_rgba(0,0,0,0.4)] transition-all duration-300 group-hover:shadow-[0_4px_16px_rgba(255,255,255,0.1)] group-hover:border-white/20">
+            <div className="absolute inset-0 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-100 transition-transform duration-300 group-hover:scale-110">
+              <path d="M10 3L6 21M18 3l-4 18M4 12h16" />
+            </svg>
           </div>
           <span className="text-[11px] font-bold tracking-[0.18em] uppercase text-white/50 group-hover:text-white/80 transition-colors">
-            Postbox
+            Hittable
           </span>
         </Link>
 
@@ -37,7 +40,7 @@ export default function Topbar() {
             { label: "Shortcuts", href: "/#shortcuts" },
             {
               label: "GitHub",
-              href: "https://github.com/Pantho-Haque/postbox",
+              href: "https://github.com/Pantho-Haque/hittable",
               external: true,
             },
           ].map((item) => (
@@ -62,7 +65,7 @@ export default function Topbar() {
           </>
         ) : (
           <Link
-            href="/postbox"
+            href="/hittable"
             className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] font-bold tracking-[0.15em] uppercase rounded text-black transition-all hover:scale-105 active:scale-95"
             style={{
               background: "#00e5cc",

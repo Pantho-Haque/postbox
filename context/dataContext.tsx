@@ -9,28 +9,28 @@ import {
   useCallback,
 } from "react";
 import {
-  TPostBoxCollections,
-  TPostBoxCurlJson,
-  TPostBoxSelectorResponse,
+  THittableCollections,
+  THittableCurlJson,
+  THittableSelectorResponse,
   TResponseJson,
 } from "@/types";
-import { GetPostboxCollections } from "@/services";
+import { GetHittableCollections } from "@/services";
 import { useExtension } from "@/hooks/useExtension";
 import { formatJson } from "@/utils/formatJson";
 import { jsonToCurl } from "@/utils/curlConverter";
-import { updateCurl } from "@/utils/postboxCollectionModifier";
+import { updateCurl } from "@/utils/hittableCollectionModifier";
 
 const DataContext = createContext<{
-  collections: TPostBoxCollections;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  selectorResponse: TPostBoxSelectorResponse | null;
+  collections: THittableCollections;
+  setCollections: Dispatch<SetStateAction<THittableCollections>>;
+  selectorResponse: THittableSelectorResponse | null;
   setSelectorResponse: Dispatch<
-    SetStateAction<TPostBoxSelectorResponse | null>
+    SetStateAction<THittableSelectorResponse | null>
   >;
   hasCollections: boolean;
 
-  formInput: TPostBoxCurlJson;
-  setFormInput: Dispatch<SetStateAction<TPostBoxCurlJson>>;
+  formInput: THittableCurlJson;
+  setFormInput: Dispatch<SetStateAction<THittableCurlJson>>;
   proxyResponse: TResponseJson;
   setProxyResponse: Dispatch<SetStateAction<TResponseJson>>;
   isUnsaved: () => boolean;
@@ -44,13 +44,13 @@ const DataContext = createContext<{
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const { available: extensionAvailable, checked: extensionChecked } =
     useExtension();
-  const [collections, setCollections] = useState<TPostBoxCollections>(
-    GetPostboxCollections(),
+  const [collections, setCollections] = useState<THittableCollections>(
+    GetHittableCollections(),
   );
   const [selectorResponse, setSelectorResponse] =
-    useState<TPostBoxSelectorResponse | null>(null);
+    useState<THittableSelectorResponse | null>(null);
 
-  const [formInput, setFormInput] = useState<TPostBoxCurlJson>({
+  const [formInput, setFormInput] = useState<THittableCurlJson>({
     url: selectorResponse?.curlJson?.url ?? "",
     method: selectorResponse?.curlJson?.method ?? "GET",
     headers: formatJson(selectorResponse?.curlJson?.headers ?? "").output,
@@ -80,7 +80,7 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
     }, [selectorResponse, formInput, proxyResponse]);
 
   useEffect(() => {
-    localStorage.setItem("postbox", JSON.stringify(collections));
+    localStorage.setItem("hittable", JSON.stringify(collections));
   }, [collections]);
 
   const hasCollections = collections.length > 0;

@@ -3,14 +3,14 @@
 import { Pencil } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import {
-  TPostBoxCollections,
-  TPostBoxSelectorSelection,
+  THittableCollections,
+  THittableSelectorSelection,
 } from "@/types";
 import {
   isAlreadyExists,
   renameCollectionName,
   renameCurlName,
-} from "@/utils/postboxCollectionModifier";
+} from "@/utils/hittableCollectionModifier";
 import { ModalInput, ModalShell, ModalActions } from "@/components";
 
 
@@ -26,8 +26,8 @@ export default function RenameModal({
   type: "collection" | "route";
   collectionCurlList: { [key: string]: string[] };
   collectionName?: string;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelection: Dispatch<SetStateAction<TPostBoxSelectorSelection>>;
+  setCollections: Dispatch<SetStateAction<THittableCollections>>;
+  setSelection: Dispatch<SetStateAction<THittableSelectorSelection>>;
 }) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(currentName);

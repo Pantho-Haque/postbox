@@ -2,7 +2,7 @@
 import { Suspense } from "react";
 import { RequestForm, Selector, ImportModal, InfoModal, NoteModal } from "@/components";
 
-export default function Postbox() {
+export default function Hittable() {
   return (
     <div className="h-[calc(100vh-44px)] w-full flex bg-[#080f1a] overflow-hidden font-mono">
       {/* Ambient background glow */}

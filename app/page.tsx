@@ -39,7 +39,7 @@ function TerminalDemo() {
         <span className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
         <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
         <span className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
-        <span className="ml-3 text-[10px] tracking-widest uppercase text-white/20">postbox · shop / create-user</span>
+        <span className="ml-3 text-[10px] tracking-widest uppercase text-white/20">hittable · shop / create-user</span>
       </div>
       <div className="p-5 flex flex-col gap-1.5 min-h-[220px]">
         {DEMO_LINES.map((line, i) => (
@@ -159,28 +159,28 @@ export default function HomePage() {
               <span className="text-[10px] tracking-[0.25em] uppercase text-cyan-400/80">Open Source · MIT License</span>
             </div>
             <h1 className="text-5xl lg:text-6xl font-black leading-[1.05] tracking-tight">
-              <span className="text-white">Postbox: API testing,</span>
+              <span className="text-white">Hittable: API testing,</span>
               <br />
               <span style={{ color: "#00e5cc" }}>without</span>
               <br />
               <span className="text-white">the bloat.</span>
             </h1>
             <p className="text-sm text-white/40 leading-relaxed max-w-md">
-              Postbox is a keyboard-driven HTTP client that lives in your browser. Collections, environment variables, curl import, and a server-side proxy — everything you need, nothing you don&apos;t.
+              Hittable is a keyboard-driven HTTP client that lives in your browser. Collections, environment variables, curl import, and a server-side proxy — everything you need, nothing you don&apos;t.
             </p>
             <div className="flex items-center gap-3 flex-wrap">
               <Link
-                href="/postbox"
+                href="/hittable"
                 className="flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase rounded-lg text-black transition-all hover:scale-105 active:scale-95"
                 style={{ background: "#00e5cc", boxShadow: "0 0 24px rgba(0,229,204,0.4)" }}
               >
-                Launch Postbox
+                Launch Hittable
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M5 12h14M12 5l7 7-7 7" />
                 </svg>
               </Link>
               <a
-                href="https://github.com/Pantho-Haque/postbox"
+                href="https://github.com/Pantho-Haque/hittable"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase rounded-lg border border-white/10 text-white/50 hover:border-white/20 hover:text-white/80 transition-all"
@@ -301,11 +301,11 @@ export default function HomePage() {
               <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/60">Open Source</p>
               <h2 className="text-3xl font-black text-white/90">Built in public. Free forever.</h2>
               <p className="text-sm text-white/35 max-w-md leading-relaxed">
-                Postbox is MIT licensed. Fork it, modify it, self-host it. PRs welcome — check the roadmap for what&apos;s next.
+                Hittable is MIT licensed. Fork it, modify it, self-host it. PRs welcome — check the roadmap for what&apos;s next.
               </p>
               <div className="flex items-center gap-3 flex-wrap justify-center">
                 <a
-                  href="https://github.com/Pantho-Haque/postbox"
+                  href="https://github.com/Pantho-Haque/hittable"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase rounded-lg border border-white/15 text-white/60 hover:border-cyan-500/30 hover:text-cyan-400 transition-all"
@@ -316,11 +316,11 @@ export default function HomePage() {
                   View on GitHub
                 </a>
                 <Link
-                  href="/postbox"
+                  href="/hittable"
                   className="flex items-center gap-2 px-6 py-3 text-xs font-bold tracking-widest uppercase rounded-lg text-black transition-all hover:scale-105"
                   style={{ background: "#00e5cc", boxShadow: "0 0 20px rgba(0,229,204,0.35)" }}
                 >
-                  Try Postbox Now
+                  Try Hittable Now
                 </Link>
               </div>
             </div>
@@ -343,7 +343,7 @@ export default function HomePage() {
               <p className="text-[9px] tracking-[0.3em] uppercase text-cyan-500/50">Built by</p>
               <h3 className="text-base font-black text-white/85 tracking-wide">Pantho Haque</h3>
               <p className="text-xs text-white/30 leading-relaxed max-w-sm">
-                Full-stack developer passionate about clean tooling and great DX. Postbox was built out of frustration with bloated API clients.
+                Full-stack developer passionate about clean tooling and great DX. Hittable was built out of frustration with bloated API clients.
               </p>
             </div>
 
@@ -375,7 +375,7 @@ export default function HomePage() {
             <div className="w-6 h-6 rounded border border-cyan-500/25 bg-cyan-500/8 flex items-center justify-center">
               <span className="text-cyan-400 text-[10px] font-bold">P</span>
             </div>
-            <span className="text-[11px] text-white/25">Postbox · MIT License</span>
+            <span className="text-[11px] text-white/25">Hittable · MIT License</span>
           </div>
           <div className="flex items-center gap-5">
             <a href="https://panthohaque.vercel.app" target="_blank" rel="noopener noreferrer"
@@ -384,7 +384,7 @@ export default function HomePage() {
               className="text-[11px] text-white/25 hover:text-cyan-400 transition-colors">GitHub</a>
             <a href="https://www.linkedin.com/in/panthohaque/" target="_blank" rel="noopener noreferrer"
               className="text-[11px] text-white/25 hover:text-cyan-400 transition-colors">LinkedIn</a>
-            <Link href="/postbox" className="text-[11px] text-white/25 hover:text-cyan-400 transition-colors">App</Link>
+            <Link href="/hittable" className="text-[11px] text-white/25 hover:text-cyan-400 transition-colors">App</Link>
           </div>
         </footer>
 

@@ -3,15 +3,15 @@
 import { Plus } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import {
-  TPostBoxCollections,
-  TPostBoxSelectorResponse,
-  TPostBoxSelectorSelection,
+  THittableCollections,
+  THittableSelectorResponse,
+  THittableSelectorSelection,
 } from "@/types";
 import {
   createCollectionName,
   createCurlName,
   isAlreadyExists,
-} from "@/utils/postboxCollectionModifier";
+} from "@/utils/hittableCollectionModifier";
 import { ModalInput, ModalShell, ModalActions } from "@/components";
 
 
@@ -24,10 +24,10 @@ export default function CreateModal({
   collectionCurlList,
 }: {
   type: "collection" | "route";
-  selection: TPostBoxSelectorSelection;
-  setSelection: (value: TPostBoxSelectorSelection) => void;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectorResponse: Dispatch<SetStateAction<TPostBoxSelectorResponse | null>>;
+  selection: THittableSelectorSelection;
+  setSelection: (value: THittableSelectorSelection) => void;
+  setCollections: Dispatch<SetStateAction<THittableCollections>>;
+  setSelectorResponse: Dispatch<SetStateAction<THittableSelectorResponse | null>>;
   collectionCurlList: { [key: string]: string[] };
 }) {
   const [open, setOpen] = useState(false);

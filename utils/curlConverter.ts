@@ -1,8 +1,8 @@
-import { TPostBoxCurlJson } from "@/types";
+import { THittableCurlJson } from "@/types";
 import parse, { ResultJSON } from "@bany/curl-to-json";
 import { formatJson } from "./formatJson";
 
-export function curlConverter(curlString: string): TPostBoxCurlJson {
+export function curlConverter(curlString: string): THittableCurlJson {
   if (!curlString) return { method: "GET", url: "", params: "{}", headers: "{}", body: "{}" };
 
   const urlRegex = /(?:https?:\/\/|<<)[^\s"']+/;
@@ -50,7 +50,7 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
 }
 
 
-export function jsonToCurl(json: TPostBoxCurlJson): string {
+export function jsonToCurl(json: THittableCurlJson): string {
   let methodPart = `-X ${json.method}`;
   
   // Use the standard curl shorthand for HEAD

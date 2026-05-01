@@ -1,24 +1,24 @@
 export type TabSize = 2 | 4 | "tab";
 
-export type TPostBoxEnv = {
+export type THittableEnv = {
   [key: string]: string;
 };
 
-export type TPostBoxCurl = {
+export type THittableCurl = {
   name: string;
   curl: string;
   response: string;
 };
 
-export type TPostBoxCollection = {
+export type THittableCollection = {
   collectionName: string;
-  curls: TPostBoxCurl[];
-  env: TPostBoxEnv;
+  curls: THittableCurl[];
+  env: THittableEnv;
 };
 
-export type TPostBoxCollections = TPostBoxCollection[];
+export type THittableCollections = THittableCollection[];
 
-export type TPostBoxCurlJson = {
+export type THittableCurlJson = {
   method: string;
   url: string;
   headers: string;
@@ -26,7 +26,7 @@ export type TPostBoxCurlJson = {
   params: string;
 };
 
-export type TPostBoxSelectorSelection = {
+export type THittableSelectorSelection = {
     collectionName: string;
     curlName: string;
 }
@@ -41,11 +41,11 @@ export type TResponseJson = {
     cookies?: unknown;
 } | null;
 
-export type TPostBoxSelectorResponse = {
+export type THittableSelectorResponse = {
     collectionName: string;
     curlName: string;
-    env?: TPostBoxEnv;
-    curlJson: TPostBoxCurlJson;
+    env?: THittableEnv;
+    curlJson: THittableCurlJson;
     responseJson?: TResponseJson;
 };
 

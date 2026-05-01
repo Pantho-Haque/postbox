@@ -1,14 +1,14 @@
-import { TPostBoxCollections, TPostBoxCurlJson, TPostBoxEnv } from "@/types";
+import { THittableCollections, THittableCurlJson, THittableEnv } from "@/types";
 
 export const createCollectionName = (
-  prev: TPostBoxCollections,
+  prev: THittableCollections,
   currentName: string,
 ) => {
   return [...prev, { collectionName: currentName, curls: [], env: {} }];
 };
 
 export const createCurlName = (
-  prev: TPostBoxCollections,
+  prev: THittableCollections,
   selectedCollection: string,
   currentName: string,
   curlString: string,
@@ -26,7 +26,7 @@ export const createCurlName = (
 };
 
 export const renameCollectionName = (
-  prev: TPostBoxCollections,
+  prev: THittableCollections,
   currentName: string,
   newName: string,
 ) => {
@@ -42,7 +42,7 @@ export const renameCollectionName = (
 };
 
 export const renameCurlName = (
-  prev: TPostBoxCollections,
+  prev: THittableCollections,
   currentName: string,
   collectionName: string,
   newName: string,
@@ -73,7 +73,7 @@ export const isAlreadyExists = (
 };
 
 export const updateCurl = (
-  prev: TPostBoxCollections,
+  prev: THittableCollections,
   collectionName: string,
   curlName: string,
   curl: string,
@@ -94,14 +94,14 @@ export const updateCurl = (
 };
 
 export const deleteCollectionName = (
-  prev: TPostBoxCollections,
+  prev: THittableCollections,
   currentName: string,
 ) => {
   return prev.filter((collection) => collection.collectionName !== currentName);
 };
 
 export const deleteCurlName = (
-  prev: TPostBoxCollections,
+  prev: THittableCollections,
   collectionName: string,
   currentName: string,
 ) => {
@@ -116,7 +116,7 @@ export const deleteCurlName = (
 };
 
 export const updateEnv = (
-  prev: TPostBoxCollections,
+  prev: THittableCollections,
   collectionName: string,
   env: Record<string, string>,
 ) => {
@@ -132,12 +132,12 @@ export const updateEnv = (
 };
 
 
-export function resolveEnv(formInput: TPostBoxCurlJson, env?: TPostBoxEnv): TPostBoxCurlJson {
+export function resolveEnv(formInput: THittableCurlJson, env?: THittableEnv): THittableCurlJson {
   if (!env) return formInput;
-  const newFormInput: TPostBoxCurlJson = { ...formInput };
+  const newFormInput: THittableCurlJson = { ...formInput };
   Object.entries(newFormInput).forEach(([key, val]) => {
     if (typeof val === 'string') {
-      newFormInput[key as keyof TPostBoxCurlJson] = val.replace(
+      newFormInput[key as keyof THittableCurlJson] = val.replace(
         /<<(\w+)>>/g, 
         (_, envKey) => env[envKey] ?? `<<${envKey}>>`
       );

@@ -9,12 +9,12 @@ import {
   useState,
 } from "react";
 import {
-  TPostBoxCollections,
-  TPostBoxEnv,
-  TPostBoxSelectorResponse,
+  THittableCollections,
+  THittableEnv,
+  THittableSelectorResponse,
 } from "@/types";
 import { createPortal } from "react-dom";
-import { updateEnv } from "@/utils/postboxCollectionModifier";
+import { updateEnv } from "@/utils/hittableCollectionModifier";
 
 export default function EnvModal({
   envs,
@@ -22,10 +22,10 @@ export default function EnvModal({
   setSelectorResponse,
   setCollections,
 }: {
-  envs: TPostBoxEnv;
+  envs: THittableEnv;
   collectionName: string;
-  setSelectorResponse: Dispatch<SetStateAction<TPostBoxSelectorResponse | null>>;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
+  setSelectorResponse: Dispatch<SetStateAction<THittableSelectorResponse | null>>;
+  setCollections: Dispatch<SetStateAction<THittableCollections>>;
 }) {
   const [open, setOpen] = useState(false);
   const [localEnv, setLocalEnv] = useState<[string, string][]>([]);
@@ -44,7 +44,7 @@ export default function EnvModal({
   };
 
   const handleSave = useCallback(() => {
-    const updatedEnv = Object.fromEntries(localEnv.filter(([k]) => k.trim())) as TPostBoxEnv;
+    const updatedEnv = Object.fromEntries(localEnv.filter(([k]) => k.trim())) as THittableEnv;
     setCollections((prev) => updateEnv(prev, collectionName, updatedEnv));
     setSelectorResponse((prev) => {
       if (!prev || prev.collectionName !== collectionName) return prev;

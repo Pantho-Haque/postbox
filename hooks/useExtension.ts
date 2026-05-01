@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 declare global {
-  interface Window { __postboxExtension?: boolean; }
+  interface Window { __hittableExtension?: boolean; }
 }
 
 export function useExtension() {
@@ -12,8 +12,8 @@ export function useExtension() {
 
   useEffect(() => {
     const handler = (e: MessageEvent) => {
-      if (e.data?.type === "POSTBOX_EXTENSION_READY") {
-        window.__postboxExtension = true;
+      if (e.data?.type === "HITTABLE_EXTENSION_READY") {
+        window.__hittableExtension = true;
         setAvailable(true);
         setChecked(true);
       }
@@ -23,7 +23,7 @@ export function useExtension() {
 
     let attempts = 0;
     const poll = setInterval(() => {
-      window.postMessage({ type: "POSTBOX_PING" }, "*");
+      window.postMessage({ type: "HITTABLE_PING" }, "*");
       attempts++;
       if (attempts >= 10) {
         clearInterval(poll);

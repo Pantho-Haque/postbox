@@ -1,4 +1,4 @@
-# <p align="center">📦 Postbox</p>
+# <p align="center">📦 Hittable</p>
 
 <p align="center">
   <strong>A developer-first HTTP client built for speed, transparency, and DX.</strong><br>
@@ -16,13 +16,13 @@
 
 ## 🚀 Live Demo
 
-**[postbox-pantho.vercel.app](https://postbox-pantho.vercel.app/postbox)**
+**[hittable-pantho.vercel.app](https://hittable-pantho.vercel.app/hittable)**
 
 ---
 
-## What is Postbox?
+## What is Hittable?
 
-Postbox is a lightweight, open-source HTTP API client that runs entirely in your browser. It hits the "sweet spot" between simplified online testers and heavy desktop apps like Postman.
+Hittable is a lightweight, open-source HTTP API client that runs entirely in your browser. It hits the "sweet spot" between simplified online testers and heavy desktop apps like Postman.
 
 ### 🆕 What's New (April 2026)
 - **Import/Export Collections** - Share and backup your route configurations
@@ -33,7 +33,7 @@ Postbox is a lightweight, open-source HTTP API client that runs entirely in your
 - **Info Modal** - Quick reference for all shortcuts and setup guides
 - **URL-based Routing** - Share and select routes via URL parameters
 
-### Why Postbox?
+### Why Hittable?
 - **Zero Install**: Lives in your browser, persistent to `localStorage`.
 - **CORS Bypass**: Integrated server-side proxy eliminates CORS headaches during development.
 - **Keyboard First**: Every major action has a shortcut. Stop reaching for the mouse.
@@ -77,16 +77,16 @@ Postbox is a lightweight, open-source HTTP API client that runs entirely in your
 ## 🏗 Project Structure
 
 ```bash
-postbox/
+hittable/
 ├── app/
 │   ├── layout.tsx         # Global layout with SEO & Topbar
 │   ├── page.tsx           # High-conversion landing page
 │   ├── sitemap.ts         # Dynamic SEO sitemap
-│   └── postbox/           # Main application engine
+│   └── hittable/           # Main application engine
 │       └── page.tsx       # State orchestrator
 ├── components/
 │   ├── Topbar.tsx         # Global navigation header
-│   └── postbox/
+│   └── hittable/
 │       ├── RequestForm.tsx # Method/URL/Body/Headers/Response UI
 │       ├── Selector.tsx    # Sidebar navigation
 │       ├── Menu.tsx        # Context menu for collections/routes
@@ -94,7 +94,7 @@ postbox/
 ├── utils/
 │   ├── curlConverter.ts   # Advanced curl command parser
 │   ├── JsonStringParsing.ts # Robust JSON handling
-│   └── postboxCollectionModifier.ts # Immutable state logic
+│   └── hittableCollectionModifier.ts # Immutable state logic
 └── types/
     └── index.ts           # Centralized type definitions
 ```
@@ -105,8 +105,8 @@ postbox/
 
 ### 1. Clone & Install
 ```bash
-git clone https://github.com/Pantho-Haque/postbox.git
-cd postbox
+git clone https://github.com/Pantho-Haque/hittable.git
+cd hittable
 npm install
 ```
 
@@ -118,7 +118,7 @@ npm run dev
 ### 3. Deploy
 One-click deployment to Vercel:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Pantho-Haque/postbox)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Pantho-Haque/hittable)
 
 ---
 

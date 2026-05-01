@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Postbox Companion",
+  "name": "Hittable Companion",
   "version": "1.0.0",
   "permissions": ["declarativeNetRequest", "cookies"],
   "host_permissions": [
@@ -13,7 +13,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://postbox-pantho.vercel.app/*",
+        "https://hittable-pantho.vercel.app/*",
         "http://localhost:3000/*"
       ],
       "js": ["content.js"]

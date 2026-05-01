@@ -1,1 +1,1 @@
-export * from "./Postbox";
+export * from "./Hittable";

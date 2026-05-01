@@ -32,7 +32,7 @@ export default function NoExtensionModal({
       {open && (
         <ModalShell
           title={`No Extension Found`}
-          subtitle={`To get connected to localhost make sure to install PostBox Extension`}
+          subtitle={`To get connected to localhost make sure to install Hittable Extension`}
           onClose={() => setOpen(false)}
           isOnBlurPressClose={false}
         >

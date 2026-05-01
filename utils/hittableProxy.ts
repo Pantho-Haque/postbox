@@ -1,5 +1,5 @@
-import { TPostBoxCurlJson, TPostBoxEnv } from "@/types";
-import { resolveEnv } from "./postboxCollectionModifier";
+import { THittableCurlJson, THittableEnv } from "@/types";
+import { resolveEnv } from "./hittableCollectionModifier";
 
 const LOCAL_HOSTNAMES = ["localhost", "127.0.0.1", "0.0.0.0"];
 
@@ -20,10 +20,10 @@ export function fetchViaExtension(
   body: string | null,
 ): Promise<{ data: unknown; status: number; ok: boolean; error?: string }> {
   return new Promise((resolve, reject) => {
-    window.postMessage({ type: "POSTBOX_REQUEST", payload: { url, method, headers, body } }, "*");
+    window.postMessage({ type: "HITTABLE_REQUEST", payload: { url, method, headers, body } }, "*");
 
     const handler = (event: MessageEvent) => {
-      if (event.data?.type !== "POSTBOX_RESPONSE") return;
+      if (event.data?.type !== "HITTABLE_RESPONSE") return;
       window.removeEventListener("message", handler);
       if (event.data.success) resolve(event.data);
       else reject(new Error(event.data.error));
@@ -58,9 +58,9 @@ async function fetchViaProxy(
   return responseData;
 }
 
-export async function postboxProxy(
-  formInput: TPostBoxCurlJson,
-  env: TPostBoxEnv | undefined,
+export async function hittableProxy(
+  formInput: THittableCurlJson,
+  env: THittableEnv | undefined,
   extensionAvailable: boolean,
 ) {
   const {url, method, headers, body} = resolveEnv(formInput, env);
@@ -71,7 +71,7 @@ export async function postboxProxy(
   }
 
   if (isLocal && !extensionAvailable) {
-    throw new Error("Install the Postbox Extension to make localhost requests");
+    throw new Error("Install the Hittable Extension to make localhost requests");
   }
 
   return fetchViaProxy(url, method, headers, body);
