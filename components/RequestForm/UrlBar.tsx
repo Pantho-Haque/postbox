@@ -2,37 +2,25 @@
 
 import { METHOD_COLORS, POSTBOX_METHODS } from "@/constants";
 import useKeypress from "@/hooks/useKeypress";
-import { TPostBoxCurlJson, TPostBoxEnv, TResponseJson } from "@/types";
 import { curlConverter, jsonToCurl } from "@/utils/curlConverter";
 import { postboxProxy } from "@/utils/postboxProxy";
 import { getParamsfromUrl } from "@/utils/responsePanelUtils";
 import { CheckCircle2, Code2, Loader2, Save, Send } from "lucide-react";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useState,
-} from "react";
+import { useCallback, useState } from "react";
+import { useDataContext } from "@/context/dataContext";
 
 export default function UrlBar({
-  formInput,
-  setFormInput,
-  setProxyResponse,
-  env,
-  extensionAvailable,
   handleSaveCollection,
   isUnsaved,
   error,
 }: {
-  formInput: TPostBoxCurlJson;
-  env: TPostBoxEnv | undefined;
-  setFormInput: Dispatch<SetStateAction<TPostBoxCurlJson>>;
-  setProxyResponse: Dispatch<SetStateAction<TResponseJson>>;
-  extensionAvailable: boolean;
   handleSaveCollection: () => void;
   isUnsaved: () => boolean;
   error: string | null;
 }) {
+  const { formInput, setFormInput, extensionAvailable, setProxyResponse , selectorResponse } = useDataContext();
+
+  const {env} = selectorResponse!;
   const mc = METHOD_COLORS[formInput.method] ?? "#94a3b8";
 
   const [curlCopied, setCurlCopied] = useState(false);

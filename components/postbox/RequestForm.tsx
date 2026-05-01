@@ -1,19 +1,7 @@
 "use client";
-import {
-  TPostBoxCurlJson,
-  TResponseJson,
-} from "@/types";
-import { jsonToCurl } from "@/utils/curlConverter";
 import { formatJson } from "@/utils/formatJson";
-import { updateCurl } from "@/utils/postboxCollectionModifier";
-
 import { AlertCircle, MessageCircleWarning } from "lucide-react";
-import {
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import { useExtension } from "@/hooks/useExtension";
+import { useEffect, useState } from "react";
 import {
   NoExtensionModal,
   ResponsePanel,
@@ -23,89 +11,29 @@ import {
 import { useDataContext } from "@/context/dataContext";
 
 export default function RequestForm() {
-  const {  selectorResponse } = useDataContext();
-  
+  const { selectorResponse } = useDataContext();
+
   if (!selectorResponse) {
     return <EmptyState />;
   }
-  return <InputForm />
+  return <InputForm />;
 }
 
 function InputForm() {
+  const {
+    selectorResponse,
+    extensionAvailable,
+    extensionChecked,
+    setFormInput,
+    setProxyResponse,
+    isUnsaved,
+    handleSaveCollection
+  } = useDataContext();
 
-  const { setCollections, selectorResponse, setSelectorResponse } = useDataContext();
-
-  const { collectionName, curlName, env, curlJson, responseJson } = selectorResponse!;
+  const { collectionName, curlName, curlJson, responseJson } =
+    selectorResponse!;
 
   const [error, setError] = useState<string | null>(null);
-
-  const { available: extensionAvailable, checked: extensionChecked } = useExtension();
-
-  const [formInput, setFormInput] = useState<TPostBoxCurlJson>({
-    ...curlJson,
-    body: formatJson(curlJson.body).output,
-    headers: formatJson(curlJson.headers).output,
-  });
-
-  const [proxyResponse, setProxyResponse] = useState<TResponseJson>(
-    responseJson ?? null,
-  );
-
-  const isUnsaved = useCallback(() => {
-    const normalize = (s: string) => {
-      try {
-        return JSON.stringify(JSON.parse(s || "{}"));
-      } catch {
-        return s.trim();
-      }
-    };
-    return (
-      formInput.method !== curlJson.method ||
-      formInput.url !== curlJson.url ||
-      normalize(formInput.body) !== normalize(curlJson.body) ||
-      normalize(formInput.headers) !== normalize(curlJson.headers) ||
-      normalize(JSON.stringify(proxyResponse)) !==
-        normalize(JSON.stringify(responseJson))
-    );
-  }, [
-    curlJson.body,
-    curlJson.headers,
-    curlJson.method,
-    curlJson.url,
-    formInput.body,
-    formInput.headers,
-    formInput.method,
-    formInput.url,
-    proxyResponse,
-    responseJson,
-  ]);
-
-  const handleSaveCollection = useCallback(() => {
-    setSelectorResponse({
-      collectionName,
-      curlName,
-      env,
-      curlJson: formInput,
-      responseJson: proxyResponse,
-    });
-    setCollections((prev) =>
-      updateCurl(
-        prev,
-        collectionName,
-        curlName,
-        jsonToCurl(formInput),
-        JSON.stringify(proxyResponse),
-      ),
-    );
-  }, [
-    setSelectorResponse,
-    collectionName,
-    curlName,
-    env,
-    formInput,
-    proxyResponse,
-    setCollections,
-  ]);
 
   useEffect(() => {
     const temp = () => {
@@ -118,7 +46,7 @@ function InputForm() {
       setProxyResponse(responseJson ?? null);
     };
     temp();
-  }, [curlJson, responseJson]);
+  }, [curlJson, responseJson, setFormInput, setProxyResponse]);
 
   return (
     <div className="h-full w-full flex flex-col gap-4 font-mono">
@@ -138,11 +66,6 @@ function InputForm() {
       </div>
 
       <UrlBar
-        formInput={formInput}
-        setFormInput={setFormInput}
-        setProxyResponse={setProxyResponse}
-        extensionAvailable={extensionAvailable}
-        env={env}
         handleSaveCollection={handleSaveCollection}
         error={error}
         isUnsaved={isUnsaved}
@@ -166,19 +89,14 @@ function InputForm() {
       )}
 
       <TabEditor
-        formInput={formInput}
-        setFormInput={setFormInput}
         setError={setError}
       />
-      <ResponsePanel proxyResponse={proxyResponse} />
+      <ResponsePanel />
     </div>
   );
 }
 
-
-
 function EmptyState() {
-
   const { hasCollections } = useDataContext();
   return (
     <div className="h-full w-full flex items-center justify-center">

@@ -1,19 +1,17 @@
 "use client";
 
 import { formatJson } from "@/utils/formatJson";
-import { TPostBoxCurlJson } from "@/types";
 import { Dispatch, SetStateAction, useState } from "react";
 import { modifyUrlForNewParams } from "@/utils/responsePanelUtils";
+import { useDataContext } from "@/context/dataContext";
 
 export default function TabEditor({
-  formInput,
-  setFormInput,
   setError,
 }: {
-  formInput: TPostBoxCurlJson;
-  setFormInput: Dispatch<SetStateAction<TPostBoxCurlJson>>;
   setError: Dispatch<SetStateAction<string | null>>;
 }) {
+
+  const { formInput, setFormInput } = useDataContext();
 
   const [activeTab, setActiveTab] = useState<"params" | "body" | "headers">(
     "params",

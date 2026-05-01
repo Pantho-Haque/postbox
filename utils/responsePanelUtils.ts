@@ -58,21 +58,18 @@ export function getParamsfromUrl(url:string):string{
   return JSON.stringify(paramsObj,null,2);
 }
 
-export function modifyUrlForNewParams(url:string , newParams:string):string{
-   const host = url.split("?")[0];
+export function modifyUrlForNewParams(url:string , newParams:string) : string{
+   try {
+    const parsedParams = JSON.parse(newParams) as Record<string,string>;
+    const host = url.split("?")[0];
    let modifiedUrl = host + "?";
-   Object.entries(JSON.parse(newParams)).forEach(([key, value]) => {
-        modifiedUrl += `${key}=${value}&`;
-   });
-   modifiedUrl = modifiedUrl.slice(0, -1);
-
-    // const parsedUrl = new URL(url);
-    // const searchParams = new URLSearchParams(parsedUrl.search);
-    // const newParamsObj = JSON.parse(newParams);
-    // Object.keys(newParamsObj).forEach((key) => {
-    //     searchParams.set(key, newParamsObj[key]);
-    // });
-    // parsedUrl.search = searchParams.toString();
+    Object.entries(parsedParams).forEach(([key, value]) => {
+         modifiedUrl += `${key}=${value}&`;
+    });
+    modifiedUrl = modifiedUrl.slice(0, -1);
     return decodeURIComponent(modifiedUrl);
+   }catch{
+    return url;
+   }
 }
 

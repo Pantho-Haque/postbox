@@ -1,6 +1,6 @@
 "use client";
 
-import { JsonValue, TResponseJson } from "@/types";
+import { JsonValue } from "@/types";
 import { CheckCircle2, AlertCircle, Send, Search } from "lucide-react";
 import { useState, useCallback, useMemo, useRef } from "react";
 import {
@@ -12,13 +12,11 @@ import {
 } from "@/components";
 import { countMatches } from "@/utils/responsePanelUtils";
 import useKeypress from "@/hooks/useKeypress";
+import { useDataContext } from "@/context/dataContext";
 
 
-export default function ResponsePanel({
-  proxyResponse,
-}: {
-  proxyResponse: TResponseJson | null;
-}) {
+export default function ResponsePanel() {
+  const {proxyResponse} = useDataContext();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
