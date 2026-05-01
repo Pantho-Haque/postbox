@@ -11,7 +11,7 @@ export default function Topbar() {
       {/* Left — logo + breadcrumb */}
       <div className="flex items-center gap-3">
         <Link href="/" className="flex items-center gap-3 group outline-none">
-          <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-b from-zinc-800 to-zinc-900 border border-white/10 shadow-[0_2px_10px_rgba(0,0,0,0.4)] transition-all duration-300 group-hover:shadow-[0_4px_16px_rgba(255,255,255,0.1)] group-hover:border-white/20">
+          <div className="relative flex items-center justify-center w-8 h-8 rounded-xl bg-linear-to-b from-zinc-800 to-zinc-900 border border-white/10 transition-all duration-300 group-hover:shadow-[0_4px_16px_rgba(255,255,255,0.1)] group-hover:border-white/20">
             <div className="absolute inset-0 rounded-xl bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-zinc-100 transition-transform duration-300 group-hover:scale-110">
               <path d="M10 3L6 21M18 3l-4 18M4 12h16" />

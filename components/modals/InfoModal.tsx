@@ -49,17 +49,17 @@ export default function InfoModal() {
           onClose={() => setOpen(false)}
           size="md"
         >
-          <div className="w-full font-mono">
+          <div className="w-full font-mono overflow-y-auto">
             <Accordion type="multiple">
               {acordionItems.map((item) => (
                 <AccordionItem key={item.value} value={item.value}>
-                  <AccordionTrigger>
+                  <AccordionTrigger className="border-l border-b border-white/10">
                     <span className="flex items-center gap-2">
                       {item.triggerIcon}
                       {item.triggerText}
                     </span>
                   </AccordionTrigger>
-                  <AccordionContent>{item.content}</AccordionContent>
+                  <AccordionContent className="pt-2">{item.content}</AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
