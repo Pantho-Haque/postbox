@@ -176,7 +176,7 @@ export default function ResponsePanel({
               <span className="font-mono text-[11px] text-red-400 whitespace-pre-wrap">
                 {proxyResponse.error}
               </span>
-            ) : parsedData !== null ? (
+            ) : parsedData ? (
               <JsonNode
                 value={parsedData}
                 depth={0}
@@ -185,7 +185,7 @@ export default function ResponsePanel({
               />
             ) : (
               <pre className="text-xs text-white/60 leading-relaxed whitespace-pre-wrap wrap-words">
-                {String(proxyResponse.data)}
+                {String(proxyResponse.data || '')}
               </pre>
             )}
           </div>

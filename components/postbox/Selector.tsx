@@ -11,8 +11,6 @@ import { Package2, Route, ChevronLeft, ChevronRight } from "lucide-react";
 import { CreateModal, EnvModal, Menu } from "@/components";
 import { curlConverter } from "@/utils/curlConverter";
 import {
-  TPostBoxCollections,
-  TPostBoxSelectorResponse,
   TPostBoxSelectorSelection,
 } from "@/types";
 import { parseStringToJson } from "@/utils/JsonStringParsing";
@@ -20,6 +18,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useShortcuts } from "@/context/ShortcutKeypressProvider";
 import useKeypress from "@/hooks/useKeypress";
 import { createCurlName, isAlreadyExists } from "@/utils/postboxCollectionModifier";
+import { useDataContext } from "@/context/dataContext";
 
 function EmptyState({
   icon: Icon,
@@ -71,17 +70,10 @@ function PanelItem({
   );
 }
 
-export default function Selector({
-  collections,
-  setCollections,
-  setSelectorResponse,
-}: {
-  collections: TPostBoxCollections;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectorResponse: Dispatch<
-    SetStateAction<TPostBoxSelectorResponse | null>
-  >;
-}) {
+export default function Selector() {
+
+  const { collections, setCollections, setSelectorResponse } = useDataContext();
+
   const router = useRouter();
   const searchParams = useSearchParams();
 

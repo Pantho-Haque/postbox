@@ -4,16 +4,13 @@ import { Import } from "lucide-react";
 import { useState } from "react";
 import { ModalShell, ModalActions } from "@/components";
 import { decompressString } from "@/utils/compressString";
-import { TPostBoxCollection, TPostBoxCollections } from "@/types";
-import { Dispatch, SetStateAction } from "react";
+import { TPostBoxCollection } from "@/types";
+import { useDataContext } from "@/context/dataContext";
 
-export default function ImportModal({
-  collections,
-  setCollections,
-}: {
-  collections: TPostBoxCollections;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-}) {
+export default function ImportModal() {
+
+  const { collections, setCollections } = useDataContext();
+  
   const [open, setOpen] = useState(false);
   const [compressedString, setCompressedString] = useState("");
 

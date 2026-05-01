@@ -5,30 +5,22 @@ import { formatJson } from "./formatJson";
 export function curlConverter(curlString: string): TPostBoxCurlJson {
   if (!curlString) return { method: "GET", url: "", params: "{}", headers: "{}", body: "{}" };
 
-  // 1. REGEX to extract the URL before the parser breaks
-  // This looks for anything after 'curl', '-X GET', etc., that looks like a URL/Placeholder
   const urlRegex = /(?:https?:\/\/|<<)[^\s"']+/;
   const rawUrlFromCurl = curlString.match(urlRegex)?.[0] || "";
 
-  // 2. SHIELD the entire curl string 
-  // Replace <<var>> with a safe word so the Parser doesn't crash
   const shieldedCurl = curlString.replace(/<<(\w+)>>/g, 'PH_$1_PH');
 
   let parsed: ResultJSON;
   try {
-    // We parse the shielded version
     parsed = parse(shieldedCurl);
   } catch {
-    // Fallback if the parser still hates the string
     parsed = { url: rawUrlFromCurl, origin: rawUrlFromCurl, method: "GET", header: {}, data: {} };
   }
-
-  // 3. Helper to swap "PH_var_PH" back to "<<var>>"
   const unshield = (val: string): string => {
-    return val.replace(/PH_(\w+)_PH/g, '<<$1>>');
+    if (!val) return "";
+    return val.toString().replace(/PH_(\w+)_PH/g, '<<$1>>');
   };
 
-  // 4. Manual Query Parameter Extraction (to avoid URL encoding issues)
   const extractParams = (url: string) => {
     const queryPart = url.split('?')[1];
     if (!queryPart) return {};
@@ -40,7 +32,6 @@ export function curlConverter(curlString: string): TPostBoxCurlJson {
     }, {});
   };
 
-  // 5. Clean up Headers and Body
   const cleanObj = (obj: Record<string, string>) => {
     const newObj: Record<string, string> = {};
     Object.entries(obj || {}).forEach(([k, v]) => {

@@ -5,6 +5,7 @@ import useKeypress from "@/hooks/useKeypress";
 import { TPostBoxCurlJson, TPostBoxEnv, TResponseJson } from "@/types";
 import { curlConverter, jsonToCurl } from "@/utils/curlConverter";
 import { postboxProxy } from "@/utils/postboxProxy";
+import { getParamsfromUrl } from "@/utils/responsePanelUtils";
 import { CheckCircle2, Code2, Loader2, Save, Send } from "lucide-react";
 import {
   Dispatch,
@@ -134,7 +135,7 @@ export default function UrlBar({
         type="text"
         placeholder="https://api.example.com/endpoint"
         value={formInput.url}
-        onChange={(e) => setFormInput({ ...formInput, url: e.target.value })}
+        onChange={(e) => setFormInput({ ...formInput, url: e.target.value, params : getParamsfromUrl(e.target.value) })}
         onPaste={handleUrlPaste}
         spellCheck={false}
       />

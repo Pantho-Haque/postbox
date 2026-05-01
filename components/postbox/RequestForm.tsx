@@ -1,8 +1,6 @@
 "use client";
 import {
-  TPostBoxCollections,
   TPostBoxCurlJson,
-  TPostBoxSelectorResponse,
   TResponseJson,
 } from "@/types";
 import { jsonToCurl } from "@/utils/curlConverter";
@@ -11,8 +9,6 @@ import { updateCurl } from "@/utils/postboxCollectionModifier";
 
 import { AlertCircle, MessageCircleWarning } from "lucide-react";
 import {
-  Dispatch,
-  SetStateAction,
   useCallback,
   useEffect,
   useState,
@@ -24,25 +20,26 @@ import {
   TabEditor,
   UrlBar,
 } from "@/components";
+import { useDataContext } from "@/context/dataContext";
 
-export default function RequestForm({
-  selectorResponse,
-  setCollections,
-  setSelectorResponse,
-}: {
-  selectorResponse: TPostBoxSelectorResponse;
-  setCollections: Dispatch<SetStateAction<TPostBoxCollections>>;
-  setSelectorResponse: Dispatch<
-    SetStateAction<TPostBoxSelectorResponse | null>
-  >;
-}) {
-  const { collectionName, curlName, env, curlJson, responseJson } =
-    selectorResponse;
+export default function RequestForm() {
+  const {  selectorResponse } = useDataContext();
+  
+  if (!selectorResponse) {
+    return <EmptyState />;
+  }
+  return <InputForm />
+}
+
+function InputForm() {
+
+  const { setCollections, selectorResponse, setSelectorResponse } = useDataContext();
+
+  const { collectionName, curlName, env, curlJson, responseJson } = selectorResponse!;
 
   const [error, setError] = useState<string | null>(null);
 
-  const { available: extensionAvailable, checked: extensionChecked } =
-    useExtension();
+  const { available: extensionAvailable, checked: extensionChecked } = useExtension();
 
   const [formInput, setFormInput] = useState<TPostBoxCurlJson>({
     ...curlJson,
@@ -174,6 +171,57 @@ export default function RequestForm({
         setError={setError}
       />
       <ResponsePanel proxyResponse={proxyResponse} />
+    </div>
+  );
+}
+
+
+
+function EmptyState() {
+
+  const { hasCollections } = useDataContext();
+  return (
+    <div className="h-full w-full flex items-center justify-center">
+      <div className="relative flex flex-col items-center gap-6 text-center px-8">
+        {/* Corner brackets */}
+        <span className="absolute -top-6 -left-6 w-6 h-6 border-t-2 border-l-2 border-cyan-500/40" />
+        <span className="absolute -top-6 -right-6 w-6 h-6 border-t-2 border-r-2 border-cyan-500/40" />
+        <span className="absolute -bottom-6 -left-6 w-6 h-6 border-b-2 border-l-2 border-cyan-500/40" />
+        <span className="absolute -bottom-6 -right-6 w-6 h-6 border-b-2 border-r-2 border-cyan-500/40" />
+
+        <div className="w-16 h-16 rounded-full border border-cyan-500/20 bg-cyan-500/5 flex items-center justify-center">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#00e5cc"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.6"
+          >
+            <path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" />
+            <path d="M12 12h.01" />
+            <path d="M8 12h.01" />
+            <path d="M16 12h.01" />
+          </svg>
+        </div>
+
+        <div>
+          <p className="text-[10px] tracking-[0.3em] uppercase text-cyan-500/60 mb-2">
+            Postbox
+          </p>
+          <h2 className="text-xl font-bold text-white/80 mb-2">
+            {hasCollections ? "Select a route" : "No collections yet"}
+          </h2>
+          <p className="text-xs text-white/30 max-w-[260px] leading-relaxed">
+            {hasCollections
+              ? "Choose a collection and route from the sidebar to start making requests."
+              : "Create a collection in the sidebar, then add routes to start testing your APIs."}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
