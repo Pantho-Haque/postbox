@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
         hostname: "localhost",
         port: "3000",
       },
+      {
+        protocol: "https",
+        hostname: "domiknows.vercel.app",
+      },
     ],
     qualities: [25, 50, 75, 100],
   }, 

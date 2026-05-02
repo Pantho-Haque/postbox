@@ -15,7 +15,7 @@ jobs:
 
       - name: Zip extension
         run: |
-          cd browserExtension && zip -r ../postbox-extension.zip . \
+          cd browserExtension && zip -r ../hittable-extension.zip . \
             --exclude ".git/*" \
             --exclude ".github/*" \
             --exclude "*.md"
@@ -23,7 +23,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: postbox-extension.zip
+          files: hittable-extension.zip
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

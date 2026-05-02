@@ -10,56 +10,61 @@ import NoteModal from "./modals/NoteModal";
 import NotePills from "./notes/NotePills";
 import NoteEditor from "./notes/NoteEditor";
 
-
 import ResponsePanel from "./RequestForm/ResponsePanel";
 import TabEditor from "./RequestForm/TabEditor";
 import UrlBar from "./RequestForm/UrlBar";
 
 import CopyButton from "./RequestForm/ResponsePanelComponents/CopyButton";
 import FloatingSearch from "./RequestForm/ResponsePanelComponents/FloatingSearch";
-import {Highlight,MatchMark} from "./RequestForm/ResponsePanelComponents/Highlight";
+import {
+  Highlight,
+  MatchMark,
+} from "./RequestForm/ResponsePanelComponents/Highlight";
 import JsonNode from "./RequestForm/ResponsePanelComponents/JsonNode";
-import {MatchCtx,MatchRegistry} from "./RequestForm/ResponsePanelComponents/MatchContext";
+import {
+  MatchCtx,
+  MatchRegistry,
+} from "./RequestForm/ResponsePanelComponents/MatchContext";
 
 import Selector from "./hittable/Selector";
 import RequestForm from "./hittable/RequestForm";
 import NoExtensionModal from "./modals/NoExtensionModal";
 import SyntaxHighlighter from "./hittable/SyntaxHighlighter";
 import Menu from "./hittable/Menu";
-import Topbar from "./TopBar";
+import Topbar from "./homepage/TopBar";
+
 export * from "./ui/SharedModal";
 
+import PortfolioSection from "./homepage/PortfolioSection";
+import { TerminalDemo } from "./homepage/TerminalDemo";
+
 export {
-    RenameModal,
-    DeleteModal,
-    CreateModal,
-    EnvModal,
-    ImportModal,
-    ExportModal,
-    InfoModal,
-    NoteModal,
-    
-    NotePills,
-    NoteEditor,
-    
-
-    ResponsePanel,
-    TabEditor,
-    UrlBar,
-
-    CopyButton,
-    FloatingSearch,
-    Highlight,
-    MatchMark,
-    JsonNode,
-    MatchCtx,
-    
-    
-    Selector,
-    RequestForm,
-    Menu,
-    SyntaxHighlighter,
-    Topbar,
-    NoExtensionModal
-}
-export type {MatchRegistry}
+  RenameModal,
+  DeleteModal,
+  CreateModal,
+  EnvModal,
+  ImportModal,
+  ExportModal,
+  InfoModal,
+  NoteModal,
+  NotePills,
+  NoteEditor,
+  ResponsePanel,
+  TabEditor,
+  UrlBar,
+  CopyButton,
+  FloatingSearch,
+  Highlight,
+  MatchMark,
+  JsonNode,
+  MatchCtx,
+  Selector,
+  RequestForm,
+  Menu,
+  SyntaxHighlighter,
+  Topbar,
+  NoExtensionModal,
+  PortfolioSection,
+  TerminalDemo,
+};
+export type { MatchRegistry };
