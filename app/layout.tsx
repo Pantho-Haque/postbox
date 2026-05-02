@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://hittable-pantho.vercel.app'),
+  metadataBase: new URL('https://hittable.vercel.app'),
   alternates: {
     canonical: '/',
   },
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Hittable | API Testing Client for Developers',
     description: 'Minimalist, keyboard-driven API testing client for modern developers.',
-    url: 'https://hittable-pantho.vercel.app/',
+    url: 'https://hittable.vercel.app/',
     siteName: 'Hittable',
     images: [
       {
@@ -85,7 +85,7 @@ const jsonLd = {
     url: 'https://panthohaque.vercel.app',
   },
   description: 'A professional, minimalist, and keyboard-driven API testing client. The modern alternative to Postman and Insomnia.',
-  screenshot: 'https://hittable-pantho.vercel.app/assets/images/logo.svg',
+  screenshot: 'https://hittable.vercel.app/assets/images/logo.png',
   softwareVersion: '1.0.0',
 };
 
