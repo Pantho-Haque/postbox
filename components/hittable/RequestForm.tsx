@@ -27,7 +27,7 @@ function InputForm() {
     setFormInput,
     setProxyResponse,
     isUnsaved,
-    handleSaveCollection
+    handleSaveCollection,
   } = useDataContext();
 
   const { collectionName, curlName, curlJson, responseJson } =
@@ -55,7 +55,7 @@ function InputForm() {
         available={extensionAvailable}
       />
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 h-3 w-full">
         <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/40">
           {collectionName}
         </span>
@@ -63,6 +63,22 @@ function InputForm() {
         <span className="text-[9px] tracking-[0.25em] uppercase text-cyan-500/70">
           {curlName}
         </span>
+        {(isUnsaved() || error) && (
+          <div className="flex items-center w-full justify-end gap-2">
+            {isUnsaved() && !error && (
+              <span className="flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 text-[10px] font-semibold text-amber-400 border border-amber-500/20">
+                <MessageCircleWarning className="h-3 w-3" strokeWidth={2.5} />
+                Unsaved · Ctrl/Cmd+S
+              </span>
+            )}
+            {error && (
+              <span className="flex items-center gap-1.5 rounded-md bg-red-500/10 px-2.5 py-1 text-[10px] font-semibold text-red-400 border border-red-500/20">
+                <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
+                {error}
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       <UrlBar
@@ -71,26 +87,7 @@ function InputForm() {
         isUnsaved={isUnsaved}
       />
 
-      {(isUnsaved() || error) && (
-        <div className="flex items-center gap-2">
-          {isUnsaved() && !error && (
-            <span className="flex items-center gap-1.5 rounded-md bg-amber-500/10 px-2.5 py-1 text-[10px] font-semibold text-amber-400 border border-amber-500/20">
-              <MessageCircleWarning className="h-3 w-3" strokeWidth={2.5} />
-              Unsaved · Ctrl/Cmd+S
-            </span>
-          )}
-          {error && (
-            <span className="flex items-center gap-1.5 rounded-md bg-red-500/10 px-2.5 py-1 text-[10px] font-semibold text-red-400 border border-red-500/20">
-              <AlertCircle className="h-3 w-3" strokeWidth={2.5} />
-              {error}
-            </span>
-          )}
-        </div>
-      )}
-
-      <TabEditor
-        setError={setError}
-      />
+      <TabEditor setError={setError} />
       <ResponsePanel />
     </div>
   );
