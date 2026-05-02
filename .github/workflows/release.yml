@@ -14,11 +14,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Zip extension
+        # We target the subdirectory from the root
         run: |
-          cd browserExtension && zip -r ../hittable-extension.zip . \
-            --exclude ".git/*" \
-            --exclude ".github/*" \
-            --exclude "*.md"
+          zip -r hittable-extension.zip browserExtension/ \
+            -x "browserExtension/.git/*" \
+            -x "browserExtension/.github/*" \
+            -x "*.md"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
