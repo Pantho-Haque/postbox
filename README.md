@@ -2,62 +2,54 @@
 
 <p align="center">
   <strong>A developer-first HTTP client built for speed, transparency, and DX.</strong><br>
-  No Electron, no accounts, no bloat. Just fire requests.
+  No accounts, no bloat. Just fire requests.
 </p>
 
 <p align="center">
-  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js" alt="Next.js"></a>
+  <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js" alt="Next.js"></a>
   <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5-3178c6?style=for-the-badge&logo=typescript" alt="TypeScript"></a>
-  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind-3-38bdf8?style=for-the-badge&logo=tailwindcss" alt="Tailwind"></a>
+  <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind-4-38bdf8?style=for-the-badge&logo=tailwindcss" alt="Tailwind"></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-00e5cc?style=for-the-badge" alt="License"></a>
 </p>
 
 ---
 
-## 🚀 Live Demo
-
-**[hittable-pantho.vercel.app](https://hittable-pantho.vercel.app/hittable)**
-
----
+### 🚀 Live at [hittable.vercel.app](https://hittable.vercel.app)
 
 ## What is Hittable?
 
 Hittable is a lightweight, open-source HTTP API client that runs entirely in your browser. It hits the "sweet spot" between simplified online testers and heavy desktop apps like Postman.
 
-### 🆕 What's New (April 2026)
-- **Import/Export Collections** - Share and backup your route configurations
-- **Enhanced cURL Support** - Copy routes as curl, paste curl directly in URL bar, and import from curl
-- **Browser Extension** - Seamless localhost API testing with automatic extension detection
-- **Clickable Response Links** - Navigate URLs directly from responses
-- **New Shortcuts** - `Shift+T` for quick route creation
-- **Info Modal** - Quick reference for all shortcuts and setup guides
-- **URL-based Routing** - Share and select routes via URL parameters
+### 🆕 Latest Upgrades (May 2026)
+- **Searchable Response Panel**: Find text within large JSON responses instantly using the new floating search bar.
+- **Route Documentation**: Add context to your requests with a built-in markdown Notes Editor.
+- **Intelligent UI Indicators**: Real-time visual feedback for unsaved changes (`Ctrl/Cmd+S`) and request errors.
+- **Hittable Companion Extension**: A rebuilt browser extension proxy that seamlessly bypasses CORS for all remote APIs.
+- **Redesigned Landing Experience**: Added a live terminal demo and professional portfolio integration.
+- **Codebase Refactor**: Highly modularized component architecture for better performance and maintainability.
 
 ### Why Hittable?
-- **Zero Install**: Lives in your browser, persistent to `localStorage`.
-- **CORS Bypass**: Integrated server-side proxy eliminates CORS headaches during development.
+- **Zero Install**: Lives in your browser, fully persistent to `localStorage`.
+- **CORS Bypass**: Leverage the Hittable Companion extension to bypass CORS restrictions without a proxy server.
 - **Keyboard First**: Every major action has a shortcut. Stop reaching for the mouse.
-- **Privacy Centric**: Your data stays in your browser's local storage. No cloud syncing of sensitive API keys unless you choose to.
+- **Privacy Centric**: Your data never leaves your browser. No cloud syncing of sensitive API keys.
 
 ---
 
 ## ✨ Key Features
 
-- **📂 Smart Collections**: Group routes into logical folders. Rename or delete them with the integrated context menu.
-- **🔄 Import/Export**: Export your collections and import them back anytime. Share configurations with your team.
-- **🌐 Environment Variables**: Define `<<KEY>>` placeholders. Perfect for switching between `localhost:3000` and `api.production.com`.
+- **📂 Smart Collections**: Group routes into logical folders. Rename, duplicate, or delete them with an intuitive context menu.
+- **🔄 Import/Export**: Export your collections and share configurations with your team seamlessly.
+- **🌐 Environment Variables**: Define `<<KEY>>` placeholders to easily switch between environments like `localhost` and `production`.
 - **⚡ curl Integration**: 
   - Paste a raw `curl` command into the URL bar for instant parsing
   - Copy any route as a `curl` command with one click
-  - Import routes directly from `curl` commands
-- **🔗 Browser Extension**: Optional extension for seamless localhost API testing with automatic detection.
-- **🖱️ Clickable Links**: Response URLs and links are directly clickable for quick navigation.
-- **🛠 Integrated Proxy**: Optional server-side proxy (`/api/proxy`) to test APIs that don't have permissive CORS headers.
-- **⌨️ Pro Shortcuts**: `Cmd/Ctrl + Enter` to send, `Cmd/Ctrl + S` to save, `Shift + T` for new route.
-- **📋 Info Modal**: Quick access to all keyboard shortcuts and extension setup instructions.
-- **🔍 URL-based Routing**: Select and share routes directly via URL parameters.
-- **🛡️ Type Safe**: Built with strict TypeScript for maximum reliability and great developer experience.
-- **🔍 SEO Optimized**: Metadata and sitemaps are ready for public deployment.
+- **🔗 Browser Extension**: The Hittable Companion extension automatically detects your app and proxies requests to avoid CORS.
+- **🖱️ Clickable Links**: URLs inside JSON responses are fully clickable.
+- **📝 Route Notes**: Write rich markdown notes to document API parameters and expected behaviors.
+- **🔍 Deep Search**: Find exactly what you need in massive API payloads with floating text match highlights.
+- **⌨️ Pro Shortcuts**: `Cmd/Ctrl + Enter` (Send), `Cmd/Ctrl + S` (Save), `Shift + T` (New Route), `Cmd/Ctrl + F` (Search).
+- **🛡️ Type Safe**: Built with strict TypeScript for maximum reliability and a bulletproof developer experience.
 
 ---
 
@@ -67,9 +59,9 @@ Hittable is a lightweight, open-source HTTP API client that runs entirely in you
 | :--- | :--- |
 | **Framework** | Next.js 15 (App Router) |
 | **Language** | TypeScript 5 (Strict Mode) |
-| **Styling** | Vanilla CSS + Tailwind CSS 3 |
+| **Styling** | Vanilla CSS + Tailwind CSS 4 |
 | **Icons** | Lucide React |
-| **State Management** | React Hooks + Immutable Updates |
+| **State Management** | React Context + Custom Hooks |
 | **Persistence** | Browser `localStorage` |
 
 ---
@@ -81,22 +73,19 @@ hittable/
 ├── app/
 │   ├── layout.tsx         # Global layout with SEO & Topbar
 │   ├── page.tsx           # High-conversion landing page
-│   ├── sitemap.ts         # Dynamic SEO sitemap
-│   └── hittable/           # Main application engine
+│   └── hittable/          # Main application engine
 │       └── page.tsx       # State orchestrator
+├── browserExtension/      # Hittable Companion Chrome Extension
+│   ├── background.js      # CORS bypass proxy
+│   └── content.js         # DOM injection & detection
 ├── components/
-│   ├── Topbar.tsx         # Global navigation header
-│   └── hittable/
-│       ├── RequestForm.tsx # Method/URL/Body/Headers/Response UI
-│       ├── Selector.tsx    # Sidebar navigation
-│       ├── Menu.tsx        # Context menu for collections/routes
-│       └── Modals.tsx      # Env / Create / Delete / Rename logic
-├── utils/
-│   ├── curlConverter.ts   # Advanced curl command parser
-│   ├── JsonStringParsing.ts # Robust JSON handling
-│   └── hittableCollectionModifier.ts # Immutable state logic
-└── types/
-    └── index.ts           # Centralized type definitions
+│   ├── homepage/          # Landing page (PortfolioSection, TerminalDemo)
+│   ├── hittable/          # Core App UI (RequestForm, Selector, Menu)
+│   ├── RequestForm/       # Request internals (UrlBar, TabEditor, ResponsePanel)
+│   ├── notes/             # Markdown notes integration
+│   └── ui/                # Shared modals and micro-components
+├── utils/                 # Parsers (curl, JSON) and state modifiers
+└── hooks/                 # Custom React hooks (useExtension, etc.)
 ```
 
 ---
@@ -128,6 +117,8 @@ One-click deployment to Vercel:
 | :--- | :--- |
 | `Ctrl/Cmd + Enter` | **Send Request** |
 | `Ctrl/Cmd + S` | **Save to Collection** |
+| `Ctrl/Cmd + F` | **Search Response Payload** |
+| `Ctrl/Cmd + B` | **Toggle Sidebar** |
 | `Shift + T` | **Create New Untitled Route** |
 | `Esc` | **Close Modal** |
 | `Enter` (in modal) | **Confirm Action** |
@@ -140,20 +131,15 @@ One-click deployment to Vercel:
 
 - [x] Collections & Route management
 - [x] Environment Variables (`<<VAR>>` syntax)
-- [x] curl command auto-import & export
-- [x] Copy route as curl command
+- [x] curl command parsing & generation
 - [x] Import/Export collections
-- [x] Server-side CORS Proxy
-- [x] Browser extension for localhost testing
-- [x] Keyboard-driven UI
-- [x] Context Menu (Rename/Delete)
+- [x] Browser extension for CORS bypass
+- [x] Payload Search & Highlighting
+- [x] Route Notes & Documentation
 - [x] Clickable response links
-- [x] SEO & Sitemap support
 - [x] URL-based route selection
-- [x] Info modal with shortcuts
 - [ ] Response History
 - [ ] Auth presets (OAuth2, AWS Signature)
-- [ ] Multi-window layout
 - [ ] OpenAPI/Swagger import
 
 ---

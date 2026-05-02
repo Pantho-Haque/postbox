@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: ["/", "/hittable", "/sitemap.xml", "/favicon.ico", "/assets/"],
       disallow: ["/private/", "/api/"],
     },
-    sitemap: `https://hittable-pantho.vercel.app/sitemap.xml`,
+    sitemap: `https://hittable.vercel.app/sitemap.xml`,
   };
 }
